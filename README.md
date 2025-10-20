@@ -22,12 +22,9 @@ A Web3 platform for virtual streamers and content creators to connect with their
 
 ## Getting Started
 
-### Prerequisites
+### Quick Start (Development Mode with Mock Data)
 
-- Node.js 18+ and npm
-- Supabase account
-
-### Installation
+This project includes mock data so you can run it immediately without configuring any backend services.
 
 1. Clone the repository:
 ```bash
@@ -40,26 +37,79 @@ cd alterfun
 npm install
 ```
 
-3. Set up environment variables:
-
-Create a `.env` file in the root directory with your Supabase credentials:
-
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_YOUTUBE_API_KEY=your_youtube_api_key
-```
-
-4. Run database migrations:
-
-The project includes Supabase migrations in `supabase/migrations/`. Apply them to your Supabase project.
-
-5. Start the development server:
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
+
+**The app will automatically use mock data** when Supabase credentials are not configured. You'll see sample creators, live streams, and other content to explore the UI and features.
+
+### Setting Up the Real Backend (Production)
+
+When you're ready to connect to a real database and enable full functionality:
+
+#### Prerequisites
+
+- Node.js 18+ and npm
+- Supabase account (free tier available)
+- YouTube API key (optional, for video features)
+
+#### Steps
+
+1. **Create a Supabase Project**
+   - Go to [supabase.com](https://supabase.com) and create a free account
+   - Create a new project
+   - Wait for the project to finish setting up
+
+2. **Get Your Credentials**
+   - In your Supabase project dashboard, go to Settings → API
+   - Copy your project URL and anon/public API key
+
+3. **Apply Database Migrations**
+   - In your Supabase dashboard, go to the SQL Editor
+   - Run each migration file from `supabase/migrations/` in order:
+     - `20251020051354_create_alterfun_schema.sql`
+     - `20251020060135_add_social_and_youtube_fields.sql`
+     - `20251020070248_add_comments_and_user_keys.sql`
+     - `20251020071411_add_users_and_follows.sql`
+     - `20251020083333_create_creator_applications.sql`
+
+4. **Configure Environment Variables**
+
+   Update the `.env` file in the root directory with your real credentials:
+
+   ```env
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your_actual_anon_key_here
+   VITE_YOUTUBE_API_KEY=your_youtube_api_key_here
+   ```
+
+   **Important**: Once you add real Supabase credentials, the app will automatically switch from mock data to the real database.
+
+5. **Get YouTube API Key (Optional)**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Enable the YouTube Data API v3
+   - Create credentials (API Key)
+   - Add the key to your `.env` file
+
+6. **Restart the Development Server**
+   ```bash
+   npm run dev
+   ```
+
+   The app will now connect to your Supabase database instead of using mock data.
+
+### How the Mock Data System Works
+
+The project automatically detects whether real backend credentials are configured:
+
+- **Mock Mode**: If `VITE_SUPABASE_URL` is not set or equals `your_supabase_url`, the app uses mock data from `src/data/mockData.ts`
+- **Production Mode**: If valid Supabase credentials are provided, the app connects to your real database
+
+You can check which mode is active by looking at `src/config.ts`. The system is seamless - no code changes needed to switch between modes.
 
 ## Available Scripts
 

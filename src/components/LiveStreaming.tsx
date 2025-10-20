@@ -1,52 +1,21 @@
 import { Radio, Eye, Users } from 'lucide-react';
+import { mockLiveStreams } from '../data/mockData';
 
 type LiveStreamingProps = {
   onNavigate: (page: string, slug?: string) => void;
 };
 
 export default function LiveStreaming({ onNavigate }: LiveStreamingProps) {
-  const liveStreams = [
-    {
-      id: 1,
-      slug: 'sakura-chan',
-      thumbnail: 'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Late Night Gaming Session - Come hang out!',
-      streamerName: 'SakuraChan',
-      streamerAvatar: 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=200',
-      viewers: 1234,
-      category: 'Gaming',
-    },
-    {
-      id: 2,
-      slug: 'neon-beats',
-      thumbnail: 'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Music Production Stream - Making Beats Live',
-      streamerName: 'NeonBeats',
-      streamerAvatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200',
-      viewers: 856,
-      category: 'Music',
-    },
-    {
-      id: 3,
-      slug: 'art-master',
-      thumbnail: 'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Digital Art Tutorial - Character Design',
-      streamerName: 'ArtMaster',
-      streamerAvatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=200',
-      viewers: 672,
-      category: 'Art',
-    },
-    {
-      id: 4,
-      slug: 'tech-guru',
-      thumbnail: 'https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=800',
-      title: 'Building a Web App from Scratch',
-      streamerName: 'TechGuru',
-      streamerAvatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=200',
-      viewers: 543,
-      category: 'Tech',
-    },
-  ];
+  const liveStreams = mockLiveStreams.map(stream => ({
+    id: stream.id,
+    slug: stream.creator.slug,
+    thumbnail: stream.thumbnail,
+    title: stream.title,
+    streamerName: stream.creator.name,
+    streamerAvatar: stream.creator.avatar_url,
+    viewers: stream.viewers,
+    category: stream.category,
+  }));
 
   return (
     <section className="bg-white py-12">
