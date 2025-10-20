@@ -190,11 +190,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const mockWalletAddress = `${walletType === 'phantom' ? '5xJq' : '7mKp'}...${walletType === 'phantom' ? 'p7m' : 'n9q'}`;
 
+    const username = user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`;
+
     const { error } = await supabase
       .from('users')
       .upsert({
         id: user.id,
         wallet_address: mockWalletAddress,
+        username: username,
         updated_at: new Date().toISOString(),
       });
 
