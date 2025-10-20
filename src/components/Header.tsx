@@ -145,7 +145,7 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
               <div className="flex items-center gap-3">
                 <button
                   onClick={onSignIn}
-                  className="px-4 py-2 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white rounded-lg font-medium hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/30"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
                 >
                   Log In
                 </button>

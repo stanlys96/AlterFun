@@ -317,7 +317,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signup' }: A
               className={`w-full py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg ${
                 mode === 'signup'
                   ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-green-500/30'
-                  : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-500/30'
+                  : 'bg-gradient-to-r from-[#7E34FF] to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-purple-500/30'
               }`}
             >
               {loading ? 'Processing...' : mode === 'signup' ? 'Create Account' : 'Log In'}
