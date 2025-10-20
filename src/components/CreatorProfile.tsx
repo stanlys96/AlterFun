@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Users, Eye, Video, ThumbsUp, TrendingUp, Clock, Gift, UserPlus, UserCheck } from 'lucide-react';
 import { supabase, Creator, Perk, CreatorVideo, UserKeys } from '../lib/supabase';
-import { useWallet } from '../contexts/WalletContext';
+import { useAuth } from '../contexts/AuthContext';
 import GrowthChart from './GrowthChart';
 import SocialLinks from './SocialLinks';
 import YouTubeVideoList from './YouTubeVideoList';
@@ -10,10 +10,10 @@ import { fetchAndCacheVideos } from '../lib/youtube';
 
 type CreatorProfileProps = {
   slug: string;
-  onConnectWallet: () => void;
+  onBuyClick: () => void;
 };
 
-export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfileProps) {
+export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps) {
   const [creator, setCreator] = useState<Creator | null>(null);
   const [perks, setPerks] = useState<Perk[]>([]);
   const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('buy');
@@ -26,18 +26,18 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
   const [showMobileTradeKeys, setShowMobileTradeKeys] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
-  const { isConnected, walletAddress } = useWallet();
+  const { user, isAuthenticated, isWalletConnected } = useAuth();
 
   useEffect(() => {
     loadCreatorData();
   }, [slug]);
 
   useEffect(() => {
-    if (isConnected && walletAddress && creator) {
+    if (isWalletConnected && user?.wallet_address && creator) {
       loadUserKeys();
       checkFollowStatus();
     }
-  }, [isConnected, walletAddress, creator]);
+  }, [isWalletConnected, user?.wallet_address, creator]);
 
   const loadCreatorData = async () => {
     const { data: creatorData } = await supabase
@@ -75,12 +75,12 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
   };
 
   const loadUserKeys = async () => {
-    if (!creator || !walletAddress) return;
+    if (!creator || !user?.wallet_address) return;
 
     const { data } = await supabase
       .from('user_keys')
       .select('keys_held')
-      .eq('user_id', walletAddress)
+      .eq('user_id', user.wallet_address)
       .eq('creator_id', creator.id)
       .maybeSingle();
 
@@ -88,12 +88,12 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
   };
 
   const checkFollowStatus = async () => {
-    if (!creator || !walletAddress) return;
+    if (!creator || !user?.wallet_address) return;
 
     const { data } = await supabase
       .from('follows')
       .select('id')
-      .eq('user_wallet', walletAddress)
+      .eq('user_wallet', user.wallet_address)
       .eq('creator_id', creator.id)
       .maybeSingle();
 
@@ -101,8 +101,8 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
   };
 
   const handleFollowToggle = async () => {
-    if (!isConnected || !creator) {
-      onConnectWallet();
+    if (!isWalletConnected || !creator) {
+      onBuyClick();
       return;
     }
 
@@ -112,7 +112,7 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
       const { error } = await supabase
         .from('follows')
         .delete()
-        .eq('user_wallet', walletAddress)
+        .eq('user_wallet', user.wallet_address)
         .eq('creator_id', creator.id);
 
       if (!error) {
@@ -122,7 +122,7 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
       const { error } = await supabase
         .from('follows')
         .insert({
-          user_wallet: walletAddress,
+          user_wallet: user.wallet_address,
           creator_id: creator.id
         });
 
@@ -135,8 +135,8 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
   };
 
   const handleClaimPerk = async (perk: Perk) => {
-    if (!isConnected) {
-      onConnectWallet();
+    if (!isWalletConnected) {
+      onBuyClick();
       return;
     }
     alert(`Claiming perk: ${perk.title}`);
@@ -443,7 +443,7 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Trade Keys</h2>
 
-            {isConnected && userKeys > 0 && (
+            {isWalletConnected && userKeys > 0 && (
               <div className="mb-4 p-3 bg-gradient-to-r from-[#7E34FF] to-purple-600 rounded-lg">
                 <div className="text-white text-sm font-medium">You hold</div>
                 <div className="text-white text-2xl font-bold">{userKeys} Keys</div>
@@ -479,12 +479,12 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  disabled={!isConnected}
+                  disabled={!isWalletConnected}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#7E34FF] disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {activeTab === 'sell' && (
                   <button
-                    disabled={!isConnected}
+                    disabled={!isWalletConnected}
                     className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-[#7E34FF] text-white text-xs font-semibold rounded hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Max
@@ -516,9 +516,9 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
               </div>
             </div>
 
-            {!isConnected ? (
+            {!isWalletConnected ? (
               <button
-                onClick={onConnectWallet}
+                onClick={onBuyClick}
                 className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all"
               >
                 Connect Wallet to Trade
@@ -572,7 +572,7 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
               </button>
             </div>
 
-            {isConnected && userKeys > 0 && (
+            {isWalletConnected && userKeys > 0 && (
               <div className="mb-4 p-3 bg-gradient-to-r from-[#7E34FF] to-purple-600 rounded-lg">
                 <div className="text-white text-sm font-medium">You hold</div>
                 <div className="text-white text-2xl font-bold">{userKeys} Keys</div>
@@ -629,7 +629,7 @@ export default function CreatorProfile({ slug, onConnectWallet }: CreatorProfile
               </div>
             </div>
 
-            {!isConnected ? (
+            {!isWalletConnected ? (
               <button
                 onClick={() => {
                   setShowMobileTradeKeys(false);

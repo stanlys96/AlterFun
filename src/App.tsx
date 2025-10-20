@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { WalletProvider, useWallet } from './contexts/WalletContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HeroBanner from './components/HeroBanner';
@@ -11,17 +11,19 @@ import Profile from './components/Profile';
 import JoinUs from './components/JoinUs';
 import Apply from './components/Apply';
 import ApplyThanks from './components/ApplyThanks';
-import ConnectWalletModal from './components/ConnectWalletModal';
-import UsernameSetupModal from './components/UsernameSetupModal';
+import AuthModal from './components/AuthModal';
+import WalletConnectionModal from './components/WalletConnectionModal';
 
 type Page = 'home' | 'creators' | 'creator' | 'profile' | 'join' | 'apply' | 'apply-thanks';
+type AuthModalMode = 'signup' | 'login' | null;
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>('');
   const [applicationEmail, setApplicationEmail] = useState<string>('');
+  const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
-  const { needsUsername } = useWallet();
+  const { isAuthenticated, isWalletConnected } = useAuth();
 
   const handleNavigate = (page: string, slugOrEmail?: string) => {
     setCurrentPage(page as Page);
@@ -35,8 +37,12 @@ function AppContent() {
     window.scrollTo(0, 0);
   };
 
-  const handleConnectWallet = () => {
-    setWalletModalOpen(true);
+  const handleBuyAction = () => {
+    if (!isAuthenticated) {
+      setAuthModalMode('signup');
+    } else if (!isWalletConnected) {
+      setWalletModalOpen(true);
+    }
   };
 
   return (
@@ -44,7 +50,8 @@ function AppContent() {
       <Header
         onNavigate={handleNavigate}
         currentPage={currentPage}
-        onConnectWallet={handleConnectWallet}
+        onSignUp={() => setAuthModalMode('signup')}
+        onSignIn={() => setAuthModalMode('login')}
       />
 
       <main className="min-h-[calc(100vh-4rem)]">
@@ -59,7 +66,7 @@ function AppContent() {
         {currentPage === 'creator' && (
           <CreatorProfile
             slug={selectedCreatorSlug}
-            onConnectWallet={handleConnectWallet}
+            onBuyClick={handleBuyAction}
           />
         )}
         {currentPage === 'profile' && <Profile onNavigate={handleNavigate} />}
@@ -70,21 +77,24 @@ function AppContent() {
 
       <Footer />
 
-      <ConnectWalletModal
+      <AuthModal
+        isOpen={authModalMode !== null}
+        onClose={() => setAuthModalMode(null)}
+      />
+
+      <WalletConnectionModal
         isOpen={walletModalOpen}
         onClose={() => setWalletModalOpen(false)}
       />
-
-      {needsUsername && <UsernameSetupModal />}
     </div>
   );
 }
 
 function App() {
   return (
-    <WalletProvider>
+    <AuthProvider>
       <AppContent />
-    </WalletProvider>
+    </AuthProvider>
   );
 }
 
