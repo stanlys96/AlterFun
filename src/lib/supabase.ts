@@ -4,7 +4,7 @@ import { createMockSupabaseClient } from "./mockSupabase";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createMockSupabaseClient();
+export const supabase = createMockSupabaseClient(); // mock
 
 export type Creator = {
   id: string;
