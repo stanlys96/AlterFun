@@ -1,15 +1,16 @@
-import { Search, User, Wallet } from 'lucide-react';
-import { useWallet } from '../contexts/WalletContext';
+import { Search, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import { useState } from 'react';
 
 type HeaderProps = {
   onNavigate: (page: string) => void;
   currentPage: string;
-  onConnectWallet: () => void;
+  onSignUp: () => void;
+  onSignIn: () => void;
 };
 
-export default function Header({ onNavigate, currentPage, onConnectWallet }: HeaderProps) {
-  const { isConnected, walletAddress, username, solBalance, disconnect } = useWallet();
+export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: HeaderProps) {
+  const { user, isAuthenticated, signOut } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
@@ -70,36 +71,45 @@ export default function Header({ onNavigate, currentPage, onConnectWallet }: Hea
               )}
             </div>
 
-            {!isConnected ? (
-              <button
-                onClick={onConnectWallet}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white rounded-lg font-medium hover:from-purple-700 hover:to-purple-800 transition-all"
-              >
-                <Wallet className="w-4 h-4" />
-                Connect Wallet
-              </button>
+            {!isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={onSignIn}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={onSignUp}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30"
+                >
+                  Sign Up
+                </button>
+              </div>
             ) : (
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm font-medium text-green-700">{solBalance.toFixed(2)} SOL</span>
-                </div>
+                {user?.wallet_address && (
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg border border-green-200">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span className="text-sm font-medium text-green-700">{user.wallet_address}</span>
+                  </div>
+                )}
 
                 <button
                   onClick={() => onNavigate('profile')}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
-                    currentPage === 'profile' ? 'bg-purple-50 text-[#7E34FF]' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    currentPage === 'profile' ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm font-medium">{username || walletAddress}</span>
+                  <span className="text-sm font-medium">{user?.email?.split('@')[0] || 'Profile'}</span>
                 </button>
 
                 <button
-                  onClick={disconnect}
+                  onClick={signOut}
                   className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
-                  Disconnect
+                  Sign Out
                 </button>
               </div>
             )}
