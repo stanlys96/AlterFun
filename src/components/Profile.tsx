@@ -173,7 +173,7 @@ export default function Profile({ onNavigate }: ProfileProps) {
             ) : (
               <button
                 onClick={() => setShowWalletModal(true)}
-                className="px-6 py-3 bg-[#03EC86] text-white font-bold rounded-lg hover:bg-green-500 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-[#7E34FF] text-white font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
               >
                 <WalletIcon className="w-5 h-5" />
                 Connect Wallet

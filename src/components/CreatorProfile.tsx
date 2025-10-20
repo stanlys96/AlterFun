@@ -33,11 +33,15 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
   }, [slug]);
 
   useEffect(() => {
-    if (isWalletConnected && user?.wallet_address && creator) {
-      loadUserKeys();
-      checkFollowStatus();
+    if (creator) {
+      if (isWalletConnected && user?.wallet_address) {
+        loadUserKeys();
+      }
+      if (isAuthenticated && user?.id) {
+        checkFollowStatus();
+      }
     }
-  }, [isWalletConnected, user?.wallet_address, creator]);
+  }, [isAuthenticated, isWalletConnected, user, creator]);
 
   const loadCreatorData = async () => {
     const { data: creatorData } = await supabase
@@ -88,12 +92,12 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
   };
 
   const checkFollowStatus = async () => {
-    if (!creator || !user?.wallet_address) return;
+    if (!creator || !user?.id) return;
 
     const { data } = await supabase
       .from('follows')
       .select('id')
-      .eq('user_wallet', user.wallet_address)
+      .eq('user_wallet', user.id)
       .eq('creator_id', creator.id)
       .maybeSingle();
 
@@ -101,7 +105,7 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
   };
 
   const handleFollowToggle = async () => {
-    if (!isWalletConnected || !creator) {
+    if (!isAuthenticated || !creator) {
       onBuyClick();
       return;
     }
@@ -112,7 +116,7 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
       const { error } = await supabase
         .from('follows')
         .delete()
-        .eq('user_wallet', user.wallet_address)
+        .eq('user_wallet', user.id)
         .eq('creator_id', creator.id);
 
       if (!error) {
@@ -122,7 +126,7 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
       const { error } = await supabase
         .from('follows')
         .insert({
-          user_wallet: user.wallet_address,
+          user_wallet: user.id,
           creator_id: creator.id
         });
 

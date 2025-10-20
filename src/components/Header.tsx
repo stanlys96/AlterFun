@@ -81,7 +81,7 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
                 </button>
                 <button
                   onClick={onSignUp}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30"
+                  className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-lg shadow-green-500/30"
                 >
                   Sign Up
                 </button>
