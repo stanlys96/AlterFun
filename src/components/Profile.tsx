@@ -37,80 +37,82 @@ export default function Profile({ onNavigate }: ProfileProps) {
 
   useEffect(() => {
     loadProfileData();
-  }, [walletAddress]);
+  }, [user]);
 
   const loadProfileData = async () => {
-    if (!walletAddress) return;
+    if (!user) return;
 
-    const mockHoldings: HoldingWithCreator[] = [];
+    if (walletAddress) {
+      const mockHoldings: HoldingWithCreator[] = [];
 
-    const { data: creatorsData } = await supabase
-      .from('creators')
-      .select('*')
-      .in('slug', ['miko-sakura', 'aria-volt', 'kira-neon']);
+      const { data: creatorsData } = await supabase
+        .from('creators')
+        .select('*')
+        .in('slug', ['miko-sakura', 'aria-volt', 'kira-neon']);
 
-    if (creatorsData) {
-      creatorsData.forEach((creator, idx) => {
-        const keysHeld = [150, 85, 200][idx];
-        const avgBuyPrice = [7.20, 11.80, 5.50][idx];
+      if (creatorsData) {
+        creatorsData.forEach((creator, idx) => {
+          const keysHeld = [150, 85, 200][idx];
+          const avgBuyPrice = [7.20, 11.80, 5.50][idx];
 
-        mockHoldings.push({
-          id: `holding-${idx}`,
-          keys_held: keysHeld,
-          avg_buy_price: avgBuyPrice,
-          creator
+          mockHoldings.push({
+            id: `holding-${idx}`,
+            keys_held: keysHeld,
+            avg_buy_price: avgBuyPrice,
+            creator
+          });
         });
-      });
 
-      setHoldings(mockHoldings);
+        setHoldings(mockHoldings);
 
-      let totalVal = 0;
-      let totalProfit = 0;
+        let totalVal = 0;
+        let totalProfit = 0;
 
-      mockHoldings.forEach((holding) => {
-        const currentValue = holding.keys_held * holding.creator.key_price;
-        const costBasis = holding.keys_held * holding.avg_buy_price;
-        totalVal += currentValue;
-        totalProfit += (currentValue - costBasis);
-      });
+        mockHoldings.forEach((holding) => {
+          const currentValue = holding.keys_held * holding.creator.key_price;
+          const costBasis = holding.keys_held * holding.avg_buy_price;
+          totalVal += currentValue;
+          totalProfit += (currentValue - costBasis);
+        });
 
-      setTotalValue(totalVal);
-      setTotalPnL(totalProfit);
-    }
+        setTotalValue(totalVal);
+        setTotalPnL(totalProfit);
+      }
 
-    const { data: userKeys } = await supabase
-      .from('user_keys')
-      .select('keys_held, creator_id')
-      .eq('user_id', walletAddress);
+      const { data: userKeys } = await supabase
+        .from('user_keys')
+        .select('keys_held, creator_id')
+        .eq('user_id', walletAddress);
 
-    if (userKeys) {
-      const creatorIds = userKeys.map(k => k.creator_id);
+      if (userKeys) {
+        const creatorIds = userKeys.map(k => k.creator_id);
 
-      const { data: perksData } = await supabase
-        .from('perks')
-        .select('*, creators(name, slug)')
-        .in('creator_id', creatorIds);
+        const { data: perksData } = await supabase
+          .from('perks')
+          .select('*, creators(name, slug)')
+          .in('creator_id', creatorIds);
 
-      if (perksData) {
-        const eligiblePerks = perksData
-          .filter(perk => {
-            const userKey = userKeys.find(k => k.creator_id === perk.creator_id);
-            return userKey && userKey.keys_held >= perk.requirement_keys;
-          })
-          .map(perk => ({
-            ...perk,
-            creator_name: (perk.creators as any).name,
-            creator_slug: (perk.creators as any).slug
-          }));
+        if (perksData) {
+          const eligiblePerks = perksData
+            .filter(perk => {
+              const userKey = userKeys.find(k => k.creator_id === perk.creator_id);
+              return userKey && userKey.keys_held >= perk.requirement_keys;
+            })
+            .map(perk => ({
+              ...perk,
+              creator_name: (perk.creators as any).name,
+              creator_slug: (perk.creators as any).slug
+            }));
 
-        setPerks(eligiblePerks);
+          setPerks(eligiblePerks);
+        }
       }
     }
 
     const { data: followsData } = await supabase
       .from('follows')
       .select('*, creators(*)')
-      .eq('user_wallet', walletAddress);
+      .eq('user_wallet', user.id);
 
     if (followsData) {
       setFollowing(followsData.map(f => ({

@@ -1,5 +1,5 @@
 import { X, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 type AuthModalProps = {
@@ -19,6 +19,17 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signup' }: A
   const [error, setError] = useState('');
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const { signInWithGoogle, signInWithTwitter, signUpWithEmail, signInWithEmail, resetPassword } = useAuth();
+
+  useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setEmail('');
+      setPassword('');
+      setUsername('');
+      setError('');
+      setResetEmailSent(false);
+    }
+  }, [isOpen, initialMode]);
 
   if (!isOpen) return null;
 

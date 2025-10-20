@@ -1,6 +1,7 @@
 import { Search, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase, Creator } from '../lib/supabase';
 
 type HeaderProps = {
   onNavigate: (page: string) => void;
@@ -12,6 +13,38 @@ type HeaderProps = {
 export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: HeaderProps) {
   const { user, isAuthenticated, signOut } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Creator[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      searchCreators();
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
+
+  const searchCreators = async () => {
+    setIsSearching(true);
+    const { data } = await supabase
+      .from('creators')
+      .select('*')
+      .ilike('name', `%${searchQuery}%`)
+      .limit(5);
+
+    if (data) {
+      setSearchResults(data);
+    }
+    setIsSearching(false);
+  };
+
+  const handleCreatorClick = (slug: string) => {
+    onNavigate('creator', slug);
+    setSearchOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -60,13 +93,50 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
               </button>
 
               {searchOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-2">
-                  <input
-                    type="text"
-                    placeholder="Search creators..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
-                    autoFocus
-                  />
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+                  <div className="p-2">
+                    <input
+                      type="text"
+                      placeholder="Search creators..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
+                      autoFocus
+                    />
+                  </div>
+                  {isSearching && (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      Searching...
+                    </div>
+                  )}
+                  {!isSearching && searchResults.length > 0 && (
+                    <div className="max-h-64 overflow-y-auto">
+                      {searchResults.map((creator) => (
+                        <button
+                          key={creator.id}
+                          onClick={() => handleCreatorClick(creator.slug)}
+                          className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                        >
+                          <img
+                            src={creator.avatar_url}
+                            alt={creator.name}
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div>
+                            <div className="font-medium text-gray-900">{creator.name}</div>
+                            <div className="text-sm text-gray-500">
+                              {(creator.subscribers / 1000).toFixed(1)}k subscribers
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {!isSearching && searchQuery.trim() && searchResults.length === 0 && (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No creators found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
