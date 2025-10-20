@@ -15,9 +15,10 @@ type AuthContextType = {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithTwitter: () => Promise<void>;
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, username?: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
   connectWallet: (walletType: 'phantom' | 'solflare') => Promise<void>;
   disconnectWallet: () => Promise<void>;
 };
@@ -118,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const signUpWithEmail = async (email: string, password: string) => {
+  const signUpWithEmail = async (email: string, password: string, username?: string) => {
     if (config.useMockData) {
       const mockUser: User = {
         id: `mock-user-${Date.now()}`,
@@ -130,12 +131,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          username: username || email.split('@')[0],
+        },
+      },
     });
 
     if (error) throw error;
+
+    if (data.user && username) {
+      const generatedUsername = username || email.split('@')[0];
+      await supabase.from('users').insert({
+        id: data.user.id,
+        username: generatedUsername,
+        wallet_address: null,
+      });
+    }
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -171,6 +187,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const resetPassword = async (email: string) => {
+    if (config.useMockData) {
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (error) throw error;
+  };
+
   const connectWallet = async (walletType: 'phantom' | 'solflare') => {
     if (!user) {
       throw new Error('Please sign in first');
@@ -190,11 +218,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const mockWalletAddress = `${walletType === 'phantom' ? '5xJq' : '7mKp'}...${walletType === 'phantom' ? 'p7m' : 'n9q'}`;
 
+    const username = user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`;
+
     const { error } = await supabase
       .from('users')
       .upsert({
         id: user.id,
         wallet_address: mockWalletAddress,
+        username: username,
         updated_at: new Date().toISOString(),
       });
 
@@ -236,6 +267,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUpWithEmail,
         signInWithEmail,
         signOut,
+        resetPassword,
         connectWallet,
         disconnectWallet,
       }}

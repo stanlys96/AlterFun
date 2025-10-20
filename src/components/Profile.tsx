@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, Wallet as WalletIcon, ExternalLink, Gift, Users } from 'lucide-react';
 import { supabase, Creator, Perk, Follow } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import WalletConnectionModal from './WalletConnectionModal';
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -24,9 +25,10 @@ type FollowWithCreator = Follow & {
 };
 
 export default function Profile({ onNavigate }: ProfileProps) {
-  const { user } = useAuth();
+  const { user, isWalletConnected, connectWallet } = useAuth();
   const walletAddress = user?.wallet_address;
   const username = user?.email?.split('@')[0] || 'User';
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
   const [perks, setPerks] = useState<PerkWithCreator[]>([]);
   const [following, setFollowing] = useState<FollowWithCreator[]>([]);
@@ -35,80 +37,82 @@ export default function Profile({ onNavigate }: ProfileProps) {
 
   useEffect(() => {
     loadProfileData();
-  }, [walletAddress]);
+  }, [user]);
 
   const loadProfileData = async () => {
-    if (!walletAddress) return;
+    if (!user) return;
 
-    const mockHoldings: HoldingWithCreator[] = [];
+    if (walletAddress) {
+      const mockHoldings: HoldingWithCreator[] = [];
 
-    const { data: creatorsData } = await supabase
-      .from('creators')
-      .select('*')
-      .in('slug', ['miko-sakura', 'aria-volt', 'kira-neon']);
+      const { data: creatorsData } = await supabase
+        .from('creators')
+        .select('*')
+        .in('slug', ['miko-sakura', 'aria-volt', 'kira-neon']);
 
-    if (creatorsData) {
-      creatorsData.forEach((creator, idx) => {
-        const keysHeld = [150, 85, 200][idx];
-        const avgBuyPrice = [7.20, 11.80, 5.50][idx];
+      if (creatorsData) {
+        creatorsData.forEach((creator, idx) => {
+          const keysHeld = [150, 85, 200][idx];
+          const avgBuyPrice = [7.20, 11.80, 5.50][idx];
 
-        mockHoldings.push({
-          id: `holding-${idx}`,
-          keys_held: keysHeld,
-          avg_buy_price: avgBuyPrice,
-          creator
+          mockHoldings.push({
+            id: `holding-${idx}`,
+            keys_held: keysHeld,
+            avg_buy_price: avgBuyPrice,
+            creator
+          });
         });
-      });
 
-      setHoldings(mockHoldings);
+        setHoldings(mockHoldings);
 
-      let totalVal = 0;
-      let totalProfit = 0;
+        let totalVal = 0;
+        let totalProfit = 0;
 
-      mockHoldings.forEach((holding) => {
-        const currentValue = holding.keys_held * holding.creator.key_price;
-        const costBasis = holding.keys_held * holding.avg_buy_price;
-        totalVal += currentValue;
-        totalProfit += (currentValue - costBasis);
-      });
+        mockHoldings.forEach((holding) => {
+          const currentValue = holding.keys_held * holding.creator.key_price;
+          const costBasis = holding.keys_held * holding.avg_buy_price;
+          totalVal += currentValue;
+          totalProfit += (currentValue - costBasis);
+        });
 
-      setTotalValue(totalVal);
-      setTotalPnL(totalProfit);
-    }
+        setTotalValue(totalVal);
+        setTotalPnL(totalProfit);
+      }
 
-    const { data: userKeys } = await supabase
-      .from('user_keys')
-      .select('keys_held, creator_id')
-      .eq('user_id', walletAddress);
+      const { data: userKeys } = await supabase
+        .from('user_keys')
+        .select('keys_held, creator_id')
+        .eq('user_id', walletAddress);
 
-    if (userKeys) {
-      const creatorIds = userKeys.map(k => k.creator_id);
+      if (userKeys) {
+        const creatorIds = userKeys.map(k => k.creator_id);
 
-      const { data: perksData } = await supabase
-        .from('perks')
-        .select('*, creators(name, slug)')
-        .in('creator_id', creatorIds);
+        const { data: perksData } = await supabase
+          .from('perks')
+          .select('*, creators(name, slug)')
+          .in('creator_id', creatorIds);
 
-      if (perksData) {
-        const eligiblePerks = perksData
-          .filter(perk => {
-            const userKey = userKeys.find(k => k.creator_id === perk.creator_id);
-            return userKey && userKey.keys_held >= perk.requirement_keys;
-          })
-          .map(perk => ({
-            ...perk,
-            creator_name: (perk.creators as any).name,
-            creator_slug: (perk.creators as any).slug
-          }));
+        if (perksData) {
+          const eligiblePerks = perksData
+            .filter(perk => {
+              const userKey = userKeys.find(k => k.creator_id === perk.creator_id);
+              return userKey && userKey.keys_held >= perk.requirement_keys;
+            })
+            .map(perk => ({
+              ...perk,
+              creator_name: (perk.creators as any).name,
+              creator_slug: (perk.creators as any).slug
+            }));
 
-        setPerks(eligiblePerks);
+          setPerks(eligiblePerks);
+        }
       }
     }
 
     const { data: followsData } = await supabase
       .from('follows')
       .select('*, creators(*)')
-      .eq('user_wallet', walletAddress);
+      .eq('user_wallet', user.id);
 
     if (followsData) {
       setFollowing(followsData.map(f => ({
@@ -130,15 +134,17 @@ export default function Profile({ onNavigate }: ProfileProps) {
     return (pnl / costBasis) * 100;
   };
 
+  const handleConnectWallet = async (walletType: 'phantom' | 'solflare') => {
+    try {
+      await connectWallet(walletType);
+      setShowWalletModal(false);
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Profile
-        </h1>
-        <p className="text-gray-600">Your portfolio, perks, and following</p>
-      </div>
-
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <WalletIcon className="w-5 h-5 text-[#7E34FF]" />
@@ -151,47 +157,57 @@ export default function Profile({ onNavigate }: ProfileProps) {
           </div>
           <div>
             <div className="text-sm text-gray-600 mb-1">Wallet Address</div>
-            <div className="flex items-center gap-3">
-              <code className="text-sm font-mono bg-gray-100 px-3 py-1.5 rounded text-gray-900">
-                {walletAddress}
-              </code>
-              <a
-                href={`https://solscan.io/account/${walletAddress}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 px-3 py-1.5 bg-[#7E34FF] text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+            {isWalletConnected ? (
+              <div className="flex items-center gap-3">
+                <code className="text-sm font-mono bg-gray-100 px-3 py-1.5 rounded text-gray-900">
+                  {walletAddress}
+                </code>
+                <a
+                  href={`https://solscan.io/account/${walletAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-[#7E34FF] text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View on Solscan
+                </a>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowWalletModal(true)}
+                className="px-6 py-3 bg-[#7E34FF] text-white font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
               >
-                <ExternalLink className="w-4 h-4" />
-                View on Solscan
-              </a>
-            </div>
+                <WalletIcon className="w-5 h-5" />
+                Connect Wallet
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+        <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-5 h-5" />
-            <h3 className="text-sm font-medium opacity-90">Total Portfolio Value</h3>
+            <DollarSign className="w-5 h-5 text-blue-600" />
+            <h3 className="text-sm font-medium text-gray-600">Total Portfolio Value</h3>
           </div>
-          <div className="text-4xl font-black mb-1">{totalValue.toFixed(2)} SOL</div>
-          <div className="text-sm opacity-75">≈ ${(totalValue * 95).toFixed(2)} USD</div>
+          <div className="text-4xl font-black mb-1 text-gray-900">{totalValue.toFixed(2)} SOL</div>
+          <div className="text-sm text-gray-500">≈ ${(totalValue * 95).toFixed(2)} USD</div>
         </div>
 
-        <div className={`rounded-xl p-6 text-white shadow-lg ${
+        <div className={`rounded-xl p-6 shadow-lg border-2 ${
           totalPnL >= 0
-            ? 'bg-gradient-to-br from-green-500 to-green-600'
-            : 'bg-gradient-to-br from-red-500 to-red-600'
+            ? 'bg-white border-green-200'
+            : 'bg-white border-red-200'
         }`}>
           <div className="flex items-center gap-2 mb-2">
-            {totalPnL >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-            <h3 className="text-sm font-medium opacity-90">Total P&L</h3>
+            {totalPnL >= 0 ? <TrendingUp className="w-5 h-5 text-green-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
+            <h3 className="text-sm font-medium text-gray-600">Total P&L</h3>
           </div>
-          <div className="text-4xl font-black mb-1">
+          <div className={`text-4xl font-black mb-1 ${totalPnL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {totalPnL >= 0 ? '+' : ''}{totalPnL.toFixed(2)} SOL
           </div>
-          <div className="text-sm opacity-75">
+          <div className={`text-sm ${totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
             {totalPnL >= 0 ? '+' : ''}{((totalPnL / (totalValue - totalPnL)) * 100).toFixed(2)}%
           </div>
         </div>
@@ -330,6 +346,14 @@ export default function Profile({ onNavigate }: ProfileProps) {
           )}
         </div>
       </div>
+
+      {showWalletModal && (
+        <WalletConnectionModal
+          isOpen={showWalletModal}
+          onClose={() => setShowWalletModal(false)}
+          onConnect={handleConnectWallet}
+        />
+      )}
     </div>
   );
 }

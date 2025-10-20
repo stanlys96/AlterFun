@@ -80,6 +80,7 @@ function AppContent() {
       <AuthModal
         isOpen={authModalMode !== null}
         onClose={() => setAuthModalMode(null)}
+        initialMode={authModalMode || 'signup'}
       />
 
       <WalletConnectionModal
