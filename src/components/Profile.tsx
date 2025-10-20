@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, Wallet as WalletIcon, ExternalLink, Gift, Users } from 'lucide-react';
 import { supabase, Creator, Perk, Follow } from '../lib/supabase';
-import { useWallet } from '../contexts/WalletContext';
+import { useAuth } from '../contexts/AuthContext';
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -24,7 +24,9 @@ type FollowWithCreator = Follow & {
 };
 
 export default function Profile({ onNavigate }: ProfileProps) {
-  const { walletAddress, username } = useWallet();
+  const { user } = useAuth();
+  const walletAddress = user?.wallet_address;
+  const username = user?.email?.split('@')[0] || 'User';
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
   const [perks, setPerks] = useState<PerkWithCreator[]>([]);
   const [following, setFollowing] = useState<FollowWithCreator[]>([]);
