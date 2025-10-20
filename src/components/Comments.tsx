@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, Send } from 'lucide-react';
 import { supabase, Comment } from '../lib/supabase';
-import { useWallet } from '../contexts/WalletContext';
+import { useAuth } from '../contexts/AuthContext';
 
 type CommentsProps = {
   creatorId: string;
@@ -11,7 +11,8 @@ export default function Comments({ creatorId }: CommentsProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const { isConnected, walletAddress } = useWallet();
+  const { user, isWalletConnected } = useAuth();
+  const walletAddress = user?.wallet_address;
 
   useEffect(() => {
     loadComments();
@@ -31,7 +32,7 @@ export default function Comments({ creatorId }: CommentsProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !isConnected || !walletAddress) return;
+    if (!newComment.trim() || !isWalletConnected || !walletAddress) return;
 
     setLoading(true);
 
@@ -78,7 +79,7 @@ export default function Comments({ creatorId }: CommentsProps) {
         </h2>
       </div>
 
-      {isConnected ? (
+      {isWalletConnected ? (
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="flex gap-3">
             <input
