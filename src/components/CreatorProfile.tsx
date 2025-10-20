@@ -523,7 +523,7 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
             {!isWalletConnected ? (
               <button
                 onClick={onBuyClick}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all"
+                className="w-full py-3 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/30"
               >
                 Connect Wallet to Trade
               </button>
@@ -637,9 +637,9 @@ export default function CreatorProfile({ slug, onBuyClick }: CreatorProfileProps
               <button
                 onClick={() => {
                   setShowMobileTradeKeys(false);
-                  onConnectWallet();
+                  onBuyClick();
                 }}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg"
+                className="w-full py-3 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/30"
               >
                 Connect Wallet to Trade
               </button>
