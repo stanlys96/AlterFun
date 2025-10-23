@@ -23,6 +23,8 @@ import { SocialLinks } from "../components";
 import { YouTubeVideoList } from "../components";
 import { Comments } from "../components";
 import { fetchAndCacheVideos } from "../lib/youtube";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 type CreatorProfileProps = {
   slug: string;
@@ -33,6 +35,7 @@ export const CreatorProfilePage = ({
   slug,
   onBuyClick,
 }: CreatorProfileProps) => {
+  const { publicKey } = useWallet();
   const [creator, setCreator] = useState<Creator | null>(null);
   const [perks, setPerks] = useState<Perk[]>([]);
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
@@ -45,7 +48,7 @@ export const CreatorProfilePage = ({
   const [showMobileTradeKeys, setShowMobileTradeKeys] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
-  const { user, isAuthenticated, isWalletConnected } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     loadCreatorData();
@@ -53,14 +56,14 @@ export const CreatorProfilePage = ({
 
   useEffect(() => {
     if (creator) {
-      if (isWalletConnected && user?.wallet_address) {
+      if (publicKey?.toBase58() && user?.wallet_address) {
         loadUserKeys();
       }
       if (isAuthenticated && user?.id) {
         checkFollowStatus();
       }
     }
-  }, [isAuthenticated, isWalletConnected, user, creator]);
+  }, [isAuthenticated, publicKey?.toBase58(), user, creator]);
 
   const loadCreatorData = async () => {
     const { data: creatorData } = await supabase
@@ -159,7 +162,7 @@ export const CreatorProfilePage = ({
   };
 
   const handleClaimPerk = async (perk: Perk) => {
-    if (!isWalletConnected) {
+    if (!publicKey?.toBase58()) {
       onBuyClick();
       return;
     }
@@ -559,7 +562,7 @@ export const CreatorProfilePage = ({
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Trade Keys</h2>
 
-            {isWalletConnected && userKeys > 0 && (
+            {publicKey?.toBase58() && userKeys > 0 && (
               <div className="mb-4 p-3 bg-gradient-to-r from-[#7E34FF] to-purple-600 rounded-lg">
                 <div className="text-white text-sm font-medium">You hold</div>
                 <div className="text-white text-2xl font-bold">
@@ -601,12 +604,12 @@ export const CreatorProfilePage = ({
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  disabled={!isWalletConnected}
+                  disabled={!publicKey?.toBase58()}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#7E34FF] disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
                 {activeTab === "sell" && (
                   <button
-                    disabled={!isWalletConnected}
+                    disabled={!publicKey?.toBase58()}
                     className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-[#7E34FF] text-white text-xs font-semibold rounded hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Max
@@ -645,13 +648,8 @@ export const CreatorProfilePage = ({
               </div>
             </div>
 
-            {!isWalletConnected ? (
-              <button
-                onClick={onBuyClick}
-                className="w-full py-3 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/30"
-              >
-                Connect Wallet to Trade
-              </button>
+            {!publicKey?.toBase58() ? (
+              <WalletMultiButton />
             ) : (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}
@@ -707,7 +705,7 @@ export const CreatorProfilePage = ({
               </button>
             </div>
 
-            {isWalletConnected && userKeys > 0 && (
+            {publicKey?.toBase58() && userKeys > 0 && (
               <div className="mb-4 p-3 bg-gradient-to-r from-[#7E34FF] to-purple-600 rounded-lg">
                 <div className="text-white text-sm font-medium">You hold</div>
                 <div className="text-white text-2xl font-bold">
@@ -774,16 +772,8 @@ export const CreatorProfilePage = ({
               </div>
             </div>
 
-            {!isWalletConnected ? (
-              <button
-                onClick={() => {
-                  setShowMobileTradeKeys(false);
-                  onBuyClick();
-                }}
-                className="w-full py-3 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/30"
-              >
-                Connect Wallet to Trade
-              </button>
+            {!publicKey?.toBase58() ? (
+              <WalletMultiButton />
             ) : (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}

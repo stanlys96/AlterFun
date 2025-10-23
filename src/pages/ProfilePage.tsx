@@ -35,7 +35,6 @@ type FollowWithCreator = Follow & {
 };
 
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
-  const { connect } = useWallet();
   const { user, isWalletConnected, connectWallet } = useAuth();
   const walletAddress = user?.wallet_address;
   const username = user?.email?.split("@")[0] || "User";
