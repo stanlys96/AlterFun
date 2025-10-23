@@ -22,6 +22,7 @@ import {
   OTPModal,
   WalletConnectionModal,
 } from "./components";
+import { WalletProvider } from "./contexts/WalletContext";
 
 type Page =
   | "home"

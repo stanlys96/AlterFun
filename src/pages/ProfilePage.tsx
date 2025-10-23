@@ -11,6 +11,8 @@ import {
 import { supabase, Creator, Perk, Follow } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { WalletConnectionModal } from "../components";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -33,6 +35,7 @@ type FollowWithCreator = Follow & {
 };
 
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
+  const { connect } = useWallet();
   const { user, isWalletConnected, connectWallet } = useAuth();
   const walletAddress = user?.wallet_address;
   const username = user?.email?.split("@")[0] || "User";
@@ -187,13 +190,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                 </a>
               </div>
             ) : (
-              <button
-                onClick={() => setShowWalletModal(true)}
-                className="px-6 py-3 bg-[#7E34FF] text-white font-bold rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-              >
-                <WalletIcon className="w-5 h-5" />
-                Connect Wallet
-              </button>
+              <WalletMultiButton />
             )}
           </div>
         </div>

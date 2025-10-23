@@ -4,11 +4,14 @@ import App from "./App.tsx";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./stores/store.ts";
+import { WalletConnectionProvider } from "./WalletConnectionProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <WalletConnectionProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </WalletConnectionProvider>
   </StrictMode>
 );
