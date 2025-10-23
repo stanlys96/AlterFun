@@ -35,7 +35,6 @@ type AuthModalMode = "signup" | "login" | null;
 
 function AppContent() {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState<Page>("home");
   const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>("");
   const [applicationEmail, setApplicationEmail] = useState<string>("");
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
@@ -66,7 +65,6 @@ function AppContent() {
     <div className="min-h-screen bg-white">
       <Header
         onNavigate={handleNavigate}
-        currentPage={currentPage}
         onSignUp={() => setAuthModalMode("signup")}
         onSignIn={() => setAuthModalMode("login")}
       />

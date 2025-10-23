@@ -2,20 +2,20 @@ import { Search, User } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase, Creator } from "../lib/supabase";
+import { useLocation } from "react-router-dom";
 
 type HeaderProps = {
   onNavigate: (page: string, slug?: string) => void;
-  currentPage: string;
   onSignUp: () => void;
   onSignIn: () => void;
 };
 
 export default function Header({
   onNavigate,
-  currentPage,
   onSignUp,
   onSignIn,
 }: HeaderProps) {
+  const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,7 +71,7 @@ export default function Header({
               <button
                 onClick={() => onNavigate("creators")}
                 className={`text-sm font-medium transition-colors ${
-                  currentPage === "creators"
+                  location?.pathname === "/creators"
                     ? "text-[#7E34FF]"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
@@ -184,7 +184,7 @@ export default function Header({
                 <button
                   onClick={() => onNavigate("profile")}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
-                    currentPage === "profile"
+                    location?.pathname === "/profile"
                       ? "bg-blue-50 text-blue-600"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
