@@ -29,6 +29,7 @@ type AuthContextType = {
   resetPassword: (email: string) => Promise<void>;
   connectWallet: (walletType: "phantom" | "solflare") => Promise<void>;
   disconnectWallet: () => Promise<void>;
+  signInWithSolanaWallet: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,6 +88,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const signInWithSolanaWallet = async () => {
+    const { error } = await supabase.auth.signInWithWeb3({ chain: "solana" });
+    if (error) throw error;
   };
 
   const signInWithGoogle = async () => {
@@ -246,6 +252,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         connectWallet,
         disconnectWallet,
         verifyOtp,
+        signInWithSolanaWallet,
       }}
     >
       {children}

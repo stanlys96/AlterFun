@@ -1,28 +1,31 @@
-import { X } from 'lucide-react';
-import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { X } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 type WalletConnectionModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function WalletConnectionModal({ isOpen, onClose }: WalletConnectionModalProps) {
+export default function WalletConnectionModal({
+  isOpen,
+  onClose,
+}: WalletConnectionModalProps) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const { connectWallet } = useAuth();
+  const [error, setError] = useState("");
+  const { signInWithSolanaWallet } = useAuth();
 
   if (!isOpen) return null;
 
-  const handleWalletConnect = async (walletType: 'phantom' | 'solflare') => {
+  const handleWalletConnect = async (walletType: "phantom" | "solflare") => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      await connectWallet(walletType);
+      await signInWithSolanaWallet();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to connect wallet');
+      setError(err.message || "Failed to connect wallet");
     } finally {
       setLoading(false);
     }
@@ -34,9 +37,12 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Connect Wallet</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Connect Wallet
+              </h2>
               <p className="text-sm text-gray-600 mt-1">
-                To buy and sell, link your Solana wallet to your AlterFUN account
+                To buy and sell, link your Solana wallet to your AlterFUN
+                account
               </p>
             </div>
             <button
@@ -50,7 +56,7 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
 
         <div className="p-6 space-y-3">
           <button
-            onClick={() => handleWalletConnect('phantom')}
+            onClick={() => handleWalletConnect("phantom")}
             disabled={loading}
             className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -61,7 +67,13 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
                   fill="url(#paint0_linear)"
                 />
                 <defs>
-                  <linearGradient id="paint0_linear" x1="64" y1="34.5" x2="64" y2="110.5">
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="64"
+                    y1="34.5"
+                    x2="64"
+                    y2="110.5"
+                  >
                     <stop stopColor="#8B5CF6" />
                     <stop offset="1" stopColor="#6D28D9" />
                   </linearGradient>
@@ -72,12 +84,14 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
               <h3 className="font-bold text-gray-900 text-lg group-hover:text-purple-600 transition-colors">
                 Phantom
               </h3>
-              <p className="text-sm text-gray-600">Connect with Phantom Wallet</p>
+              <p className="text-sm text-gray-600">
+                Connect with Phantom Wallet
+              </p>
             </div>
           </button>
 
           <button
-            onClick={() => handleWalletConnect('solflare')}
+            onClick={() => handleWalletConnect("solflare")}
             disabled={loading}
             className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-xl hover:border-orange-500 hover:bg-orange-50 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -91,7 +105,9 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
               <h3 className="font-bold text-gray-900 text-lg group-hover:text-orange-600 transition-colors">
                 Solflare
               </h3>
-              <p className="text-sm text-gray-600">Connect with Solflare Wallet</p>
+              <p className="text-sm text-gray-600">
+                Connect with Solflare Wallet
+              </p>
             </div>
           </button>
 
@@ -103,8 +119,9 @@ export default function WalletConnectionModal({ isOpen, onClose }: WalletConnect
 
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800">
-              <span className="font-semibold">Secure Connection:</span> Your wallet will never share
-              your private keys. You'll approve each transaction individually.
+              <span className="font-semibold">Secure Connection:</span> Your
+              wallet will never share your private keys. You'll approve each
+              transaction individually.
             </p>
           </div>
         </div>
