@@ -1,0 +1,4 @@
+[auth.web3.solana]
+enabled = true
+[auth.web3.ethereum]
+enabled = true

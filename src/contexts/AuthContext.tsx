@@ -91,7 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithSolanaWallet = async () => {
-    const { error } = await supabase.auth.signInWithWeb3({ chain: "solana" });
+    const { error } = await supabase.auth.signInWithWeb3({
+      chain: "solana",
+      statement: "I accept the Terms of Service at https://alterfun.com",
+    });
     if (error) throw error;
   };
 
