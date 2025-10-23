@@ -649,7 +649,7 @@ export const CreatorProfilePage = ({
             </div>
 
             {!publicKey?.toBase58() ? (
-              <WalletMultiButton />
+              <WalletMultiButton className="w-full" />
             ) : (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}
@@ -773,7 +773,7 @@ export const CreatorProfilePage = ({
             </div>
 
             {!publicKey?.toBase58() ? (
-              <WalletMultiButton />
+              <WalletMultiButton className="w-full" />
             ) : (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}
