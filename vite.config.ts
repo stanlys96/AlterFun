@@ -14,10 +14,4 @@ export default defineConfig({
       },
     },
   },
-  resolve: {},
-  define: {
-    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-    Buffer: [Buffer],
-    global: "globalThis",
-  },
 });
