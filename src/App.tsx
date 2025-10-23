@@ -39,6 +39,7 @@ function AppContent() {
   const [applicationEmail, setApplicationEmail] = useState<string>("");
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [otpModalOpen, setOtpModalOpen] = useState<boolean>(false);
   const { isAuthenticated, isWalletConnected } = useAuth();
 
   const handleNavigate = (page: string, slugOrEmail?: string) => {
@@ -59,6 +60,11 @@ function AppContent() {
     } else if (!isWalletConnected) {
       setWalletModalOpen(true);
     }
+  };
+
+  const showOTPModal = () => {
+    setAuthModalMode(null);
+    setOtpModalOpen(true);
   };
 
   return (
@@ -113,13 +119,14 @@ function AppContent() {
         isOpen={authModalMode !== null}
         onClose={() => setAuthModalMode(null)}
         initialMode={authModalMode || "signup"}
+        showOTPModal={showOTPModal}
       />
 
       <WalletConnectionModal
         isOpen={walletModalOpen}
         onClose={() => setWalletModalOpen(false)}
       />
-      <OTPModal />
+      <OTPModal open={otpModalOpen} onClose={() => setOtpModalOpen(false)} />
     </div>
   );
 }

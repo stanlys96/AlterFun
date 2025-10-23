@@ -5,6 +5,8 @@ const initialState = {
   applicationEmail: "",
   authModalMode: null,
   walletModalOpen: false,
+  username: "",
+  email: "",
 };
 
 export const userSlice = createSlice({
@@ -23,11 +25,19 @@ export const userSlice = createSlice({
     setWalletModalOpen: (state, action) => {
       state.walletModalOpen = action.payload;
     },
+    setUserUsername: (state, action) => {
+      state.username = action.payload;
+    },
+    setUserEmail: (state, action) => {
+      state.email = action.payload;
+    },
     resetState: (state) => {
       state.selectedCreatorSlug = "";
       state.applicationEmail = "";
       state.authModalMode = null;
       state.walletModalOpen = false;
+      state.username = "";
+      state.email = "";
     },
   },
 });
@@ -39,5 +49,7 @@ export const {
   setAuthModalMode,
   setWalletModalOpen,
   resetState,
+  setUserUsername,
+  setUserEmail,
 } = actions;
 export default reducer;

@@ -1,11 +1,18 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
-import { config } from '../config';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { supabase } from "../lib/supabase";
+import { config } from "../config";
 
 type User = {
   id: string;
   email: string | null;
   wallet_address: string | null;
+  username: string | null;
 };
 
 type AuthContextType = {
@@ -15,11 +22,12 @@ type AuthContextType = {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithTwitter: () => Promise<void>;
-  signUpWithEmail: (email: string, password: string, username?: string) => Promise<void>;
-  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, username?: string) => Promise<void>;
+  signInWithEmail: (email: string) => Promise<void>;
+  verifyOtp: (email: string, otpCode: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
-  connectWallet: (walletType: 'phantom' | 'solflare') => Promise<void>;
+  connectWallet: (walletType: "phantom" | "solflare") => Promise<void>;
   disconnectWallet: () => Promise<void>;
 };
 
@@ -33,12 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
 
     if (!config.useMockData) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
           setUser({
             id: session.user.id,
             email: session.user.email || null,
             wallet_address: null,
+            username: "",
           });
         } else {
           setUser(null);
@@ -51,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const initializeAuth = async () => {
     if (config.useMockData) {
-      const mockUser = localStorage.getItem('mock_user');
+      const mockUser = localStorage.getItem("mock_user");
       if (mockUser) {
         setUser(JSON.parse(mockUser));
       }
@@ -60,35 +71,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user) {
         setUser({
           id: session.user.id,
           email: session.user.email || null,
           wallet_address: null,
+          username: "",
         });
       }
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      console.error("Error initializing auth:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const signInWithGoogle = async () => {
-    if (config.useMockData) {
-      const mockUser: User = {
-        id: 'mock-google-user',
-        email: 'user@gmail.com',
-        wallet_address: null,
-      };
-      setUser(mockUser);
-      localStorage.setItem('mock_user', JSON.stringify(mockUser));
-      return;
-    }
-
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: window.location.origin,
       },
@@ -98,19 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithTwitter = async () => {
-    if (config.useMockData) {
-      const mockUser: User = {
-        id: 'mock-twitter-user',
-        email: 'user@twitter.com',
-        wallet_address: null,
-      };
-      setUser(mockUser);
-      localStorage.setItem('mock_user', JSON.stringify(mockUser));
-      return;
-    }
-
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
+      provider: "twitter",
       options: {
         redirectTo: window.location.origin,
       },
@@ -119,25 +111,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const signUpWithEmail = async (email: string, password: string, username?: string) => {
-    if (config.useMockData) {
-      const mockUser: User = {
-        id: `mock-user-${Date.now()}`,
-        email,
-        wallet_address: null,
-      };
-      setUser(mockUser);
-      localStorage.setItem('mock_user', JSON.stringify(mockUser));
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
+  const signUpWithEmail = async (email: string, username?: string) => {
+    const { data, error } = await supabase.auth.signInWithOtp({
       email,
-      password,
       options: {
         emailRedirectTo: window.location.origin,
         data: {
-          username: username || email.split('@')[0],
+          username: username || email.split("@")[0],
         },
       },
     });
@@ -145,8 +125,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
 
     if (data.user && username) {
-      const generatedUsername = username || email.split('@')[0];
-      await supabase.from('users').insert({
+      const generatedUsername = username || email.split("@")[0];
+      await supabase.from("users").insert({
         id: data.user.id,
         username: generatedUsername,
         wallet_address: null,
@@ -154,34 +134,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signInWithEmail = async (email: string, password: string) => {
-    if (config.useMockData) {
-      const mockUser: User = {
-        id: `mock-user-${Date.now()}`,
-        email,
-        wallet_address: null,
-      };
-      setUser(mockUser);
-      localStorage.setItem('mock_user', JSON.stringify(mockUser));
-      return;
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({
+  const signInWithEmail = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      password,
     });
 
     if (error) throw error;
   };
 
-  const signOut = async () => {
-    if (config.useMockData) {
-      setUser(null);
-      localStorage.removeItem('mock_user');
-      localStorage.removeItem('mock_wallet');
-      return;
-    }
+  const verifyOtp = async (email: string, otpCode: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      email: email,
+      token: otpCode, // The 6-digit code the user received
+      type: "email", // The type is 'email' for email OTP
+    });
+    if (error) throw error;
+  };
 
+  const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser(null);
@@ -199,35 +169,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const connectWallet = async (walletType: 'phantom' | 'solflare') => {
+  const connectWallet = async (walletType: "phantom" | "solflare") => {
     if (!user) {
-      throw new Error('Please sign in first');
+      throw new Error("Please sign in first");
     }
 
     if (config.useMockData) {
-      const mockWalletAddress = `${walletType === 'phantom' ? '5xJq' : '7mKp'}...${walletType === 'phantom' ? 'p7m' : 'n9q'}`;
+      const mockWalletAddress = `${
+        walletType === "phantom" ? "5xJq" : "7mKp"
+      }...${walletType === "phantom" ? "p7m" : "n9q"}`;
       const updatedUser = { ...user, wallet_address: mockWalletAddress };
       setUser(updatedUser);
-      localStorage.setItem('mock_user', JSON.stringify(updatedUser));
-      localStorage.setItem('mock_wallet', JSON.stringify({
-        type: walletType,
-        address: mockWalletAddress,
-      }));
+      localStorage.setItem("mock_user", JSON.stringify(updatedUser));
+      localStorage.setItem(
+        "mock_wallet",
+        JSON.stringify({
+          type: walletType,
+          address: mockWalletAddress,
+        })
+      );
       return;
     }
 
-    const mockWalletAddress = `${walletType === 'phantom' ? '5xJq' : '7mKp'}...${walletType === 'phantom' ? 'p7m' : 'n9q'}`;
+    const mockWalletAddress = `${
+      walletType === "phantom" ? "5xJq" : "7mKp"
+    }...${walletType === "phantom" ? "p7m" : "n9q"}`;
 
-    const username = user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`;
+    const username = user.email?.split("@")[0] || `user_${user.id.slice(0, 8)}`;
 
-    const { error } = await supabase
-      .from('users')
-      .upsert({
-        id: user.id,
-        wallet_address: mockWalletAddress,
-        username: username,
-        updated_at: new Date().toISOString(),
-      });
+    const { error } = await supabase.from("users").upsert({
+      id: user.id,
+      wallet_address: mockWalletAddress,
+      username: username,
+      updated_at: new Date().toISOString(),
+    });
 
     if (error) throw error;
 
@@ -240,15 +215,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (config.useMockData) {
       const updatedUser = { ...user, wallet_address: null };
       setUser(updatedUser);
-      localStorage.setItem('mock_user', JSON.stringify(updatedUser));
-      localStorage.removeItem('mock_wallet');
+      localStorage.setItem("mock_user", JSON.stringify(updatedUser));
+      localStorage.removeItem("mock_wallet");
       return;
     }
 
     const { error } = await supabase
-      .from('users')
+      .from("users")
       .update({ wallet_address: null, updated_at: new Date().toISOString() })
-      .eq('id', user.id);
+      .eq("id", user.id);
 
     if (error) throw error;
 
@@ -270,6 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword,
         connectWallet,
         disconnectWallet,
+        verifyOtp,
       }}
     >
       {children}
@@ -280,7 +256,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 }

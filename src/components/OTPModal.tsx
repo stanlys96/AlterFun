@@ -1,16 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useAuth } from "../contexts/AuthContext";
 
 export const OTPModal = ({
   open = false,
   onClose = () => {},
   onSubmit = (otp: any) => {},
-  phoneOrEmail = "your phone",
+  phoneOrEmail = "your email",
   digits = 6,
 }) => {
+  const user = useSelector((state) => state?.user);
   const [values, setValues] = useState(Array(digits).fill(""));
   const inputsRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
+  const { verifyOtp } = useAuth();
 
   useEffect(() => {
     if (!open) return;
@@ -95,7 +99,9 @@ export const OTPModal = ({
     }
     setLoading(true);
     try {
-      await Promise.resolve(onSubmit(otp));
+      await verifyOtp(user.email, otp);
+      setLoading(false);
+      onClose();
     } catch (err) {
       // swallow — user callback can throw to indicate failure
       console.error(err);

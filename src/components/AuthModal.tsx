@@ -1,20 +1,25 @@
 import { X, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useDispatch } from "react-redux";
+import { setUserEmail, setUserUsername } from "../stores/user-slice";
 
 type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: "signup" | "login";
+  showOTPModal: () => void;
 };
 
-type AuthMode = "signup" | "login" | "forgot" | "creator-login";
+type AuthMode = "signup" | "login" | "forgot" | "creator-login" | "otp";
 
 export default function AuthModal({
   isOpen,
   onClose,
   initialMode = "signup",
+  showOTPModal,
 }: AuthModalProps) {
+  const dispatch = useDispatch();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -72,13 +77,13 @@ export default function AuthModal({
           setLoading(false);
           return;
         }
-        await signUpWithEmail(email, password, username);
+        await signUpWithEmail(email, username);
+        dispatch(setUserEmail(email));
+        dispatch(setUserUsername(username));
         setError("");
-        alert(
-          "Please check your email to verify your account before logging in."
-        );
+        showOTPModal();
       } else {
-        await signInWithEmail(email, password);
+        await signInWithEmail(email);
       }
       onClose();
       setEmail("");
@@ -338,7 +343,7 @@ export default function AuthModal({
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1">
+                  {/* <div className="flex items-center justify-between mb-1">
                     {mode !== "creator-login" && (
                       <label
                         htmlFor="password"
@@ -356,8 +361,8 @@ export default function AuthModal({
                         Forgot password?
                       </button>
                     )}
-                  </div>
-                  {mode !== "creator-login" && (
+                  </div> */}
+                  {/* {mode !== "creator-login" && (
                     <input
                       id="password"
                       type="password"
@@ -367,7 +372,7 @@ export default function AuthModal({
                       placeholder="••••••••"
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
-                  )}
+                  )} */}
                 </div>
 
                 {error && (
