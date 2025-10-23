@@ -84,6 +84,8 @@ export default function AuthModal({
         showOTPModal();
       } else {
         await signInWithEmail(email);
+        dispatch(setUserEmail(email));
+        showOTPModal();
       }
       onClose();
       setEmail("");

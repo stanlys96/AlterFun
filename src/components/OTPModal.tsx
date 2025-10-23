@@ -14,7 +14,7 @@ export const OTPModal = ({
   const inputsRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const { verifyOtp } = useAuth();
+  const { verifyOtp, signInWithEmail } = useAuth();
 
   useEffect(() => {
     if (!open) return;
@@ -110,10 +110,11 @@ export const OTPModal = ({
     }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (resendTimer > 0) return;
     // user may call API here — we'll just trigger cooldown and call onSubmit with empty string to indicate "resend"
     setResendTimer(30); // 30s cooldown
+    await signInWithEmail(user.email);
     try {
       // calling onSubmit with null to indicate a resend action is optional; adapt as you like
       if (typeof onSubmit === "function") onSubmit(null);
