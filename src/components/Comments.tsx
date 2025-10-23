@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { MessageSquare, Send } from 'lucide-react';
-import { supabase, Comment } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from "react";
+import { MessageSquare, Send } from "lucide-react";
+import { supabase, Comment } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
 
 type CommentsProps = {
   creatorId: string;
@@ -9,9 +9,9 @@ type CommentsProps = {
 
 export default function Comments({ creatorId }: CommentsProps) {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user, isWalletConnected } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const walletAddress = user?.wallet_address;
 
   useEffect(() => {
@@ -20,10 +20,10 @@ export default function Comments({ creatorId }: CommentsProps) {
 
   const loadComments = async () => {
     const { data, error } = await supabase
-      .from('comments')
-      .select('*')
-      .eq('creator_id', creatorId)
-      .order('created_at', { ascending: false });
+      .from("comments")
+      .select("*")
+      .eq("creator_id", creatorId)
+      .order("created_at", { ascending: false });
 
     if (!error && data) {
       setComments(data);
@@ -37,14 +37,16 @@ export default function Comments({ creatorId }: CommentsProps) {
     setLoading(true);
 
     const { data: userData } = await supabase
-      .from('users')
-      .select('username')
-      .eq('wallet_address', walletAddress)
+      .from("users")
+      .select("username")
+      .eq("wallet_address", walletAddress)
       .maybeSingle();
 
-    const displayName = userData?.username || walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4);
+    const displayName =
+      userData?.username ||
+      walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4);
 
-    const { error } = await supabase.from('comments').insert({
+    const { error } = await supabase.from("comments").insert({
       creator_id: creatorId,
       user_id: walletAddress,
       user_name: displayName,
@@ -52,7 +54,7 @@ export default function Comments({ creatorId }: CommentsProps) {
     });
 
     if (!error) {
-      setNewComment('');
+      setNewComment("");
       loadComments();
     }
     setLoading(false);
@@ -63,7 +65,7 @@ export default function Comments({ creatorId }: CommentsProps) {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (seconds < 60) return 'just now';
+    if (seconds < 60) return "just now";
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
@@ -79,7 +81,7 @@ export default function Comments({ creatorId }: CommentsProps) {
         </h2>
       </div>
 
-      {isWalletConnected ? (
+      {isAuthenticated ? (
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="flex gap-3">
             <input
