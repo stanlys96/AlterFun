@@ -1,31 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import nodePolyfills from "rollup-plugin-node-polyfills";
+import { nodeStdlibBrowser } from "vite-plugin-node-stdlib-browser";
 
 // Import 'Buffer' from 'buffer' for the `define` section
 import { Buffer } from "buffer";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), nodePolyfills()],
+  plugins: [react(), nodeStdlibBrowser()],
   optimizeDeps: {
     exclude: ["lucide-react"],
   },
   resolve: {
-    alias: {
-      // 2. Add an alias for 'process' and 'stream' to use polyfills
-      // 'process' and 'stream' are often related to Buffer usage
-      process: "rollup-plugin-node-polyfills/polyfills/process-es6",
-      stream: "rollup-plugin-node-polyfills/polyfills/stream",
-      // The 'events' polyfill is also sometimes required
-      events: "rollup-plugin-node-polyfills/polyfills/events",
-    },
+    // You can usually remove the alias section entirely now,
+    // as the plugin handles standard Node modules.
   },
   define: {
-    // 3. Define the global 'Buffer' variable
-    // This makes the Buffer class available globally
-    global: "globalThis",
+    // Define the global process and Buffer to ensure full compatibility.
+    // This is often still necessary for older libraries.
     "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-    Buffer: [Buffer], // <-- This is the core fix
+    Buffer: ["buffer", "Buffer"], // Correct way to reference the Buffer export
+    global: "globalThis",
   },
 });
