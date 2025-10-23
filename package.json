@@ -26,6 +26,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
     "redux": "^5.0.1",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "swal": "^0.1.0"
   },
   "devDependencies": {
