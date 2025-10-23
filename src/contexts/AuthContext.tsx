@@ -7,6 +7,7 @@ import {
 } from "react";
 import { supabase } from "../lib/supabase";
 import { config } from "../config";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 type User = {
   id: string;
@@ -37,7 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const { publicKey } = useWallet();
   useEffect(() => {
     initializeAuth();
 
@@ -244,7 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
-        isWalletConnected: !!user?.wallet_address,
+        isWalletConnected: !!publicKey?.toBase58(),
         loading,
         signInWithGoogle,
         signInWithTwitter,
