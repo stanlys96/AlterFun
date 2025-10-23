@@ -104,9 +104,7 @@ export default function Comments({ creatorId }: CommentsProps) {
         </form>
       ) : (
         <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
-          <p className="text-gray-600">
-            Please connect your wallet to post comments
-          </p>
+          <p className="text-gray-600">Please login to post comments</p>
         </div>
       )}
 
