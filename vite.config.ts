@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { nodeStdlibBrowser } from "vite-plugin-node-stdlib-browser";
 import { Buffer } from "buffer";
 
 // https://vitejs.dev/config/
