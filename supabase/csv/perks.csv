@@ -1,0 +1,6 @@
+id,creator_id,title,description,requirement_keys,status,created_at
+ae85ed96-7c5f-4009-9dd6-b5e3c9444466,1b0a9e9f-fdc2-4c53-a6da-3a4a61c48b7d,Exclusive Discord Role,Get a special role in my Discord server with access to exclusive channels,5,active,2024-01-15T00:00:00Z
+1fa43be5-f562-4302-b46e-5b25ff1d4e95,1b0a9e9f-fdc2-4c53-a6da-3a4a61c48b7d,Monthly Q&A Session,Join private monthly Q&A sessions with me,10,active,2024-01-15T00:00:00Z
+ead81b9b-7a01-48d2-a603-60f0d3130554,1b0a9e9f-fdc2-4c53-a6da-3a4a61c48b7d,Custom Emotes Pack,Unlock exclusive custom emotes for chat,15,active,2024-01-15T00:00:00Z
+237f24af-f18c-432e-927b-e52577ed71a9,3b08e3b4-bd2f-4a0a-9a7c-8bb30b9871e0,Priority Chat Badge,Stand out in chat with a special badge,3,active,2024-02-20T00:00:00Z
+4e5701b7-9297-4dfd-a77e-93503b625ce1,3b08e3b4-bd2f-4a0a-9a7c-8bb30b9871e0,Gaming Sessions Access,Join me in gaming sessions,20,active,2024-02-20T00:00:00Z

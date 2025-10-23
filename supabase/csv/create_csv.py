@@ -1,0 +1,71 @@
+import pandas as pd
+import uuid
+
+# Original data
+data = [
+  {
+    "id": "1",
+    "creator_id": "1b0a9e9f-fdc2-4c53-a6da-3a4a61c48b7d",
+    "video_id": "dQw4w9WgXcQ",
+    "title": "Epic Gaming Marathon - 24 Hour Stream Highlights",
+    "description": "Best moments from my 24-hour gaming marathon! Thanks to everyone who joined!",
+    "thumbnail_url": "https://images.pexels.com/photos/3945683/pexels-photo-3945683.jpeg?auto=compress&cs=tinysrgb&w=400",
+    "duration": "PT15M30S",
+    "view_count": 125000,
+    "like_count": 8500,
+    "published_at": "2025-10-15T00:00:00Z",
+    "created_at": "2025-10-15T00:00:00Z",
+    "updated_at": "2025-10-20T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "creator_id": "1b0a9e9f-fdc2-4c53-a6da-3a4a61c48b7d",
+    "video_id": "abc123xyz789",
+    "title": "New Music Cover - Singing Your Requests",
+    "description": "Thank you for all the song requests! Here are my favorites from the stream.",
+    "thumbnail_url": "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=400",
+    "duration": "PT22M45S",
+    "view_count": 98000,
+    "like_count": 7200,
+    "published_at": "2025-10-12T00:00:00Z",
+    "created_at": "2025-10-12T00:00:00Z",
+    "updated_at": "2025-10-20T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "creator_id": "3b08e3b4-bd2f-4a0a-9a7c-8bb30b9871e0",
+    "video_id": "xyz789abc123",
+    "title": "Competitive Tournament Victory!",
+    "description": "We did it! Championship match highlights and reactions.",
+    "thumbnail_url": "https://images.pexels.com/photos/3945664/pexels-photo-3945664.jpeg?auto=compress&cs=tinysrgb&w=400",
+    "duration": "PT18M20S",
+    "view_count": 156000,
+    "like_count": 12500,
+    "published_at": "2025-10-18T00:00:00Z",
+    "created_at": "2025-10-18T00:00:00Z",
+    "updated_at": "2025-10-20T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "creator_id": "d4d2f9d6-4b4a-4a10-a21a-0e51ebd6d45a",
+    "video_id": "mno456pqr789",
+    "title": "Speed Drawing Challenge - 1 Hour Art",
+    "description": "Creating a full illustration in just 1 hour! Watch the process.",
+    "thumbnail_url": "https://images.pexels.com/photos/1269968/pexels-photo-1269968.jpeg?auto=compress&cs=tinysrgb&w=400",
+    "duration": "PT1H2M15S",
+    "view_count": 89000,
+    "like_count": 6800,
+    "published_at": "2025-10-16T00:00:00Z",
+    "created_at": "2025-10-16T00:00:00Z",
+    "updated_at": "2025-10-20T00:00:00Z"
+  }
+]
+
+# Replace string ids with UUIDs
+for entry in data:
+    entry["id"] = str(uuid.uuid4())
+
+# Create DataFrame and export as CSV
+df = pd.DataFrame(data)
+
+df.to_csv("videos.csv", index=False)

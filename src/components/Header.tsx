@@ -1,19 +1,24 @@
-import { Search, User } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useState, useEffect } from 'react';
-import { supabase, Creator } from '../lib/supabase';
+import { Search, User } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { supabase, Creator } from "../lib/supabase";
 
 type HeaderProps = {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, slug?: string) => void;
   currentPage: string;
   onSignUp: () => void;
   onSignIn: () => void;
 };
 
-export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: HeaderProps) {
+export default function Header({
+  onNavigate,
+  currentPage,
+  onSignUp,
+  onSignIn,
+}: HeaderProps) {
   const { user, isAuthenticated, signOut } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Creator[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -28,9 +33,9 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
   const searchCreators = async () => {
     setIsSearching(true);
     const { data } = await supabase
-      .from('creators')
-      .select('*')
-      .ilike('name', `%${searchQuery}%`)
+      .from("creators")
+      .select("*")
+      .ilike("name", `%${searchQuery}%`)
       .limit(5);
 
     if (data) {
@@ -40,9 +45,9 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
   };
 
   const handleCreatorClick = (slug: string) => {
-    onNavigate('creator', slug);
+    onNavigate("creator", slug);
     setSearchOpen(false);
-    setSearchQuery('');
+    setSearchQuery("");
     setSearchResults([]);
   };
 
@@ -52,7 +57,7 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
             <button
-              onClick={() => onNavigate('home')}
+              onClick={() => onNavigate("")}
               className="hover:opacity-80 transition-opacity"
             >
               <img
@@ -64,17 +69,21 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
 
             <nav className="hidden md:flex items-center gap-6">
               <button
-                onClick={() => onNavigate('creators')}
+                onClick={() => onNavigate("creators")}
                 className={`text-sm font-medium transition-colors ${
-                  currentPage === 'creators' ? 'text-[#7E34FF]' : 'text-gray-600 hover:text-gray-900'
+                  currentPage === "creators"
+                    ? "text-[#7E34FF]"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 Creator Lists
               </button>
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Are you a Streamer?</span>
+                <span className="text-sm text-gray-600">
+                  Are you a Streamer?
+                </span>
                 <button
-                  onClick={() => onNavigate('join')}
+                  onClick={() => onNavigate("join")}
                   className="px-4 py-1.5 bg-gradient-to-r from-[#7E34FF] to-purple-700 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all"
                 >
                   Join Us
@@ -123,20 +132,25 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
                             className="w-10 h-10 rounded-full"
                           />
                           <div>
-                            <div className="font-medium text-gray-900">{creator.name}</div>
+                            <div className="font-medium text-gray-900">
+                              {creator.name}
+                            </div>
                             <div className="text-sm text-gray-500">
-                              {(creator.subscribers / 1000).toFixed(1)}k subscribers
+                              {(creator.subscribers / 1000).toFixed(1)}k
+                              subscribers
                             </div>
                           </div>
                         </button>
                       ))}
                     </div>
                   )}
-                  {!isSearching && searchQuery.trim() && searchResults.length === 0 && (
-                    <div className="p-4 text-center text-sm text-gray-500">
-                      No creators found
-                    </div>
-                  )}
+                  {!isSearching &&
+                    searchQuery.trim() &&
+                    searchResults.length === 0 && (
+                      <div className="p-4 text-center text-sm text-gray-500">
+                        No creators found
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -161,18 +175,24 @@ export default function Header({ onNavigate, currentPage, onSignUp, onSignIn }: 
                 {user?.wallet_address && (
                   <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg border border-green-200">
                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-sm font-medium text-green-700">{user.wallet_address}</span>
+                    <span className="text-sm font-medium text-green-700">
+                      {user.wallet_address}
+                    </span>
                   </div>
                 )}
 
                 <button
-                  onClick={() => onNavigate('profile')}
+                  onClick={() => onNavigate("profile")}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
-                    currentPage === 'profile' ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    currentPage === "profile"
+                      ? "bg-blue-50 text-blue-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm font-medium">{user?.email?.split('@')[0] || 'Profile'}</span>
+                  <span className="text-sm font-medium">
+                    {user?.email?.split("@")[0] || "Profile"}
+                  </span>
                 </button>
 
                 <button

@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
-import { ArrowUpRight, ArrowDownRight, Filter, Search } from 'lucide-react';
-import { supabase, Creator } from '../lib/supabase';
+import { useState, useEffect } from "react";
+import { ArrowUpRight, ArrowDownRight, Filter, Search } from "lucide-react";
+import { supabase, Creator } from "../lib/supabase";
 
 type CreatorListsProps = {
   onNavigate: (page: string, slug?: string) => void;
 };
 
-export default function CreatorLists({ onNavigate }: CreatorListsProps) {
+export const CreatorListsPage = ({ onNavigate }: CreatorListsProps) => {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [filteredCreators, setFilteredCreators] = useState<Creator[]>([]);
-  const [sortBy, setSortBy] = useState<string>('market_cap');
+  const [sortBy, setSortBy] = useState<string>("market_cap");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
-    minMarketCap: '',
-    maxMarketCap: '',
-    minHolders: '',
-    minGrowth: ''
+    minMarketCap: "",
+    maxMarketCap: "",
+    minHolders: "",
+    minGrowth: "",
   });
 
   useEffect(() => {
@@ -29,9 +29,9 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
 
   const loadCreators = async () => {
     const { data, error } = await supabase
-      .from('creators')
-      .select('*')
-      .order('market_cap', { ascending: false });
+      .from("creators")
+      .select("*")
+      .order("market_cap", { ascending: false });
 
     if (!error && data) {
       setCreators(data);
@@ -42,33 +42,41 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
     let filtered = [...creators];
 
     if (searchQuery) {
-      filtered = filtered.filter(c =>
+      filtered = filtered.filter((c) =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (filters.minMarketCap) {
-      filtered = filtered.filter(c => c.market_cap >= parseFloat(filters.minMarketCap));
+      filtered = filtered.filter(
+        (c) => c.market_cap >= parseFloat(filters.minMarketCap)
+      );
     }
     if (filters.maxMarketCap) {
-      filtered = filtered.filter(c => c.market_cap <= parseFloat(filters.maxMarketCap));
+      filtered = filtered.filter(
+        (c) => c.market_cap <= parseFloat(filters.maxMarketCap)
+      );
     }
     if (filters.minHolders) {
-      filtered = filtered.filter(c => c.holder_count >= parseInt(filters.minHolders));
+      filtered = filtered.filter(
+        (c) => c.holder_count >= parseInt(filters.minHolders)
+      );
     }
     if (filters.minGrowth) {
-      filtered = filtered.filter(c => c.price_change_24h >= parseFloat(filters.minGrowth));
+      filtered = filtered.filter(
+        (c) => c.price_change_24h >= parseFloat(filters.minGrowth)
+      );
     }
 
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'price_change':
+        case "price_change":
           return b.price_change_24h - a.price_change_24h;
-        case 'volume':
+        case "volume":
           return b.volume_24h - a.volume_24h;
-        case 'holders':
+        case "holders":
           return b.holder_count - a.holder_count;
-        case 'market_cap':
+        case "market_cap":
         default:
           return b.market_cap - a.market_cap;
       }
@@ -89,7 +97,9 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
         <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-[#7E34FF] via-purple-600 to-[#03EC86] bg-clip-text text-transparent">
           Creator Lists
         </h1>
-        <p className="text-gray-600">Browse and discover all virtual streamers</p>
+        <p className="text-gray-600">
+          Browse and discover all virtual streamers
+        </p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -121,7 +131,9 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
               <button
                 onClick={() => setFilterOpen(!filterOpen)}
                 className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm hover:bg-gray-50 transition-colors ${
-                  filterOpen ? 'border-[#7E34FF] bg-purple-50 text-[#7E34FF]' : 'border-gray-300'
+                  filterOpen
+                    ? "border-[#7E34FF] bg-purple-50 text-[#7E34FF]"
+                    : "border-gray-300"
                 }`}
               >
                 <Filter className="w-4 h-4" />
@@ -136,28 +148,36 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
                 type="number"
                 placeholder="Min Market Cap"
                 value={filters.minMarketCap}
-                onChange={(e) => setFilters({ ...filters, minMarketCap: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, minMarketCap: e.target.value })
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
               />
               <input
                 type="number"
                 placeholder="Max Market Cap"
                 value={filters.maxMarketCap}
-                onChange={(e) => setFilters({ ...filters, maxMarketCap: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, maxMarketCap: e.target.value })
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
               />
               <input
                 type="number"
                 placeholder="Min Holders"
                 value={filters.minHolders}
-                onChange={(e) => setFilters({ ...filters, minHolders: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, minHolders: e.target.value })
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
               />
               <input
                 type="number"
                 placeholder="Min Growth %"
                 value={filters.minGrowth}
-                onChange={(e) => setFilters({ ...filters, minGrowth: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, minGrowth: e.target.value })
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#7E34FF]"
               />
             </div>
@@ -168,51 +188,93 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
           <table className="w-full">
             <thead className="bg-gray-800 border-b border-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Rank</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Creator</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">Key Price</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">24h Change</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">Market Cap</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">Volume (24h)</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">Holders</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Rank
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Creator
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                  Key Price
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                  24h Change
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                  Market Cap
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                  Volume (24h)
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">
+                  Holders
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300">
               {filteredCreators.map((creator, index) => (
                 <tr
                   key={creator.id}
-                  onClick={() => onNavigate('creator', creator.slug)}
+                  onClick={() => onNavigate("creator", creator.slug)}
                   className="hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-bold text-gray-900">#{index + 1}</div>
+                    <div className="text-sm font-bold text-gray-900">
+                      #{index + 1}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <img src={creator.avatar_url} alt={creator.name} className="w-10 h-10 rounded-full object-cover" />
+                      <img
+                        src={creator.avatar_url}
+                        alt={creator.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
                       <div>
-                        <div className="font-semibold text-gray-900">{creator.name}</div>
-                        <div className="text-sm text-gray-500">{formatNumber(creator.subscribers)} subs</div>
+                        <div className="font-semibold text-gray-900">
+                          {creator.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {formatNumber(creator.subscribers)} subs
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="font-semibold text-gray-900">{creator.key_price.toFixed(2)} SOL</div>
+                    <div className="font-semibold text-gray-900">
+                      {creator.key_price.toFixed(2)} SOL
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className={`flex items-center justify-end gap-1 font-semibold ${creator.price_change_24h >= 0 ? 'text-[#03EC86]' : 'text-red-600'}`}>
-                      {creator.price_change_24h >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                    <div
+                      className={`flex items-center justify-end gap-1 font-semibold ${
+                        creator.price_change_24h >= 0
+                          ? "text-[#03EC86]"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {creator.price_change_24h >= 0 ? (
+                        <ArrowUpRight className="w-4 h-4" />
+                      ) : (
+                        <ArrowDownRight className="w-4 h-4" />
+                      )}
                       {Math.abs(creator.price_change_24h).toFixed(1)}%
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="font-medium text-gray-900">{formatNumber(creator.market_cap)} SOL</div>
+                    <div className="font-medium text-gray-900">
+                      {formatNumber(creator.market_cap)} SOL
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="font-medium text-gray-900">{formatNumber(creator.volume_24h)} SOL</div>
+                    <div className="font-medium text-gray-900">
+                      {formatNumber(creator.volume_24h)} SOL
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="font-medium text-gray-900">{creator.holder_count}</div>
+                    <div className="font-medium text-gray-900">
+                      {creator.holder_count}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -222,10 +284,12 @@ export default function CreatorLists({ onNavigate }: CreatorListsProps) {
 
         {filteredCreators.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No creators found matching your criteria.</p>
+            <p className="text-gray-500">
+              No creators found matching your criteria.
+            </p>
           </div>
         )}
       </div>
     </div>
   );
-}
+};

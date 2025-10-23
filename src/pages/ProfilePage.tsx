@@ -1,8 +1,16 @@
-import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, DollarSign, Wallet as WalletIcon, ExternalLink, Gift, Users } from 'lucide-react';
-import { supabase, Creator, Perk, Follow } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import WalletConnectionModal from './WalletConnectionModal';
+import { useState, useEffect } from "react";
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Wallet as WalletIcon,
+  ExternalLink,
+  Gift,
+  Users,
+} from "lucide-react";
+import { supabase, Creator, Perk, Follow } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
+import { WalletConnectionModal } from "../components";
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -24,10 +32,10 @@ type FollowWithCreator = Follow & {
   creator: Creator;
 };
 
-export default function Profile({ onNavigate }: ProfileProps) {
+export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const { user, isWalletConnected, connectWallet } = useAuth();
   const walletAddress = user?.wallet_address;
-  const username = user?.email?.split('@')[0] || 'User';
+  const username = user?.email?.split("@")[0] || "User";
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
   const [perks, setPerks] = useState<PerkWithCreator[]>([]);
@@ -46,20 +54,20 @@ export default function Profile({ onNavigate }: ProfileProps) {
       const mockHoldings: HoldingWithCreator[] = [];
 
       const { data: creatorsData } = await supabase
-        .from('creators')
-        .select('*')
-        .in('slug', ['miko-sakura', 'aria-volt', 'kira-neon']);
+        .from("creators")
+        .select("*")
+        .in("slug", ["miko-sakura", "aria-volt", "kira-neon"]);
 
       if (creatorsData) {
         creatorsData.forEach((creator, idx) => {
           const keysHeld = [150, 85, 200][idx];
-          const avgBuyPrice = [7.20, 11.80, 5.50][idx];
+          const avgBuyPrice = [7.2, 11.8, 5.5][idx];
 
           mockHoldings.push({
             id: `holding-${idx}`,
             keys_held: keysHeld,
             avg_buy_price: avgBuyPrice,
-            creator
+            creator,
           });
         });
 
@@ -72,7 +80,7 @@ export default function Profile({ onNavigate }: ProfileProps) {
           const currentValue = holding.keys_held * holding.creator.key_price;
           const costBasis = holding.keys_held * holding.avg_buy_price;
           totalVal += currentValue;
-          totalProfit += (currentValue - costBasis);
+          totalProfit += currentValue - costBasis;
         });
 
         setTotalValue(totalVal);
@@ -80,28 +88,30 @@ export default function Profile({ onNavigate }: ProfileProps) {
       }
 
       const { data: userKeys } = await supabase
-        .from('user_keys')
-        .select('keys_held, creator_id')
-        .eq('user_id', walletAddress);
+        .from("user_keys")
+        .select("keys_held, creator_id")
+        .eq("user_id", walletAddress);
 
       if (userKeys) {
-        const creatorIds = userKeys.map(k => k.creator_id);
+        const creatorIds = userKeys.map((k) => k.creator_id);
 
         const { data: perksData } = await supabase
-          .from('perks')
-          .select('*, creators(name, slug)')
-          .in('creator_id', creatorIds);
+          .from("perks")
+          .select("*, creators(name, slug)")
+          .in("creator_id", creatorIds);
 
         if (perksData) {
           const eligiblePerks = perksData
-            .filter(perk => {
-              const userKey = userKeys.find(k => k.creator_id === perk.creator_id);
+            .filter((perk) => {
+              const userKey = userKeys.find(
+                (k) => k.creator_id === perk.creator_id
+              );
               return userKey && userKey.keys_held >= perk.requirement_keys;
             })
-            .map(perk => ({
+            .map((perk) => ({
               ...perk,
               creator_name: (perk.creators as any).name,
-              creator_slug: (perk.creators as any).slug
+              creator_slug: (perk.creators as any).slug,
             }));
 
           setPerks(eligiblePerks);
@@ -110,15 +120,17 @@ export default function Profile({ onNavigate }: ProfileProps) {
     }
 
     const { data: followsData } = await supabase
-      .from('follows')
-      .select('*, creators(*)')
-      .eq('user_wallet', user.id);
+      .from("follows")
+      .select("*, creators(*)")
+      .eq("user_wallet", user.id);
 
     if (followsData) {
-      setFollowing(followsData.map(f => ({
-        ...f,
-        creator: f.creators as unknown as Creator
-      })));
+      setFollowing(
+        followsData.map((f) => ({
+          ...f,
+          creator: f.creators as unknown as Creator,
+        }))
+      );
     }
   };
 
@@ -134,12 +146,12 @@ export default function Profile({ onNavigate }: ProfileProps) {
     return (pnl / costBasis) * 100;
   };
 
-  const handleConnectWallet = async (walletType: 'phantom' | 'solflare') => {
+  const handleConnectWallet = async (walletType: "phantom" | "solflare") => {
     try {
       await connectWallet(walletType);
       setShowWalletModal(false);
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      console.error("Failed to connect wallet:", error);
     }
   };
 
@@ -153,7 +165,9 @@ export default function Profile({ onNavigate }: ProfileProps) {
         <div className="space-y-3">
           <div>
             <div className="text-sm text-gray-600 mb-1">Username</div>
-            <div className="text-lg font-bold text-gray-900">{username || 'Not set'}</div>
+            <div className="text-lg font-bold text-gray-900">
+              {username || "Not set"}
+            </div>
           </div>
           <div>
             <div className="text-sm text-gray-600 mb-1">Wallet Address</div>
@@ -189,26 +203,48 @@ export default function Profile({ onNavigate }: ProfileProps) {
         <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
           <div className="flex items-center gap-2 mb-2">
             <DollarSign className="w-5 h-5 text-blue-600" />
-            <h3 className="text-sm font-medium text-gray-600">Total Portfolio Value</h3>
+            <h3 className="text-sm font-medium text-gray-600">
+              Total Portfolio Value
+            </h3>
           </div>
-          <div className="text-4xl font-black mb-1 text-gray-900">{totalValue.toFixed(2)} SOL</div>
-          <div className="text-sm text-gray-500">≈ ${(totalValue * 95).toFixed(2)} USD</div>
+          <div className="text-4xl font-black mb-1 text-gray-900">
+            {totalValue.toFixed(2)} SOL
+          </div>
+          <div className="text-sm text-gray-500">
+            ≈ ${(totalValue * 95).toFixed(2)} USD
+          </div>
         </div>
 
-        <div className={`rounded-xl p-6 shadow-lg border-2 ${
-          totalPnL >= 0
-            ? 'bg-white border-green-200'
-            : 'bg-white border-red-200'
-        }`}>
+        <div
+          className={`rounded-xl p-6 shadow-lg border-2 ${
+            totalPnL >= 0
+              ? "bg-white border-green-200"
+              : "bg-white border-red-200"
+          }`}
+        >
           <div className="flex items-center gap-2 mb-2">
-            {totalPnL >= 0 ? <TrendingUp className="w-5 h-5 text-green-600" /> : <TrendingDown className="w-5 h-5 text-red-600" />}
+            {totalPnL >= 0 ? (
+              <TrendingUp className="w-5 h-5 text-green-600" />
+            ) : (
+              <TrendingDown className="w-5 h-5 text-red-600" />
+            )}
             <h3 className="text-sm font-medium text-gray-600">Total P&L</h3>
           </div>
-          <div className={`text-4xl font-black mb-1 ${totalPnL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {totalPnL >= 0 ? '+' : ''}{totalPnL.toFixed(2)} SOL
+          <div
+            className={`text-4xl font-black mb-1 ${
+              totalPnL >= 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {totalPnL >= 0 ? "+" : ""}
+            {totalPnL.toFixed(2)} SOL
           </div>
-          <div className={`text-sm ${totalPnL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-            {totalPnL >= 0 ? '+' : ''}{((totalPnL / (totalValue - totalPnL)) * 100).toFixed(2)}%
+          <div
+            className={`text-sm ${
+              totalPnL >= 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {totalPnL >= 0 ? "+" : ""}
+            {((totalPnL / (totalValue - totalPnL)) * 100).toFixed(2)}%
           </div>
         </div>
       </div>
@@ -220,37 +256,60 @@ export default function Profile({ onNavigate }: ProfileProps) {
 
         {holdings.length === 0 ? (
           <div className="p-12 text-center">
-            <p className="text-gray-500">No holdings yet. Start trading to build your portfolio!</p>
+            <p className="text-gray-500">
+              No holdings yet. Start trading to build your portfolio!
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Creator</th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Keys Held</th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Avg Price</th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Current Price</th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Total Value</th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">P&L</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                    Creator
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    Keys Held
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    Avg Price
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    Current Price
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    Total Value
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">
+                    P&L
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {holdings.map((holding) => {
                   const pnl = calculatePnL(holding);
                   const pnlPercent = calculatePnLPercent(holding);
-                  const currentValue = holding.keys_held * holding.creator.key_price;
+                  const currentValue =
+                    holding.keys_held * holding.creator.key_price;
 
                   return (
                     <tr
                       key={holding.id}
-                      onClick={() => onNavigate('creator', holding.creator.slug)}
+                      onClick={() =>
+                        onNavigate("creator", holding.creator.slug)
+                      }
                       className="hover:bg-gray-50 cursor-pointer transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <img src={holding.creator.avatar_url} alt={holding.creator.name} className="w-10 h-10 rounded-full" />
-                          <div className="font-semibold text-gray-900">{holding.creator.name}</div>
+                          <img
+                            src={holding.creator.avatar_url}
+                            alt={holding.creator.name}
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div className="font-semibold text-gray-900">
+                            {holding.creator.name}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
@@ -266,9 +325,17 @@ export default function Profile({ onNavigate }: ProfileProps) {
                         {currentValue.toFixed(2)} SOL
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className={`font-bold ${pnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {pnl >= 0 ? '+' : ''}{pnl.toFixed(2)} SOL
-                          <div className="text-xs">({pnl >= 0 ? '+' : ''}{pnlPercent.toFixed(2)}%)</div>
+                        <div
+                          className={`font-bold ${
+                            pnl >= 0 ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          {pnl >= 0 ? "+" : ""}
+                          {pnl.toFixed(2)} SOL
+                          <div className="text-xs">
+                            ({pnl >= 0 ? "+" : ""}
+                            {pnlPercent.toFixed(2)}%)
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -287,7 +354,9 @@ export default function Profile({ onNavigate }: ProfileProps) {
             My Unlocked Perks
           </h2>
           {perks.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No unlocked perks yet</p>
+            <p className="text-gray-500 text-center py-8">
+              No unlocked perks yet
+            </p>
           ) : (
             <div className="space-y-3">
               {perks.map((perk) => (
@@ -301,9 +370,11 @@ export default function Profile({ onNavigate }: ProfileProps) {
                       Unlocked
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 mb-2">{perk.description}</p>
+                  <p className="text-sm text-gray-700 mb-2">
+                    {perk.description}
+                  </p>
                   <button
-                    onClick={() => onNavigate('creator', perk.creator_slug)}
+                    onClick={() => onNavigate("creator", perk.creator_slug)}
                     className="text-sm text-[#7E34FF] hover:text-purple-700 font-medium"
                   >
                     From {perk.creator_name} →
@@ -320,13 +391,15 @@ export default function Profile({ onNavigate }: ProfileProps) {
             Following ({following.length})
           </h2>
           {following.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">Not following any creators yet</p>
+            <p className="text-gray-500 text-center py-8">
+              Not following any creators yet
+            </p>
           ) : (
             <div className="space-y-3">
               {following.map((follow) => (
                 <div
                   key={follow.id}
-                  onClick={() => onNavigate('creator', follow.creator.slug)}
+                  onClick={() => onNavigate("creator", follow.creator.slug)}
                   className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <img
@@ -335,9 +408,12 @@ export default function Profile({ onNavigate }: ProfileProps) {
                     className="w-12 h-12 rounded-full"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900">{follow.creator.name}</div>
+                    <div className="font-semibold text-gray-900">
+                      {follow.creator.name}
+                    </div>
                     <div className="text-sm text-gray-500">
-                      {(follow.creator.subscribers / 1000).toFixed(1)}k subscribers
+                      {(follow.creator.subscribers / 1000).toFixed(1)}k
+                      subscribers
                     </div>
                   </div>
                 </div>
@@ -351,9 +427,8 @@ export default function Profile({ onNavigate }: ProfileProps) {
         <WalletConnectionModal
           isOpen={showWalletModal}
           onClose={() => setShowWalletModal(false)}
-          onConnect={handleConnectWallet}
         />
       )}
     </div>
   );
-}
+};

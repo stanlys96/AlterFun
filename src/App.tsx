@@ -1,34 +1,51 @@
-import { useState } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import HeroBanner from './components/HeroBanner';
-import LiveStreaming from './components/LiveStreaming';
-import MarketDiscovery from './components/MarketDiscovery';
-import CreatorLists from './components/CreatorLists';
-import CreatorProfile from './components/CreatorProfile';
-import Profile from './components/Profile';
-import JoinUs from './components/JoinUs';
-import Apply from './components/Apply';
-import ApplyThanks from './components/ApplyThanks';
-import AuthModal from './components/AuthModal';
-import WalletConnectionModal from './components/WalletConnectionModal';
+import { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import {
+  ApplyPage,
+  ApplyThanksPage,
+  CreatorListsPage,
+  CreatorProfilePage,
+  HomePage,
+  JoinUsPage,
+  ProfilePage,
+} from "./pages";
+import {
+  AuthModal,
+  Footer,
+  Header,
+  OTPModal,
+  WalletConnectionModal,
+} from "./components";
 
-type Page = 'home' | 'creators' | 'creator' | 'profile' | 'join' | 'apply' | 'apply-thanks';
-type AuthModalMode = 'signup' | 'login' | null;
+type Page =
+  | "home"
+  | "creators"
+  | "creator"
+  | "profile"
+  | "join"
+  | "apply"
+  | "apply-thanks";
+type AuthModalMode = "signup" | "login" | null;
 
 function AppContent() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>('');
-  const [applicationEmail, setApplicationEmail] = useState<string>('');
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>("");
+  const [applicationEmail, setApplicationEmail] = useState<string>("");
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const { isAuthenticated, isWalletConnected } = useAuth();
 
   const handleNavigate = (page: string, slugOrEmail?: string) => {
-    setCurrentPage(page as Page);
+    navigate(`/${page}`);
     if (slugOrEmail) {
-      if (page === 'apply-thanks') {
+      if (page === "apply-thanks") {
         setApplicationEmail(slugOrEmail);
       } else {
         setSelectedCreatorSlug(slugOrEmail);
@@ -39,7 +56,7 @@ function AppContent() {
 
   const handleBuyAction = () => {
     if (!isAuthenticated) {
-      setAuthModalMode('signup');
+      setAuthModalMode("signup");
     } else if (!isWalletConnected) {
       setWalletModalOpen(true);
     }
@@ -50,29 +67,46 @@ function AppContent() {
       <Header
         onNavigate={handleNavigate}
         currentPage={currentPage}
-        onSignUp={() => setAuthModalMode('signup')}
-        onSignIn={() => setAuthModalMode('login')}
+        onSignUp={() => setAuthModalMode("signup")}
+        onSignIn={() => setAuthModalMode("login")}
       />
 
       <main className="min-h-[calc(100vh-4rem)]">
-        {currentPage === 'home' && (
-          <>
-            <HeroBanner />
-            <LiveStreaming onNavigate={handleNavigate} />
-            <MarketDiscovery onNavigate={handleNavigate} />
-          </>
-        )}
-        {currentPage === 'creators' && <CreatorLists onNavigate={handleNavigate} />}
-        {currentPage === 'creator' && (
-          <CreatorProfile
-            slug={selectedCreatorSlug}
-            onBuyClick={handleBuyAction}
+        <Routes>
+          <Route
+            path="/"
+            element={<HomePage handleNavigate={handleNavigate} />}
           />
-        )}
-        {currentPage === 'profile' && <Profile onNavigate={handleNavigate} />}
-        {currentPage === 'join' && <JoinUs onNavigate={handleNavigate} />}
-        {currentPage === 'apply' && <Apply onNavigate={handleNavigate} />}
-        {currentPage === 'apply-thanks' && <ApplyThanks email={applicationEmail} />}
+          <Route
+            path="/creators"
+            element={<CreatorListsPage onNavigate={handleNavigate} />}
+          />
+          <Route
+            path="/creator"
+            element={
+              <CreatorProfilePage
+                slug={selectedCreatorSlug}
+                onBuyClick={handleBuyAction}
+              />
+            }
+          />
+          <Route
+            path="/profile"
+            element={<ProfilePage onNavigate={handleNavigate} />}
+          />
+          <Route
+            path="/join"
+            element={<JoinUsPage onNavigate={handleNavigate} />}
+          />
+          <Route
+            path="/apply"
+            element={<ApplyPage onNavigate={handleNavigate} />}
+          />
+          <Route
+            path="/apply-thanks"
+            element={<ApplyThanksPage email={applicationEmail} />}
+          />
+        </Routes>
       </main>
 
       <Footer />
@@ -80,13 +114,14 @@ function AppContent() {
       <AuthModal
         isOpen={authModalMode !== null}
         onClose={() => setAuthModalMode(null)}
-        initialMode={authModalMode || 'signup'}
+        initialMode={authModalMode || "signup"}
       />
 
       <WalletConnectionModal
         isOpen={walletModalOpen}
         onClose={() => setWalletModalOpen(false)}
       />
+      <OTPModal />
     </div>
   );
 }
@@ -94,7 +129,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Router>
+        <AppContent />
+      </Router>
     </AuthProvider>
   );
 }
