@@ -170,7 +170,7 @@ export const OTPModal = ({
 
           {/* OTP inputs */}
           <div className="mt-6">
-            <div className="flex grid grid-cols-3 items-center mx-auto md:grid-cols-6 justify-center gap-3">
+            <div className="flex grid grid-cols-6 items-center mx-auto justify-center">
               {Array.from({ length: digits }).map((_, i) => (
                 <input
                   key={i}
