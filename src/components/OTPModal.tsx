@@ -170,7 +170,7 @@ export const OTPModal = ({
 
           {/* OTP inputs */}
           <div className="mt-6">
-            <div className="flex justify-center gap-3">
+            <div className="flex grid grid-cols-3 items-center mx-auto md:grid-cols-6 justify-center gap-3">
               {Array.from({ length: digits }).map((_, i) => (
                 <input
                   key={i}
@@ -197,7 +197,7 @@ export const OTPModal = ({
                     const focusIndex = Math.min(i + text.length, digits - 1);
                     inputsRef.current[focusIndex]?.focus();
                   }}
-                  className="h-14 w-12 rounded-xl border border-gray-200 bg-white text-center text-xl font-medium text-slate-900 placeholder-slate-300 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="h-14 w-12 mx-auto rounded-xl border border-gray-200 bg-white text-center text-xl font-medium text-slate-900 placeholder-slate-300 shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                   aria-label={`Digit ${i + 1}`}
                 />
               ))}
