@@ -12,8 +12,6 @@ export default function Comments({ creatorId }: CommentsProps) {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
-  const walletAddress = user?.wallet_address;
-
   useEffect(() => {
     loadComments();
   }, [creatorId]);
@@ -36,18 +34,10 @@ export default function Comments({ creatorId }: CommentsProps) {
 
     setLoading(true);
 
-    const { data: userData } = await supabase
-      .from("users")
-      .select("username")
-      .eq("wallet_address", walletAddress)
-      .maybeSingle();
-
-    const displayName = userData?.username;
-
     const { error } = await supabase.from("comments").insert({
       creator_id: creatorId,
-      user_id: walletAddress,
-      user_name: displayName,
+      user_id: user?.id,
+      user_name: user?.username,
       content: newComment.trim(),
     });
 
