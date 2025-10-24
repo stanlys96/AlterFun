@@ -1,12 +1,12 @@
-import { Radio, Eye, Users } from 'lucide-react';
-import { mockLiveStreams } from '../data/mockData';
+import { Radio, Eye, Users } from "lucide-react";
+import { mockLiveStreams } from "../data/mockData";
 
 type LiveStreamingProps = {
   onNavigate: (page: string, slug?: string) => void;
 };
 
 export default function LiveStreaming({ onNavigate }: LiveStreamingProps) {
-  const liveStreams = mockLiveStreams.map(stream => ({
+  const liveStreams = mockLiveStreams.map((stream) => ({
     id: stream.id,
     slug: stream.creator.slug,
     thumbnail: stream.thumbnail,
@@ -26,7 +26,9 @@ export default function LiveStreaming({ onNavigate }: LiveStreamingProps) {
               <Radio className="w-8 h-8 text-red-500" />
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900">Live Streaming Now</h2>
+            <h2 className="text-3xl font-black text-gray-900">
+              Live Streaming Now
+            </h2>
           </div>
         </div>
 
@@ -34,7 +36,7 @@ export default function LiveStreaming({ onNavigate }: LiveStreamingProps) {
           {liveStreams.map((stream) => (
             <div
               key={stream.id}
-              onClick={() => onNavigate('creator', stream.slug)}
+              onClick={() => onNavigate("live-stream", stream.slug)}
               className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer group overflow-hidden"
             >
               <div className="relative">
@@ -80,7 +82,9 @@ export default function LiveStreaming({ onNavigate }: LiveStreamingProps) {
                   </span>
                   <div className="flex items-center gap-1 text-gray-500 text-sm">
                     <Users className="w-4 h-4" />
-                    <span className="font-semibold">{stream.viewers.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      {stream.viewers.toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>

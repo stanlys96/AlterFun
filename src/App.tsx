@@ -13,6 +13,7 @@ import {
   CreatorProfilePage,
   HomePage,
   JoinUsPage,
+  LiveStreamPage,
   ProfilePage,
 } from "./pages";
 import {
@@ -101,6 +102,7 @@ function AppContent() {
             path="/apply-thanks"
             element={<ApplyThanksPage email={applicationEmail} />}
           />
+          <Route path="/live-stream" element={<LiveStreamPage />} />
         </Routes>
       </main>
 
