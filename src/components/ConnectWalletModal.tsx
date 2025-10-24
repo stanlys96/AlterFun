@@ -1,18 +1,16 @@
-import { Wallet, X } from 'lucide-react';
-import { useWallet } from '../contexts/WalletContext';
-
+import { Wallet, X } from "lucide-react";
 type ConnectWalletModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function ConnectWalletModal({ isOpen, onClose }: ConnectWalletModalProps) {
-  const { connect } = useWallet();
-
+export default function ConnectWalletModal({
+  isOpen,
+  onClose,
+}: ConnectWalletModalProps) {
   if (!isOpen) return null;
 
   const handleConnect = () => {
-    connect();
     onClose();
   };
 
@@ -45,7 +43,9 @@ export default function ConnectWalletModal({ isOpen, onClose }: ConnectWalletMod
               <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                 Phantom
               </div>
-              <div className="text-sm text-gray-500">Connect with Phantom Wallet</div>
+              <div className="text-sm text-gray-500">
+                Connect with Phantom Wallet
+              </div>
             </div>
           </button>
 
@@ -60,7 +60,9 @@ export default function ConnectWalletModal({ isOpen, onClose }: ConnectWalletMod
               <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                 Solflare
               </div>
-              <div className="text-sm text-gray-500">Connect with Solflare Wallet</div>
+              <div className="text-sm text-gray-500">
+                Connect with Solflare Wallet
+              </div>
             </div>
           </button>
 
@@ -75,14 +77,16 @@ export default function ConnectWalletModal({ isOpen, onClose }: ConnectWalletMod
               <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                 Backpack
               </div>
-              <div className="text-sm text-gray-500">Connect with Backpack Wallet</div>
+              <div className="text-sm text-gray-500">
+                Connect with Backpack Wallet
+              </div>
             </div>
           </button>
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-500 text-center">
-            Don't have a wallet?{' '}
+            Don't have a wallet?{" "}
             <a
               href="https://phantom.app/"
               target="_blank"
