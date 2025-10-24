@@ -134,7 +134,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
     const { data: followsData } = await supabase
       .from("follows")
       .select("*, creators(*)")
-      .eq("user_wallet", user.id);
+      .eq("user_id", user.id);
 
     if (followsData) {
       setFollowing(

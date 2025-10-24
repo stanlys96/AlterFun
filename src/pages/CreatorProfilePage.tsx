@@ -122,7 +122,7 @@ export const CreatorProfilePage = ({
     const { data } = await supabase
       .from("follows")
       .select("id")
-      .eq("user_wallet", user.id)
+      .eq("user_id", user.id)
       .eq("creator_id", creator.id)
       .maybeSingle();
 
@@ -141,7 +141,7 @@ export const CreatorProfilePage = ({
       const { error } = await supabase
         .from("follows")
         .delete()
-        .eq("user_wallet", user.id)
+        .eq("user_id", user.id)
         .eq("creator_id", creator.id);
 
       if (!error) {
@@ -149,7 +149,7 @@ export const CreatorProfilePage = ({
       }
     } else {
       const { error } = await supabase.from("follows").insert({
-        user_wallet: user.id,
+        user_id: user.id,
         creator_id: creator.id,
       });
 
