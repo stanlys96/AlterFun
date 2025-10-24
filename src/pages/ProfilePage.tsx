@@ -36,7 +36,8 @@ type FollowWithCreator = Follow & {
 
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const { user, isWalletConnected, connectWallet } = useAuth();
-  const walletAddress = user?.wallet_address;
+  const { publicKey } = useWallet();
+  const walletAddress = publicKey?.toBase58();
   const username = user?.email?.split("@")[0] || "User";
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
@@ -175,9 +176,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
             <div className="text-sm text-gray-600 mb-1">Wallet Address</div>
             {isWalletConnected ? (
               <div className="flex items-center gap-3">
-                <code className="text-sm font-mono bg-gray-100 px-3 py-1.5 rounded text-gray-900">
-                  {walletAddress}
-                </code>
+                <WalletMultiButton />
                 <a
                   href={`https://solscan.io/account/${walletAddress}`}
                   target="_blank"
