@@ -32,7 +32,7 @@ export default function Comments({ creatorId }: CommentsProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !isWalletConnected || !walletAddress) return;
+    if (!newComment.trim() || !isAuthenticated) return;
 
     setLoading(true);
 
@@ -42,9 +42,7 @@ export default function Comments({ creatorId }: CommentsProps) {
       .eq("wallet_address", walletAddress)
       .maybeSingle();
 
-    const displayName =
-      userData?.username ||
-      walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4);
+    const displayName = userData?.username;
 
     const { error } = await supabase.from("comments").insert({
       creator_id: creatorId,

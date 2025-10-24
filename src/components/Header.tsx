@@ -172,15 +172,6 @@ export default function Header({
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                {user?.wallet_address && (
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-lg border border-green-200">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-sm font-medium text-green-700">
-                      {user.wallet_address}
-                    </span>
-                  </div>
-                )}
-
                 <button
                   onClick={() => onNavigate("profile")}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
@@ -191,7 +182,7 @@ export default function Header({
                 >
                   <User className="w-4 h-4" />
                   <span className="text-sm font-medium">
-                    {user?.email?.split("@")[0] || "Profile"}
+                    {user?.username || "Profile"}
                   </span>
                 </button>
 

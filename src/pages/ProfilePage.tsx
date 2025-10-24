@@ -40,7 +40,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const { user, isWalletConnected, connectWallet, isAuthenticated } = useAuth();
   const { publicKey } = useWallet();
   const walletAddress = publicKey?.toBase58();
-  const username = user?.email?.split("@")[0] || "User";
+  const username = user?.username;
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
   const [perks, setPerks] = useState<PerkWithCreator[]>([]);

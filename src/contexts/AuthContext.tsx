@@ -51,7 +51,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             id: session.user.id,
             email: session.user.email || null,
             wallet_address: null,
-            username: "",
+            username:
+              session?.user?.user_metadata?.username ||
+              session?.user?.email?.split("@")[0],
           });
         } else {
           setUser(null);
@@ -81,7 +83,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           id: session.user.id,
           email: session.user.email || null,
           wallet_address: null,
-          username: "",
+          username:
+            session?.user?.user_metadata?.username ||
+            session?.user?.email?.split("@")[0],
         });
       }
     } catch (error) {
