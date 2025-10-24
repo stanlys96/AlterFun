@@ -560,9 +560,11 @@ export const CreatorProfilePage = ({
 
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-            <div className="w-full mb-2 mx-auto">
-              <WalletMultiButton />
-            </div>
+            {isAuthenticated && (
+              <div className="w-full mb-2 mx-auto">
+                <WalletMultiButton />
+              </div>
+            )}
             <h2 className="text-xl font-bold text-gray-900 mb-4">Trade Keys</h2>
 
             {publicKey?.toBase58() && userKeys > 0 && (
@@ -650,7 +652,7 @@ export const CreatorProfilePage = ({
                 </span>
               </div>
             </div>
-            {publicKey?.toBase58() && (
+            {publicKey?.toBase58() && isAuthenticated && (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}
                 className={`w-full py-3 font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
@@ -695,9 +697,11 @@ export const CreatorProfilePage = ({
             className="bg-white rounded-t-3xl p-6 w-full max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-full mb-2 mx-auto">
-              <WalletMultiButton />
-            </div>
+            {isAuthenticated && (
+              <div className="w-full mb-2 mx-auto">
+                <WalletMultiButton />
+              </div>
+            )}
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-900">Trade Keys</h2>
               <button
@@ -775,7 +779,7 @@ export const CreatorProfilePage = ({
               </div>
             </div>
 
-            {!publicKey?.toBase58() && (
+            {publicKey?.toBase58() && isAuthenticated && (
               <button
                 disabled={!amount || parseFloat(amount) <= 0}
                 className={`w-full py-3 font-semibold rounded-lg transition-all disabled:opacity-50 ${

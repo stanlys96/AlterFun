@@ -13,6 +13,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { WalletConnectionModal } from "../components";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useNavigate } from "react-router-dom";
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -35,7 +36,8 @@ type FollowWithCreator = Follow & {
 };
 
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
-  const { user, isWalletConnected, connectWallet } = useAuth();
+  const navigate = useNavigate();
+  const { user, isWalletConnected, connectWallet, isAuthenticated } = useAuth();
   const { publicKey } = useWallet();
   const walletAddress = publicKey?.toBase58();
   const username = user?.email?.split("@")[0] || "User";
@@ -157,6 +159,12 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
       console.error("Failed to connect wallet:", error);
     }
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
