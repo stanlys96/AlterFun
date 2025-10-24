@@ -22,16 +22,6 @@ import {
   OTPModal,
   WalletConnectionModal,
 } from "./components";
-import { WalletProvider } from "./contexts/WalletContext";
-
-type Page =
-  | "home"
-  | "creators"
-  | "creator"
-  | "profile"
-  | "join"
-  | "apply"
-  | "apply-thanks";
 type AuthModalMode = "signup" | "login" | null;
 
 function AppContent() {
