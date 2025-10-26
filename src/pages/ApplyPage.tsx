@@ -15,6 +15,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
     twitterLink: "",
     bio: "",
     category: "",
+    username: "",
     profilePicture: null as File | null,
     agreeToTerms: false,
   });
@@ -50,7 +51,11 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
       return;
     }
 
-    if (!formData.businessEmail || !formData.creatorName) {
+    if (
+      !formData.businessEmail ||
+      !formData.creatorName ||
+      !formData.username
+    ) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -98,6 +103,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
             bio: formData.bio || null,
             category: formData.category || null,
             profile_picture_url: profilePictureUrl,
+            username: formData.username,
           },
         ]);
 
@@ -179,6 +185,24 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                 />
                 <p className="mt-2 text-sm text-gray-600">
                   Your public name that fans and supporters will see.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Username *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.username}
+                  onChange={(e) =>
+                    handleInputChange("username", e.target.value)
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  placeholder="Your username"
+                />
+                <p className="mt-2 text-sm text-gray-600">
+                  Your username that fans and supporters will see.
                 </p>
               </div>
             </div>
