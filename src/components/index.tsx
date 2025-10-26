@@ -14,6 +14,7 @@ import SocialLinks from "./SocialLinks";
 import UsernameSetupModal from "./UsernameSetupModal";
 import WalletConnectionModal from "./WalletConnectionModal";
 import YouTubeVideoList from "./YouTubeVideoList";
+import { TokenCard } from "./TokenCard";
 
 export {
   HeroBanner,
@@ -32,4 +33,5 @@ export {
   UsernameSetupModal,
   WalletConnectionModal,
   YouTubeVideoList,
+  TokenCard,
 };

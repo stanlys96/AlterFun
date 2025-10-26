@@ -6,3 +6,4 @@ export * from "./JoinUsPage";
 export * from "./ApplyPage";
 export * from "./ApplyThanksPage";
 export * from "./LiveStreamPage";
+export * from "./TokensPage";

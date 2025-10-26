@@ -15,6 +15,7 @@ import {
   JoinUsPage,
   LiveStreamPage,
   ProfilePage,
+  TokensPage,
 } from "./pages";
 import {
   AuthModal,
@@ -103,6 +104,7 @@ function AppContent() {
             element={<ApplyThanksPage email={applicationEmail} />}
           />
           <Route path="/live-stream" element={<LiveStreamPage />} />
+          <Route path="/tokens" element={<TokensPage />} />
         </Routes>
       </main>
 
