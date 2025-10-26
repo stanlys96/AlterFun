@@ -38,7 +38,7 @@ type FollowWithCreator = Follow & {
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const navigate = useNavigate();
   const { user, isWalletConnected, connectWallet, isAuthenticated } = useAuth();
-  const { publicKey } = useWallet();
+  const { publicKey, connected } = useWallet();
   const walletAddress = publicKey?.toBase58();
   const username = user?.username;
   const [showWalletModal, setShowWalletModal] = useState(false);
@@ -49,8 +49,15 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const [totalPnL, setTotalPnL] = useState(0);
 
   useEffect(() => {
-    loadProfileData();
-  }, [user]);
+    if (publicKey?.toBase58()) {
+      loadProfileData();
+    } else {
+      setHoldings([]);
+      setTotalValue(0);
+      setTotalPnL(0);
+      setPerks([]);
+    }
+  }, [publicKey, connected]);
 
   const loadProfileData = async () => {
     if (!user) return;
@@ -127,7 +134,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
     const { data: followsData } = await supabase
       .from("follows")
       .select("*, creators(*)")
-      .eq("user_wallet", user.id);
+      .eq("user_id", user.id);
 
     if (followsData) {
       setFollowing(

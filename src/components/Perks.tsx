@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Gift, CheckCircle, Clock, Award } from 'lucide-react';
-import { supabase, Perk, Creator } from '../lib/supabase';
-import { useWallet } from '../contexts/WalletContext';
+import { useState, useEffect } from "react";
+import { Gift, CheckCircle, Clock, Award } from "lucide-react";
+import { supabase, Perk, Creator } from "../lib/supabase";
 
 type PerkWithCreator = Perk & {
   creator: Creator;
@@ -11,25 +10,22 @@ type PerkWithCreator = Perk & {
 };
 
 export default function Perks() {
-  const { walletAddress } = useWallet();
   const [perks, setPerks] = useState<PerkWithCreator[]>([]);
 
   useEffect(() => {
     loadPerks();
-  }, [walletAddress]);
+  }, []);
 
   const loadPerks = async () => {
-    if (!walletAddress) return;
-
     const { data: allPerks } = await supabase
-      .from('perks')
-      .select('*, creators(*)');
+      .from("perks")
+      .select("*, creators(*)");
 
     if (allPerks) {
       const mockHoldings: Record<string, number> = {
-        'miko-sakura': 150,
-        'aria-volt': 85,
-        'kira-neon': 200
+        "miko-sakura": 150,
+        "aria-volt": 85,
+        "kira-neon": 200,
       };
 
       const enrichedPerks: PerkWithCreator[] = allPerks.map((perk: any) => {
@@ -42,7 +38,7 @@ export default function Perks() {
           creator,
           userHoldings: holdings,
           isAvailable,
-          isClaimed: false
+          isClaimed: false,
         };
       });
 
@@ -51,14 +47,16 @@ export default function Perks() {
   };
 
   const handleClaim = (perkId: string) => {
-    setPerks(perks.map(perk =>
-      perk.id === perkId ? { ...perk, isClaimed: true } : perk
-    ));
+    setPerks(
+      perks.map((perk) =>
+        perk.id === perkId ? { ...perk, isClaimed: true } : perk
+      )
+    );
   };
 
-  const availablePerks = perks.filter(p => p.isAvailable && !p.isClaimed);
-  const claimedPerks = perks.filter(p => p.isClaimed);
-  const lockedPerks = perks.filter(p => !p.isAvailable);
+  const availablePerks = perks.filter((p) => p.isAvailable && !p.isClaimed);
+  const claimedPerks = perks.filter((p) => p.isClaimed);
+  const lockedPerks = perks.filter((p) => !p.isAvailable);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -66,7 +64,9 @@ export default function Perks() {
         <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           My Perks
         </h1>
-        <p className="text-gray-600">Claim and manage your exclusive creator perks</p>
+        <p className="text-gray-600">
+          Claim and manage your exclusive creator perks
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -75,7 +75,9 @@ export default function Perks() {
             <Gift className="w-5 h-5 text-[#03EC86]" />
             <h3 className="font-semibold text-gray-900">Available</h3>
           </div>
-          <div className="text-3xl font-black text-[#03EC86]">{availablePerks.length}</div>
+          <div className="text-3xl font-black text-[#03EC86]">
+            {availablePerks.length}
+          </div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-md">
@@ -83,7 +85,9 @@ export default function Perks() {
             <CheckCircle className="w-5 h-5 text-[#7E34FF]" />
             <h3 className="font-semibold text-gray-900">Claimed</h3>
           </div>
-          <div className="text-3xl font-black text-[#7E34FF]">{claimedPerks.length}</div>
+          <div className="text-3xl font-black text-[#7E34FF]">
+            {claimedPerks.length}
+          </div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-md">
@@ -91,13 +95,17 @@ export default function Perks() {
             <Clock className="w-5 h-5 text-gray-500" />
             <h3 className="font-semibold text-gray-900">Locked</h3>
           </div>
-          <div className="text-3xl font-black text-gray-500">{lockedPerks.length}</div>
+          <div className="text-3xl font-black text-gray-500">
+            {lockedPerks.length}
+          </div>
         </div>
       </div>
 
       {availablePerks.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Available to Claim</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Available to Claim
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {availablePerks.map((perk) => (
               <div key={perk.id} className="bg-white rounded-xl p-6 shadow-md">
@@ -108,8 +116,12 @@ export default function Perks() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900">{perk.creator.name}</div>
-                    <div className="text-sm text-gray-600">{perk.userHoldings} Keys held</div>
+                    <div className="font-semibold text-gray-900">
+                      {perk.creator.name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {perk.userHoldings} Keys held
+                    </div>
                   </div>
                   <Award className="w-6 h-6 text-[#03EC86]" />
                 </div>
@@ -136,7 +148,9 @@ export default function Perks() {
 
       {claimedPerks.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Claimed Perks</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Claimed Perks
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {claimedPerks.map((perk) => (
               <div key={perk.id} className="bg-white rounded-xl p-6 shadow-md">
@@ -147,8 +161,12 @@ export default function Perks() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900">{perk.creator.name}</div>
-                    <div className="text-sm text-gray-600">{perk.userHoldings} Keys held</div>
+                    <div className="font-semibold text-gray-900">
+                      {perk.creator.name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {perk.userHoldings} Keys held
+                    </div>
                   </div>
                   <CheckCircle className="w-6 h-6 text-[#7E34FF]" />
                 </div>
@@ -172,10 +190,15 @@ export default function Perks() {
 
       {lockedPerks.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Locked Perks</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Locked Perks
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lockedPerks.map((perk) => (
-              <div key={perk.id} className="bg-white rounded-xl p-6 shadow-md opacity-60">
+              <div
+                key={perk.id}
+                className="bg-white rounded-xl p-6 shadow-md opacity-60"
+              >
                 <div className="flex items-start gap-3 mb-4">
                   <img
                     src={perk.creator.avatar_url}
@@ -183,8 +206,12 @@ export default function Perks() {
                     className="w-12 h-12 rounded-full object-cover grayscale"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900">{perk.creator.name}</div>
-                    <div className="text-sm text-gray-600">{perk.userHoldings} / {perk.requirement_keys} Keys</div>
+                    <div className="font-semibold text-gray-900">
+                      {perk.creator.name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {perk.userHoldings} / {perk.requirement_keys} Keys
+                    </div>
                   </div>
                   <Clock className="w-6 h-6 text-gray-400" />
                 </div>

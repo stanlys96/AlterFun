@@ -1,44 +1,42 @@
-import { useState } from 'react';
-import { User, AlertCircle } from 'lucide-react';
-import { useWallet } from '../contexts/WalletContext';
+import { useState } from "react";
+import { User, AlertCircle } from "lucide-react";
 
 export default function UsernameSetupModal() {
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setUsername: saveUsername } = useWallet();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!username.trim()) {
-      setError('Username is required');
+      setError("Username is required");
       return;
     }
 
     if (username.length < 3) {
-      setError('Username must be at least 3 characters');
+      setError("Username must be at least 3 characters");
       return;
     }
 
     if (username.length > 20) {
-      setError('Username must be less than 20 characters');
+      setError("Username must be less than 20 characters");
       return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setError('Username can only contain letters, numbers, and underscores');
+      setError("Username can only contain letters, numbers, and underscores");
       return;
     }
 
     setLoading(true);
-    const success = await saveUsername(username);
+    // const success = await saveUsername(username);
     setLoading(false);
 
-    if (!success) {
-      setError('Username already taken. Please choose another.');
-    }
+    // if (!success) {
+    //   setError('Username already taken. Please choose another.');
+    // }
   };
 
   return (
@@ -87,7 +85,7 @@ export default function UsernameSetupModal() {
             disabled={loading || !username.trim()}
             className="w-full py-3 bg-gradient-to-r from-[#7E34FF] to-purple-600 text-white font-bold rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating...' : 'Continue'}
+            {loading ? "Creating..." : "Continue"}
           </button>
         </form>
 

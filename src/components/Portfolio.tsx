@@ -6,7 +6,6 @@ import {
   DollarSign,
 } from "lucide-react";
 import { supabase, Creator } from "../lib/supabase";
-import { useWallet } from "../contexts/WalletContext";
 
 type PortfolioProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -20,18 +19,15 @@ type HoldingWithCreator = {
 };
 
 export default function Portfolio({ onNavigate }: PortfolioProps) {
-  const { walletAddress } = useWallet();
   const [holdings, setHoldings] = useState<HoldingWithCreator[]>([]);
   const [totalValue, setTotalValue] = useState(0);
   const [totalPnL, setTotalPnL] = useState(0);
 
   useEffect(() => {
     loadPortfolio();
-  }, [walletAddress]);
+  }, []);
 
   const loadPortfolio = async () => {
-    if (!walletAddress) return;
-
     const mockHoldings: HoldingWithCreator[] = [];
 
     const { data: creatorsData } = await supabase

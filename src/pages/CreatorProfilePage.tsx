@@ -9,6 +9,7 @@ import {
   Gift,
   UserPlus,
   UserCheck,
+  RedoDot,
 } from "lucide-react";
 import {
   supabase,
@@ -25,6 +26,7 @@ import { Comments } from "../components";
 import { fetchAndCacheVideos } from "../lib/youtube";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
+import YouTube from "react-youtube";
 
 type CreatorProfileProps = {
   slug: string;
@@ -49,6 +51,14 @@ export const CreatorProfilePage = ({
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
+
+  const opts = {
+    playerVars: {
+      autoplay: 1,
+      width: 400,
+      origin: "https://thitsarparami.org/",
+    },
+  };
 
   useEffect(() => {
     loadCreatorData();
@@ -122,7 +132,7 @@ export const CreatorProfilePage = ({
     const { data } = await supabase
       .from("follows")
       .select("id")
-      .eq("user_wallet", user.id)
+      .eq("user_id", user.id)
       .eq("creator_id", creator.id)
       .maybeSingle();
 
@@ -141,7 +151,7 @@ export const CreatorProfilePage = ({
       const { error } = await supabase
         .from("follows")
         .delete()
-        .eq("user_wallet", user.id)
+        .eq("user_id", user.id)
         .eq("creator_id", creator.id);
 
       if (!error) {
@@ -149,7 +159,7 @@ export const CreatorProfilePage = ({
       }
     } else {
       const { error } = await supabase.from("follows").insert({
-        user_wallet: user.id,
+        user_id: user.id,
         creator_id: creator.id,
       });
 
@@ -281,9 +291,11 @@ export const CreatorProfilePage = ({
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-xl shadow-md p-6 flex justify-center items-center">
+            <YouTube className="" videoId="4nQ2LT04reQ" opts={opts} />
+          </div>
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6">
               Creator Stats
