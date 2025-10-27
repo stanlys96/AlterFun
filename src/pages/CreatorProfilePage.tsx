@@ -449,7 +449,7 @@ export const CreatorProfilePage = ({
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-6">
+              {/* <div className="border-t border-gray-200 pt-6">
                 <div className="flex items-center gap-4 mb-4">
                   <h3 className="font-semibold text-gray-900">
                     Growth Metrics
@@ -494,7 +494,7 @@ export const CreatorProfilePage = ({
                     change="+0.70%"
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
