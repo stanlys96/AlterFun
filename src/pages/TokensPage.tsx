@@ -43,7 +43,7 @@ export const TokensPage = () => {
           (Phase: Cooking Stage)
         </p>
       </div>
-      {tokens.length === 0 ? (
+      {[].length === 0 ? (
         <p className="text-gray-600">No cooking stage tokens found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
