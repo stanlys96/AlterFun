@@ -681,14 +681,14 @@ export const CreatorProfilePage = ({
         </div>
       </div>
 
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <YouTubeVideoList
           creatorId={creator.id}
           videos={videos.length > 0 ? videos : []}
           isLoading={videosLoading}
           error={videosError}
         />
-      </div>
+      </div> */}
 
       <div className="mt-6">
         <Comments creatorId={creator.id} />
