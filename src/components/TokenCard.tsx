@@ -9,7 +9,6 @@ export const TokenCard: React.FC<TokenCardProps> = ({
   token,
   onTradeClick,
 }) => {
-  // "https://ipfs.erebrus.io/ipfs/bafkreih76adu6grssfjdzshkiz6gbvhsdd4zjq2vwe3ptrsg2w76ky4qwa"
   return (
     <div className="border rounded-lg p-4 shadow-md">
       <div className="flex gap-x-2 items-center">
