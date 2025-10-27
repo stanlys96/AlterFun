@@ -292,8 +292,8 @@ export const CreatorProfilePage = ({
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="space-y-6">
           {/* <div className="bg-white rounded-xl shadow-md p-6 flex justify-center items-center">
             <YouTube className="" videoId="4nQ2LT04reQ" opts={opts} />
           </div> */}
@@ -571,7 +571,7 @@ export const CreatorProfilePage = ({
           )}
         </div>
 
-        <div className="lg:col-span-1">
+        {/* <div className="lg:col-span-1">
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
             {isAuthenticated && (
               <div className="w-full mb-2 mx-auto">
@@ -678,7 +678,7 @@ export const CreatorProfilePage = ({
               </button>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className="mt-6">
