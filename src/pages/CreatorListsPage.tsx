@@ -31,6 +31,7 @@ export const CreatorListsPage = ({ onNavigate }: CreatorListsProps) => {
     const { data, error } = await supabase
       .from("creators")
       .select("*")
+      .eq("enabled", true)
       .order("market_cap", { ascending: false });
 
     if (!error && data) {

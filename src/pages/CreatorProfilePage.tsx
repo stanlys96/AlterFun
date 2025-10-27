@@ -80,6 +80,7 @@ export const CreatorProfilePage = ({
       .from("creators")
       .select("*")
       .eq("slug", slug)
+      .eq("enabled", true)
       .maybeSingle();
 
     if (creatorData) {

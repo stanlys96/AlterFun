@@ -6,7 +6,6 @@ import { LaunchedTokenData } from "../lib/cyreneSupabase";
 export const TokensPage = () => {
   const navigate = useNavigate();
   const { tokens, loading, error } = useLaunchedTokens();
-
   const handleTradeClick = (token: LaunchedTokenData) => {
     const params = new URLSearchParams({
       tokenAddress: token.contractAddress,

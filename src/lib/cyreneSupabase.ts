@@ -132,6 +132,7 @@ export interface LaunchedTokenData {
   isVerified: boolean;
   verifiedBy?: string;
   verifiedAt?: string;
+  projectImage?: string;
 }
 
 // Stream Management Types
@@ -209,6 +210,7 @@ export const dbToFrontend = (dbToken: LaunchedTokenDB): LaunchedTokenData => ({
   isVerified: dbToken.is_verified,
   verifiedBy: dbToken.verified_by || undefined,
   verifiedAt: dbToken.verified_at || undefined,
+  projectImage: dbToken?.project_ideas?.project_image || undefined,
 });
 
 export const frontendToDb = (

@@ -35,6 +35,7 @@ export default function Header({
     const { data } = await supabase
       .from("creators")
       .select("*")
+      .eq("enabled", true)
       .ilike("name", `%${searchQuery}%`)
       .limit(5);
 
@@ -77,6 +78,16 @@ export default function Header({
                 }`}
               >
                 Creator Lists
+              </button>
+              <button
+                onClick={() => onNavigate("tokens")}
+                className={`text-sm font-medium transition-colors ${
+                  location?.pathname === "/tokens"
+                    ? "text-[#7E34FF]"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Launched Tokens
               </button>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">

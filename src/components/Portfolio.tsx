@@ -33,6 +33,7 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
     const { data: creatorsData } = await supabase
       .from("creators")
       .select("*")
+      .eq("enabled", true)
       .in("slug", ["miko-sakura", "aria-volt", "kira-neon"]);
 
     if (creatorsData) {

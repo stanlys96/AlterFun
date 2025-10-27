@@ -11,8 +11,13 @@ export const TokenCard: React.FC<TokenCardProps> = ({
 }) => {
   return (
     <div className="border rounded-lg p-4 shadow-md">
-      <h3 className="text-xl font-bold">{token.tokenName}</h3>
-      <p className="text-gray-600">{token.tokenSymbol}</p>
+      <div className="flex gap-x-2 items-center">
+        <img className="w-[50px] h-[50px]" src={token.projectImage} />
+        <div>
+          <h3 className="text-xl font-bold">{token.tokenName}</h3>
+          <p className="text-gray-600">${token.tokenSymbol}</p>
+        </div>
+      </div>
       <div className="mt-4 space-y-2">
         <p>
           <strong>Contract:</strong> {token.contractAddress}
