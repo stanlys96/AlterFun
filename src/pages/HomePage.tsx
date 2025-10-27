@@ -8,7 +8,7 @@ export const HomePage = ({ handleNavigate }: HomePageProps) => {
   return (
     <>
       <HeroBanner />
-      <LiveStreaming onNavigate={handleNavigate} />
+      {/* <LiveStreaming onNavigate={handleNavigate} /> */}
       <MarketDiscovery onNavigate={handleNavigate} />
     </>
   );
