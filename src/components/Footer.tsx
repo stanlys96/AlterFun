@@ -1,4 +1,4 @@
-import { Twitter, MessageCircle, Youtube } from 'lucide-react';
+import { Twitter, MessageCircle, Youtube } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -19,14 +19,12 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Connect With Us</h4>
             <div className="flex gap-3">
-              <a href="#" className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
+              <a
+                href="https://x.com/AlterFUNdotcom"
+                target="_blank"
+                className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+              >
                 <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                <MessageCircle className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
