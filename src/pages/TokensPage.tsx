@@ -29,9 +29,14 @@ export const TokensPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6">
-        Launched Tokens (Cooking Stage)
-      </h1>
+      <div className="text-center py-6 mb-10 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
+        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+          Launched Tokens
+        </h1>
+        <p className="text-xl font-medium text-gray-600 mt-2">
+          (Phase: Cooking Stage)
+        </p>
+      </div>
       {tokens.length === 0 ? (
         <p className="text-gray-600">No cooking stage tokens found.</p>
       ) : (
