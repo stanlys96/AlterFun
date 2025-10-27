@@ -68,6 +68,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
       const { data: creatorsData } = await supabase
         .from("creators")
         .select("*")
+        .eq("enabled", true)
         .in("slug", ["miko-sakura", "aria-volt", "kira-neon"]);
 
       if (creatorsData) {

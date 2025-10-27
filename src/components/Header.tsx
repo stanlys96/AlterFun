@@ -35,6 +35,7 @@ export default function Header({
     const { data } = await supabase
       .from("creators")
       .select("*")
+      .eq("enabled", true)
       .ilike("name", `%${searchQuery}%`)
       .limit(5);
 
