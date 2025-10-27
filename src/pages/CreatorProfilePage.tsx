@@ -294,9 +294,9 @@ export const CreatorProfilePage = ({
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl shadow-md p-6 flex justify-center items-center">
+          {/* <div className="bg-white rounded-xl shadow-md p-6 flex justify-center items-center">
             <YouTube className="" videoId="4nQ2LT04reQ" opts={opts} />
-          </div>
+          </div> */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6">
               Creator Stats
