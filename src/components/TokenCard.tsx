@@ -9,10 +9,16 @@ export const TokenCard: React.FC<TokenCardProps> = ({
   token,
   onTradeClick,
 }) => {
+  // "https://ipfs.erebrus.io/ipfs/bafkreih76adu6grssfjdzshkiz6gbvhsdd4zjq2vwe3ptrsg2w76ky4qwa"
   return (
     <div className="border rounded-lg p-4 shadow-md">
-      <h3 className="text-xl font-bold">{token.tokenName}</h3>
-      <p className="text-gray-600">{token.tokenSymbol}</p>
+      <div className="flex gap-x-2 items-center">
+        <img className="w-[50px] h-[50px]" src={token.projectImage} />
+        <div>
+          <h3 className="text-xl font-bold">{token.tokenName}</h3>
+          <p className="text-gray-600">${token.tokenSymbol}</p>
+        </div>
+      </div>
       <div className="mt-4 space-y-2">
         <p>
           <strong>Contract:</strong> {token.contractAddress}

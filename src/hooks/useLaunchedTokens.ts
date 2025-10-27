@@ -4,6 +4,7 @@ import {
   LaunchedTokenData,
   dbToFrontend,
 } from "../lib/cyreneSupabase";
+import { combineTokensAndIdeas } from "../utils/utils";
 
 export const useLaunchedTokens = () => {
   const [tokens, setTokens] = useState<LaunchedTokenData[]>([]);
@@ -22,14 +23,20 @@ export const useLaunchedTokens = () => {
         .select(
           `*, 
             project_ideas!project_idea_id (
-            project_stage
+            *
           )`
         )
         .eq("is_hidden", false)
         .eq("project_ideas.project_stage", "cooking")
         .order("created_at", { ascending: false });
+      const { data: projectData, error: projectError } = await cyreneSupabase
+        .from("project_ideas")
+        .select("*");
+      const combinedData = combineTokensAndIdeas(data, projectData);
       if (error) throw error;
-      const formattedTokens = data?.map((token) => dbToFrontend(token)) || [];
+      if (projectError) throw projectError;
+      const formattedTokens =
+        combinedData?.map((token) => dbToFrontend(token)) || [];
       setTokens(formattedTokens);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch tokens");
