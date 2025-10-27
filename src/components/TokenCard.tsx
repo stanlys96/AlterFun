@@ -25,8 +25,8 @@ export const TokenCard: React.FC<TokenCardProps> = ({
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="relative group bg-gradient-to-br from-white/70 to-white/30 dark:from-slate-800/80 dark:to-slate-700/50 
-                 border border-gray-200 dark:border-slate-600 rounded-2xl p-5 shadow-lg 
+      className="relative group bg-gradient-to-br from-white/70 to-white/30 
+                 border border-gray-200 rounded-2xl p-5 shadow-lg 
                  backdrop-blur-md hover:shadow-2xl hover:border-blue-400/50 transition-all duration-300"
     >
       {/* Header */}
@@ -34,23 +34,23 @@ export const TokenCard: React.FC<TokenCardProps> = ({
         <img
           src={token.projectImage}
           alt={token.tokenName}
-          className="w-14 h-14 rounded-full object-cover border border-gray-300 dark:border-slate-600"
+          className="w-14 h-14 rounded-full object-cover border border-gray-300"
         />
         <div>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             {token.tokenName}
             {token.isVerified && (
               <CheckCircle className="text-blue-500 w-4 h-4" />
             )}
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+          <p className="text-gray-500 text-sm font-medium">
             ${token.tokenSymbol}
           </p>
         </div>
       </div>
 
       {/* Info Section */}
-      <div className="mt-5 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+      <div className="mt-5 space-y-2 text-sm text-gray-600">
         <div className="flex justify-between">
           <span className="font-medium text-gray-500">Contract</span>
           <div className="flex gap-x-2 items-center">
@@ -98,8 +98,8 @@ export const TokenCard: React.FC<TokenCardProps> = ({
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${
               token.tradeStatus
-                ? "bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300"
-                : "bg-gray-100 text-gray-700 dark:bg-gray-700/50 dark:text-gray-300"
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-100 text-gray-700"
             }`}
           >
             {token.tradeStatus ? "Active" : "Graduated"}
