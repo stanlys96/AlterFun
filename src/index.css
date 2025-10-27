@@ -4,9 +4,9 @@
 
 @layer base {
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -16,5 +16,14 @@
   .bg-clip-text {
     -webkit-background-clip: text;
     background-clip: text;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }

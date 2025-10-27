@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
 import { TokenCard } from "../components";
 import { LaunchedTokenData } from "../lib/cyreneSupabase";
+import { ClipLoader } from "react-spinners";
 
 export const TokensPage = () => {
   const navigate = useNavigate();
@@ -20,7 +21,12 @@ export const TokensPage = () => {
   };
 
   if (loading) {
-    return <div className="p-4">Loading launched tokens...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 text-gray-700">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-lg font-medium">Loading Launched Tokens...</p>
+      </div>
+    );
   }
 
   if (error) {
