@@ -302,7 +302,7 @@ export const CreatorProfilePage = ({
               Creator Stats
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="text-sm text-[#7E34FF] font-medium mb-1">
                   Key Price
@@ -342,7 +342,7 @@ export const CreatorProfilePage = ({
                   {creator.price_change_24h.toFixed(1)}%
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="border-t border-gray-200 pt-6">
               <h3 className="font-semibold text-gray-900 mb-4">
