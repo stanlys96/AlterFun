@@ -295,7 +295,7 @@ export const CreatorProfilePage = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Visit profile`}
-                  className={`p-2.5 bg-gray-100 cursor-pointer text-gray-700 rounded-lg transition-all duration-200 hover:text-[#EFBF04] hover:shadow-lg hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                  className={`p-2.5 bg-gray-100 cursor-pointer text-gray-700 rounded-lg transition-all duration-200 hover:text-white hover:bg-[#EFBF04] hover:shadow-lg hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                 >
                   <CoinsIcon />
                 </a>
