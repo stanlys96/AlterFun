@@ -210,7 +210,7 @@ export const CreatorProfilePage = ({
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center py-12">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto animate-spin mb-4"></div>
           <p className="text-gray-500">Loading...</p>
         </div>
       </div>
