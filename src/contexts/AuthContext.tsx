@@ -57,22 +57,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               session?.user?.email?.split("@")[0],
             profile_picture_url: session?.user?.user_metadata?.avatar_url,
           });
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .upsert(
-              [
-                {
-                  id: session?.user?.id,
-                  username:
-                    session?.user?.user_metadata?.username ||
-                    session?.user?.email?.split("@")[0],
-                  avatar_url: session?.user?.user_metadata?.avatar_url,
-                  email: session?.user?.email,
-                },
-              ],
-              { onConflict: ["id"] } // prevents duplicate primary key errors
-            );
-          console.log(profileError, "<< ERROR");
+          // const { error: profileError } = await supabase
+          //   .from("profiles")
+          //   .upsert(
+          //     [
+          //       {
+          //         id: session?.user?.id,
+          //         username:
+          //           session?.user?.user_metadata?.username ||
+          //           session?.user?.email?.split("@")[0],
+          //         avatar_url: session?.user?.user_metadata?.avatar_url,
+          //         email: session?.user?.email,
+          //       },
+          //     ],
+          //     { onConflict: ["id"] } // prevents duplicate primary key errors
+          //   );
+          // console.log(profileError, "<< ERROR");
         } else {
           setUser(null);
         }
@@ -106,20 +106,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             session?.user?.email?.split("@")[0],
           profile_picture_url: session?.user?.user_metadata?.avatar_url,
         });
-        const { error: profileError } = await supabase.from("profiles").upsert(
-          [
-            {
-              id: session?.user?.id,
-              username:
-                session?.user?.user_metadata?.username ||
-                session?.user?.email?.split("@")[0],
-              avatar_url: session?.user?.user_metadata?.avatar_url,
-              email: session?.user?.email,
-            },
-          ],
-          { onConflict: ["id"] } // prevents duplicate primary key errors
-        );
-        console.log(profileError, "<< ERROR");
+        // const { error: profileError } = await supabase.from("profiles").upsert(
+        //   [
+        //     {
+        //       id: session?.user?.id,
+        //       username:
+        //         session?.user?.user_metadata?.username ||
+        //         session?.user?.email?.split("@")[0],
+        //       avatar_url: session?.user?.user_metadata?.avatar_url,
+        //       email: session?.user?.email,
+        //     },
+        //   ],
+        //   { onConflict: ["id"] } // prevents duplicate primary key errors
+        // );
+        // console.log(profileError, "<< ERROR");
       }
     } catch (error) {
       console.error("Error initializing auth:", error);
