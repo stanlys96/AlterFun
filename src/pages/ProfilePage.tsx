@@ -262,7 +262,9 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                 ref={fileInputRef}
               />
               {profilePictureLoading ? (
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto animate-spin" />
+                <div className="w-12 h-12 flex justify-center items-center">
+                  <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto animate-spin" />
+                </div>
               ) : (
                 <img
                   onClick={() => fileInputRef.current.click()}
