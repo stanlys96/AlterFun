@@ -211,26 +211,28 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
           <WalletIcon className="w-5 h-5 text-[#7E34FF]" />
           Account Information
         </h2>
-        <div className="flex gap-x-3 items-center">
-          <div>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileChange}
-              ref={fileInputRef}
-            />
-            <img
-              onClick={() => fileInputRef.current.click()}
-              src={profilePicturePreview || ""}
-              alt={"WALAOEH"}
-              className="w-20 h-20 rounded-full object-cover cursor-pointer"
-            />
-          </div>
-          <div className="space-y-3">
-            <div className="text-sm text-gray-600 mb-1">Username</div>
-            <div className="text-lg font-bold text-gray-900">
-              {username || "Not set"}
+        <div className="space-y-3">
+          <div className="flex gap-x-2 items-center">
+            <div>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+              />
+              <img
+                onClick={() => fileInputRef.current.click()}
+                src={profilePicturePreview || ""}
+                alt={"WALAOEH"}
+                className="w-12 h-12 rounded-full object-cover cursor-pointer"
+              />
+            </div>
+            <div className="space-y-3">
+              <div className="text-sm text-gray-600 mb-1">Username</div>
+              <div className="text-lg font-bold text-gray-900">
+                {username || "Not set"}
+              </div>
             </div>
           </div>
           <div>
