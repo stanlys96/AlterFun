@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 email: session?.user?.email,
               },
             ],
-            { onConflict: "id" } // prevents duplicate primary key errors
+            { onConflict: ["id"] } // prevents duplicate primary key errors
           );
         } else {
           setUser(null);
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               email: session?.user?.email,
             },
           ],
-          { onConflict: "id" } // prevents duplicate primary key errors
+          { onConflict: ["id"] } // prevents duplicate primary key errors
         );
       }
     } catch (error) {
