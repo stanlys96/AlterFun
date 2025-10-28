@@ -78,16 +78,18 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
           .from("profile-pictures")
           .upload(filePath, file, { upsert: true });
         if (uploadError) {
-          console.error(uploadError);
-          return;
+          throw uploadError;
         }
         const { data } = supabase.storage
           .from("profile-pictures")
           .getPublicUrl(filePath);
         const avatarUrl = data.publicUrl;
-        await supabase.auth.updateUser({
+        const { error: updateUserError } = await supabase.auth.updateUser({
           data: { avatar_url: avatarUrl },
         });
+        if (updateUserError) {
+          throw updateUserError;
+        }
         reader.onloadend = () => {
           setProfilePicturePreview(reader.result as string);
         };
