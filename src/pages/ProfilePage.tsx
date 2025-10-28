@@ -240,7 +240,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
               <img
                 onClick={() => fileInputRef.current.click()}
                 src={profilePicturePreview || ""}
-                alt={"WALAOEH"}
+                alt={"User Image"}
                 className="w-12 h-12 rounded-full object-cover cursor-pointer"
               />
             </div>
