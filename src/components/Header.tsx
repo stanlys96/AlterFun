@@ -191,7 +191,11 @@ export default function Header({
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  <User className="w-4 h-4" />
+                  <img
+                    src={user?.profile_picture_url || "/no-photo.png"}
+                    alt={"User Image"}
+                    className="w-4 h-4 rounded-full object-cover cursor-pointer"
+                  />
                   <span className="text-sm font-medium">
                     {user?.username || "Profile"}
                   </span>

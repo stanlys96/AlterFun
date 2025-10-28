@@ -239,7 +239,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
               />
               <img
                 onClick={() => fileInputRef.current.click()}
-                src={profilePicturePreview || ""}
+                src={profilePicturePreview || "/no-photo.png"}
                 alt={"User Image"}
                 className="w-12 h-12 rounded-full object-cover cursor-pointer"
               />
