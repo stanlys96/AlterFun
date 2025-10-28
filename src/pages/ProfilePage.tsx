@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -36,6 +36,7 @@ type FollowWithCreator = Follow & {
 };
 
 export const ProfilePage = ({ onNavigate }: ProfileProps) => {
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const { user, isWalletConnected, connectWallet, isAuthenticated } = useAuth();
   const { publicKey, connected } = useWallet();
@@ -47,6 +48,22 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const [following, setFollowing] = useState<FollowWithCreator[]>([]);
   const [totalValue, setTotalValue] = useState(0);
   const [totalPnL, setTotalPnL] = useState(0);
+
+  const [profilePictureFile, setProfilePictureFile] = useState<any>(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState<
+    string | null
+  >(user?.profile_picture_url || "");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfilePictureFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicturePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     if (publicKey?.toBase58()) {
@@ -194,8 +211,23 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
           <WalletIcon className="w-5 h-5 text-[#7E34FF]" />
           Account Information
         </h2>
-        <div className="space-y-3">
+        <div className="flex gap-x-3 items-center">
           <div>
+            <input
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+            />
+            <img
+              onClick={() => fileInputRef.current.click()}
+              src={profilePicturePreview || ""}
+              alt={"WALAOEH"}
+              className="w-20 h-20 rounded-full object-cover cursor-pointer"
+            />
+          </div>
+          <div className="space-y-3">
             <div className="text-sm text-gray-600 mb-1">Username</div>
             <div className="text-lg font-bold text-gray-900">
               {username || "Not set"}

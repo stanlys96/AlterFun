@@ -14,6 +14,7 @@ type User = {
   email: string | null;
   wallet_address: string | null;
   username: string | null;
+  profile_picture_url: string | null;
 };
 
 type AuthContextType = {
@@ -54,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             username:
               session?.user?.user_metadata?.username ||
               session?.user?.email?.split("@")[0],
+            profile_picture_url: session?.user?.user_metadata?.avatar_url,
           });
         } else {
           setUser(null);
@@ -86,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           username:
             session?.user?.user_metadata?.username ||
             session?.user?.email?.split("@")[0],
+          profile_picture_url: session?.user?.user_metadata?.avatar_url,
         });
       }
     } catch (error) {
