@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!config.useMockData) {
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session?.user) {
           setUser({
             id: session.user.id,
@@ -57,6 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               session?.user?.email?.split("@")[0],
             profile_picture_url: session?.user?.user_metadata?.avatar_url,
           });
+          await supabase.from("profiles").upsert(
+            {
+              id: session?.user?.id,
+              username:
+                session?.user?.user_metadata?.username ||
+                session?.user?.email?.split("@")[0],
+              avatar_url: session?.user?.user_metadata?.avatar_url,
+              email: session?.user?.email,
+            },
+            { onConflict: "id" } // prevents duplicate primary key errors
+          );
         } else {
           setUser(null);
         }
@@ -90,6 +101,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             session?.user?.email?.split("@")[0],
           profile_picture_url: session?.user?.user_metadata?.avatar_url,
         });
+        await supabase.from("profiles").upsert(
+          {
+            id: session?.user?.id,
+            username:
+              session?.user?.user_metadata?.username ||
+              session?.user?.email?.split("@")[0],
+            avatar_url: session?.user?.user_metadata?.avatar_url,
+            email: session?.user?.email,
+          },
+          { onConflict: "id" } // prevents duplicate primary key errors
+        );
       }
     } catch (error) {
       console.error("Error initializing auth:", error);
@@ -129,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUpWithEmail = async (email: string, username?: string) => {
-    const { data, error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         emailRedirectTo: window.location.origin,
@@ -138,17 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       },
     });
-
     if (error) throw error;
-
-    if (data.user && username) {
-      const generatedUsername = username || email.split("@")[0];
-      await supabase.from("users").insert({
-        id: data.user.id,
-        username: generatedUsername,
-        wallet_address: null,
-      });
-    }
   };
 
   const signInWithEmail = async (email: string) => {
