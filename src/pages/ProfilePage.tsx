@@ -159,20 +159,33 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
     return (pnl / costBasis) * 100;
   };
 
-  const handleConnectWallet = async (walletType: "phantom" | "solflare") => {
-    try {
-      await connectWallet(walletType);
-      setShowWalletModal(false);
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-    }
-  };
-
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    (async () => {
+      if (publicKey?.toBase58()) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        await supabase.from("wallets").upsert(
+          [
+            {
+              user_id: user?.id,
+              address: publicKey?.toBase58(),
+              chain: "solana",
+              user_email: user?.email,
+            },
+          ],
+          { onConflict: "address" }
+        );
+      }
+    })();
+  }, [publicKey]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
