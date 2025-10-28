@@ -83,7 +83,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
         const { data } = supabase.storage
           .from("profile-pictures")
           .getPublicUrl(filePath);
-        const avatarUrl = data.publicUrl;
+        const avatarUrl = data?.publicUrl;
         const { error: updateUserError } = await supabase.auth.updateUser({
           data: { avatar_url: avatarUrl },
         });
