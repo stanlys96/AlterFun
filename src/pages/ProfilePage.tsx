@@ -61,7 +61,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
       };
       reader.readAsDataURL(file);
       const fileExt = file.name.split(".").pop();
-      const fileName = `${user?.email}.${fileExt}`;
+      const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `profile-pictures/${user?.email}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
