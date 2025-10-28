@@ -49,19 +49,35 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const [totalValue, setTotalValue] = useState(0);
   const [totalPnL, setTotalPnL] = useState(0);
 
-  const [profilePictureFile, setProfilePictureFile] = useState<any>(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState<
     string | null
   >(user?.profile_picture_url || "");
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setProfilePictureFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfilePicturePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${user?.email}.${fileExt}`;
+      const filePath = `profile-pictures/${user?.email}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("profile-pictures")
+        .upload(filePath, file, { upsert: true });
+      if (uploadError) {
+        console.error(uploadError);
+        return;
+      }
+      const { data } = supabase.storage
+        .from("profile-pictures")
+        .getPublicUrl(filePath);
+      const avatarUrl = data.publicUrl;
+      await supabase.auth.updateUser({
+        data: { avatar_url: avatarUrl },
+      });
     }
   };
 
@@ -228,7 +244,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                 className="w-12 h-12 rounded-full object-cover cursor-pointer"
               />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-1">
               <div className="text-sm text-gray-600 mb-1">Username</div>
               <div className="text-lg font-bold text-gray-900">
                 {username || "Not set"}
@@ -236,7 +252,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-600 mb-1">Wallet Address</div>
+            <div className="text-sm text-gray-600 mb-2">Wallet Address</div>
             {isWalletConnected ? (
               <div className="flex items-center gap-3">
                 <WalletMultiButton />
