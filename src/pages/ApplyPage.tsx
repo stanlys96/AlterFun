@@ -51,7 +51,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
       reader.readAsDataURL(file);
     }
   };
-  console.log(formData.profilePicture);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
