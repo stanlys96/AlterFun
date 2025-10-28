@@ -1,10 +1,20 @@
 import { useState } from "react";
 import { Upload } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import Swal from "sweetalert2";
 
 type ApplyProps = {
   onNavigate: (page: string, email?: string) => void;
 };
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  iconColor: "blue",
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 
 export const ApplyPage = ({ onNavigate }: ApplyProps) => {
   const [formData, setFormData] = useState({
@@ -41,31 +51,48 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
       reader.readAsDataURL(file);
     }
   };
-
+  console.log(formData.profilePicture);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     if (!formData.agreeToTerms) {
-      setError("Please agree to the Terms of Service to continue.");
+      const message = "Please agree to the Terms of Service to continue.";
+      setError(message);
+      await Toast.fire({
+        icon: "info",
+        title: message,
+      });
       return;
     }
 
     if (
-      !formData.businessEmail ||
-      !formData.creatorName ||
-      !formData.username
+      !formData.businessEmail?.trim() ||
+      !formData.creatorName?.trim() ||
+      !formData.username?.trim() ||
+      !formData.category?.trim() ||
+      !formData.bio?.trim()
     ) {
-      setError("Please fill in all required fields.");
+      const message = "Please fill in all required fields.";
+      setError(message);
+      await Toast.fire({
+        icon: "info",
+        title: message,
+      });
       return;
     }
 
     if (
-      !formData.youtubeLink &&
-      !formData.twitchLink &&
-      !formData.twitterLink
+      !formData.youtubeLink?.trim() &&
+      !formData.twitchLink?.trim() &&
+      !formData.twitterLink?.trim()
     ) {
-      setError("Please provide at least one channel link.");
+      const message = "Please provide at least one channel link.";
+      setError(message);
+      await Toast.fire({
+        icon: "info",
+        title: message,
+      });
       return;
     }
 
@@ -76,7 +103,9 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
 
       if (formData.profilePicture) {
         const fileExt = formData.profilePicture.name.split(".").pop();
-        const fileName = `${Date.now()}.${fileExt}`;
+        const fileName = `profile-pictures/${
+          formData?.businessEmail
+        }/${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage
           .from("profile-pictures")
           .upload(fileName, formData.profilePicture);
@@ -151,7 +180,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Your Business Email *
+                  Your Business Email <span className="text-[#FF2C2C]">*</span>
                 </label>
                 <input
                   type="email"
@@ -171,7 +200,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Creator Name *
+                  Creator Name <span className="text-[#FF2C2C]">*</span>
                 </label>
                 <input
                   type="text"
@@ -189,7 +218,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Username *
+                  Username <span className="text-[#FF2C2C]">*</span>
                 </label>
                 <input
                   type="text"
@@ -277,7 +306,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Short Bio / Tagline
+                  Short Bio / Tagline <span className="text-[#FF2C2C]">*</span>
                 </label>
                 <textarea
                   value={formData.bio}
@@ -290,7 +319,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Category
+                  Category <span className="text-[#FF2C2C]">*</span>
                 </label>
                 <select
                   value={formData.category}
