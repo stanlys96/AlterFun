@@ -58,14 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             profile_picture_url: session?.user?.user_metadata?.avatar_url,
           });
           await supabase.from("profiles").upsert(
-            {
-              id: session?.user?.id,
-              username:
-                session?.user?.user_metadata?.username ||
-                session?.user?.email?.split("@")[0],
-              avatar_url: session?.user?.user_metadata?.avatar_url,
-              email: session?.user?.email,
-            },
+            [
+              {
+                id: session?.user?.id,
+                username:
+                  session?.user?.user_metadata?.username ||
+                  session?.user?.email?.split("@")[0],
+                avatar_url: session?.user?.user_metadata?.avatar_url,
+                email: session?.user?.email,
+              },
+            ],
             { onConflict: "id" } // prevents duplicate primary key errors
           );
         } else {
@@ -102,14 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           profile_picture_url: session?.user?.user_metadata?.avatar_url,
         });
         await supabase.from("profiles").upsert(
-          {
-            id: session?.user?.id,
-            username:
-              session?.user?.user_metadata?.username ||
-              session?.user?.email?.split("@")[0],
-            avatar_url: session?.user?.user_metadata?.avatar_url,
-            email: session?.user?.email,
-          },
+          [
+            {
+              id: session?.user?.id,
+              username:
+                session?.user?.user_metadata?.username ||
+                session?.user?.email?.split("@")[0],
+              avatar_url: session?.user?.user_metadata?.avatar_url,
+              email: session?.user?.email,
+            },
+          ],
           { onConflict: "id" } // prevents duplicate primary key errors
         );
       }
