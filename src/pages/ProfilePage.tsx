@@ -14,6 +14,16 @@ import { WalletConnectionModal } from "../components";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  iconColor: "red",
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 
 type ProfileProps = {
   onNavigate: (page: string, slug?: string) => void;
@@ -48,6 +58,8 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const [following, setFollowing] = useState<FollowWithCreator[]>([]);
   const [totalValue, setTotalValue] = useState(0);
   const [totalPnL, setTotalPnL] = useState(0);
+  const [profilePictureLoading, setProfilePictureLoading] =
+    useState<boolean>(false);
 
   const [profilePicturePreview, setProfilePicturePreview] = useState<
     string | null
@@ -55,29 +67,39 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicturePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `profile-pictures/${user?.email}/${fileName}`;
+      setProfilePictureLoading(true);
+      try {
+        const reader = new FileReader();
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `profile-pictures/${user?.email}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("profile-pictures")
-        .upload(filePath, file, { upsert: true });
-      if (uploadError) {
-        console.error(uploadError);
-        return;
+        const { error: uploadError } = await supabase.storage
+          .from("profile-pictures")
+          .upload(filePath, file, { upsert: true });
+        if (uploadError) {
+          console.error(uploadError);
+          return;
+        }
+        const { data } = supabase.storage
+          .from("profile-pictures")
+          .getPublicUrl(filePath);
+        const avatarUrl = data.publicUrl;
+        await supabase.auth.updateUser({
+          data: { avatar_url: avatarUrl },
+        });
+        reader.onloadend = () => {
+          setProfilePicturePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+        setProfilePictureLoading(false);
+      } catch (e) {
+        await Toast.fire({
+          icon: "error",
+          title: "Update profile picture error, please try again.",
+        });
+        setProfilePictureLoading(false);
       }
-      const { data } = supabase.storage
-        .from("profile-pictures")
-        .getPublicUrl(filePath);
-      const avatarUrl = data.publicUrl;
-      await supabase.auth.updateUser({
-        data: { avatar_url: avatarUrl },
-      });
     }
   };
 
@@ -237,12 +259,16 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                 onChange={handleFileChange}
                 ref={fileInputRef}
               />
-              <img
-                onClick={() => fileInputRef.current.click()}
-                src={profilePicturePreview || "/no-photo.png"}
-                alt={"User Image"}
-                className="w-12 h-12 rounded-full object-cover cursor-pointer"
-              />
+              {profilePictureLoading ? (
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto animate-spin" />
+              ) : (
+                <img
+                  onClick={() => fileInputRef.current.click()}
+                  src={profilePicturePreview || "/no-photo.png"}
+                  alt={"User Image"}
+                  className="w-12 h-12 rounded-full object-cover cursor-pointer"
+                />
+              )}
             </div>
             <div className="space-y-1">
               <div className="text-sm text-gray-600 mb-1">Username</div>
