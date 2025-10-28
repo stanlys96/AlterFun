@@ -181,7 +181,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
               user_email: user?.email,
             },
           ],
-          { onConflict: "address" }
+          { onConflict: ["user_id", "address"] }
         );
       }
     })();
