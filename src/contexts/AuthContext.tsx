@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!config.useMockData) {
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      } = supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
           setUser({
             id: session.user.id,
