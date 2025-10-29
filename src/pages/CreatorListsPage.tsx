@@ -216,7 +216,9 @@ export const CreatorListsPage = ({ onNavigate }: CreatorListsProps) => {
               {filteredCreators.map((creator, index) => (
                 <tr
                   key={creator.id}
-                  onClick={() => onNavigate("creator", creator.slug)}
+                  onClick={() =>
+                    onNavigate(`creator/${creator.slug}`, creator.slug)
+                  }
                   className="hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">

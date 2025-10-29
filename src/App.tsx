@@ -79,7 +79,7 @@ function AppContent() {
             element={<CreatorListsPage onNavigate={handleNavigate} />}
           />
           <Route
-            path="/creator"
+            path="/creator/:creator"
             element={
               <CreatorProfilePage
                 slug={selectedCreatorSlug}

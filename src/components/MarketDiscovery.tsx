@@ -121,7 +121,9 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
             {topMovers.map((creator, idx) => (
               <button
                 key={creator.id}
-                onClick={() => onNavigate("creator", creator.slug)}
+                onClick={() =>
+                  onNavigate(`creator/${creator.slug}`, creator.slug)
+                }
                 className="w-full flex items-center gap-3 p-2 hover:bg-white/50 rounded-lg transition-colors"
               >
                 <span className="text-lg font-bold text-[#03EC86]">
@@ -157,7 +159,9 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
             {highestBuzz.map((creator, idx) => (
               <button
                 key={creator.id}
-                onClick={() => onNavigate("creator", creator.slug)}
+                onClick={() =>
+                  onNavigate(`creator/${creator.slug}`, creator.slug)
+                }
                 className="w-full flex items-center gap-3 p-2 hover:bg-white/50 rounded-lg transition-colors"
               >
                 <span className="text-lg font-bold text-[#7E34FF]">
@@ -192,7 +196,9 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
             {fastestGrowing.map((creator, idx) => (
               <button
                 key={creator.id}
-                onClick={() => onNavigate("creator", creator.slug)}
+                onClick={() =>
+                  onNavigate(`creator/${creator.slug}`, creator.slug)
+                }
                 className="w-full flex items-center gap-3 p-2 hover:bg-white/50 rounded-lg transition-colors"
               >
                 <span className="text-lg font-bold text-[#7E34FF]">
@@ -316,7 +322,9 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
               {filteredCreators.map((creator) => (
                 <tr
                   key={creator.id}
-                  onClick={() => onNavigate("creator", creator.slug)}
+                  onClick={() =>
+                    onNavigate(`creator/${creator.slug}`, creator.slug)
+                  }
                   className="hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">

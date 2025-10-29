@@ -190,7 +190,10 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() =>
-                            onNavigate("creator", holding.creator.slug)
+                            onNavigate(
+                              `creator/${holding.creator.slug}`,
+                              holding.creator.slug
+                            )
                           }
                           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                         >
@@ -251,7 +254,10 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() =>
-                              onNavigate("creator", holding.creator.slug)
+                              onNavigate(
+                                `creator/${holding.creator.slug}`,
+                                holding.creator.slug
+                              )
                             }
                             className="px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
                           >
@@ -259,7 +265,10 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
                           </button>
                           <button
                             onClick={() =>
-                              onNavigate("creator", holding.creator.slug)
+                              onNavigate(
+                                `creator/${holding.creator.slug}`,
+                                holding.creator.slug
+                              )
                             }
                             className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
                           >

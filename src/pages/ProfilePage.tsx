@@ -400,7 +400,10 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                     <tr
                       key={holding.id}
                       onClick={() =>
-                        onNavigate("creator", holding.creator.slug)
+                        onNavigate(
+                          `creator/${holding.creator.slug}`,
+                          holding.creator.slug
+                        )
                       }
                       className="hover:bg-gray-50 cursor-pointer transition-colors"
                     >
@@ -478,7 +481,12 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                     {perk.description}
                   </p>
                   <button
-                    onClick={() => onNavigate("creator", perk.creator_slug)}
+                    onClick={() =>
+                      onNavigate(
+                        `creator/${perk.creator_slug}`,
+                        perk.creator_slug
+                      )
+                    }
                     className="text-sm text-[#7E34FF] hover:text-purple-700 font-medium"
                   >
                     From {perk.creator_name} →
@@ -503,7 +511,12 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
               {following.map((follow) => (
                 <div
                   key={follow.id}
-                  onClick={() => onNavigate("creator", follow.creator.slug)}
+                  onClick={() =>
+                    onNavigate(
+                      `creator/${follow.creator.slug}`,
+                      follow.creator.slug
+                    )
+                  }
                   className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <img

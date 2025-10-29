@@ -46,7 +46,7 @@ export default function Header({
   };
 
   const handleCreatorClick = (slug: string) => {
-    onNavigate("creator", slug);
+    onNavigate(`creator/${slug}`, slug);
     setSearchOpen(false);
     setSearchQuery("");
     setSearchResults([]);

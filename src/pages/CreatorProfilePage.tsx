@@ -28,6 +28,7 @@ import { fetchAndCacheVideos } from "../lib/youtube";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import YouTube from "react-youtube";
+import { useLocation } from "react-router-dom";
 
 type CreatorProfileProps = {
   slug: string;
@@ -38,6 +39,8 @@ export const CreatorProfilePage = ({
   slug,
   onBuyClick,
 }: CreatorProfileProps) => {
+  const location = useLocation();
+  const currentCreator = location?.pathname?.split("/")[2];
   const { publicKey } = useWallet();
   const [creator, setCreator] = useState<Creator | null>(null);
   const [perks, setPerks] = useState<Perk[]>([]);
@@ -63,7 +66,7 @@ export const CreatorProfilePage = ({
 
   useEffect(() => {
     loadCreatorData();
-  }, [slug]);
+  }, [currentCreator]);
 
   useEffect(() => {
     if (creator) {
@@ -80,7 +83,7 @@ export const CreatorProfilePage = ({
     const { data: creatorData } = await supabase
       .from("creators")
       .select("*")
-      .eq("slug", slug)
+      .eq("slug", currentCreator)
       .eq("enabled", true)
       .maybeSingle();
 
