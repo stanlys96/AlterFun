@@ -294,11 +294,11 @@ export const CreatorProfilePage = ({
                 <a
                   href={creator?.token_url}
                   target="_blank"
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${"bg-[#EFBF04] text-white hover:bg-[#FFA800]"} disabled:opacity-50`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${"bg-black text-white hover:bg-black"} disabled:opacity-50`}
                 >
                   <>
                     <CoinsIcon className="w-4 h-4" />
-                    Invest
+                    Buy
                   </>
                 </a>
               )}
