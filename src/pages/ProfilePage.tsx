@@ -312,7 +312,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
             </h3>
           </div>
           <div className="text-4xl font-black mb-1 text-gray-900">
-            {totalValue.toFixed(2)} SOL
+            {totalValue.toFixed(2)} USD
           </div>
           <div className="text-sm text-gray-500">
             ≈ ${(totalValue * 95).toFixed(2)} USD
@@ -340,7 +340,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
             }`}
           >
             {totalPnL >= 0 ? "+" : ""}
-            {totalPnL.toFixed(2)} SOL
+            {totalPnL.toFixed(2)} USD
           </div>
           <div
             className={`text-sm ${
@@ -423,13 +423,13 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                         {holding.keys_held}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-gray-600">
-                        {holding.avg_buy_price.toFixed(2)} SOL
+                        {holding.avg_buy_price.toFixed(2)} USD
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-gray-900 font-medium">
-                        {holding.creator.key_price.toFixed(2)} SOL
+                        {holding.creator.key_price.toFixed(2)} USD
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
-                        {currentValue.toFixed(2)} SOL
+                        {currentValue.toFixed(2)} USD
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div
@@ -438,7 +438,7 @@ export const ProfilePage = ({ onNavigate }: ProfileProps) => {
                           }`}
                         >
                           {pnl >= 0 ? "+" : ""}
-                          {pnl.toFixed(2)} SOL
+                          {pnl.toFixed(2)} USD
                           <div className="text-xs">
                             ({pnl >= 0 ? "+" : ""}
                             {pnlPercent.toFixed(2)}%)

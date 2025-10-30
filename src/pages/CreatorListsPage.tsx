@@ -245,7 +245,7 @@ export const CreatorListsPage = ({ onNavigate }: CreatorListsProps) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="font-semibold text-gray-900">
-                      {creator.key_price.toFixed(2)} SOL
+                      {creator.key_price} USD
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -266,12 +266,12 @@ export const CreatorListsPage = ({ onNavigate }: CreatorListsProps) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="font-medium text-gray-900">
-                      {formatNumber(creator.market_cap)} SOL
+                      {formatNumber(creator.market_cap)} USD
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="font-medium text-gray-900">
-                      {formatNumber(creator.volume_24h)} SOL
+                      {formatNumber(creator.volume_24h)} USD
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">

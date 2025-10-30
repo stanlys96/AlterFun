@@ -96,7 +96,7 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
             </h3>
           </div>
           <div className="text-4xl font-black mb-1">
-            {totalValue.toFixed(2)} SOL
+            {totalValue.toFixed(2)} USD
           </div>
           <div className="text-sm opacity-75">
             ≈ ${(totalValue * 95).toFixed(2)} USD
@@ -120,7 +120,7 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
           </div>
           <div className="text-4xl font-black mb-1">
             {totalPnL >= 0 ? "+" : ""}
-            {totalPnL.toFixed(2)} SOL
+            {totalPnL.toFixed(2)} USD
           </div>
           <div className="text-sm opacity-75">
             {totalPnL >= 0 ? "+" : ""}
@@ -219,17 +219,17 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="text-gray-600">
-                          {holding.avg_buy_price.toFixed(2)} SOL
+                          {holding.avg_buy_price.toFixed(2)} USD
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="font-semibold text-gray-900">
-                          {holding.creator.key_price.toFixed(2)} SOL
+                          {holding.creator.key_price.toFixed(2)} USD
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="font-semibold text-gray-900">
-                          {totalValue.toFixed(2)} SOL
+                          {totalValue.toFixed(2)} USD
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -239,7 +239,7 @@ export default function Portfolio({ onNavigate }: PortfolioProps) {
                           }`}
                         >
                           {pnl >= 0 ? "+" : ""}
-                          {pnl.toFixed(2)} SOL
+                          {pnl.toFixed(2)} USD
                         </div>
                         <div
                           className={`text-sm ${

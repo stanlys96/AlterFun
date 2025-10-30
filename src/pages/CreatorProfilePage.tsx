@@ -325,7 +325,7 @@ export const CreatorProfilePage = ({
                   Key Price
                 </div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {creator.key_price.toFixed(2)} SOL
+                  {creator.key_price} USD
                 </div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -333,7 +333,7 @@ export const CreatorProfilePage = ({
                   Market Cap
                 </div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {(creator.market_cap / 1000).toFixed(0)}k SOL
+                  {(creator.market_cap / 1000).toFixed(0)}k USD
                 </div>
               </div>
               <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -631,7 +631,7 @@ export const CreatorProfilePage = ({
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {activeTab === "buy" ? "Amount (SOL)" : "Amount (Keys)"}
+                {activeTab === "buy" ? "Amount (USD)" : "Amount (Keys)"}
               </label>
               <div className="relative">
                 <input
@@ -657,7 +657,7 @@ export const CreatorProfilePage = ({
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Key Price</span>
                 <span className="font-semibold text-gray-900">
-                  {creator.key_price.toFixed(2)} SOL
+                  {creator.key_price} USD
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -665,12 +665,12 @@ export const CreatorProfilePage = ({
                 <span className="font-semibold text-gray-900">
                   {activeTab === "buy"
                     ? `${estimatedAmount} Keys`
-                    : `${estimatedAmount} SOL`}
+                    : `${estimatedAmount} USD`}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Fees (2.5%)</span>
-                <span className="font-semibold text-gray-900">{fees} SOL</span>
+                <span className="font-semibold text-gray-900">{fees} USD</span>
               </div>
               <div className="border-t border-gray-200 pt-2 flex justify-between">
                 <span className="font-semibold text-gray-900">Total</span>
@@ -678,7 +678,7 @@ export const CreatorProfilePage = ({
                   {amount
                     ? (parseFloat(amount) + parseFloat(fees)).toFixed(3)
                     : "0.000"}{" "}
-                  SOL
+                  USD
                 </span>
               </div>
             </div>
@@ -776,7 +776,7 @@ export const CreatorProfilePage = ({
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {activeTab === "buy" ? "Amount (SOL)" : "Amount (Keys)"}
+                {activeTab === "buy" ? "Amount (USD)" : "Amount (Keys)"}
               </label>
               <input
                 type="number"
@@ -792,7 +792,7 @@ export const CreatorProfilePage = ({
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Key Price</span>
                 <span className="font-semibold text-gray-900">
-                  {creator.key_price.toFixed(2)} SOL
+                  {creator.key_price} USD
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -800,12 +800,12 @@ export const CreatorProfilePage = ({
                 <span className="font-semibold text-gray-900">
                   {activeTab === "buy"
                     ? `${estimatedAmount} Keys`
-                    : `${estimatedAmount} SOL`}
+                    : `${estimatedAmount} USD`}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Fees (2.5%)</span>
-                <span className="font-semibold text-gray-900">{fees} SOL</span>
+                <span className="font-semibold text-gray-900">{fees} USD</span>
               </div>
             </div>
 

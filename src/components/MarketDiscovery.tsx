@@ -139,7 +139,7 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
                     {creator.name}
                   </div>
                   <div className="text-xs text-gray-600">
-                    {formatNumber(creator.market_cap)} SOL
+                    {formatNumber(creator.market_cap)} USD
                   </div>
                 </div>
                 <div className="text-[#03EC86] font-bold text-sm">
@@ -177,7 +177,7 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
                     {creator.name}
                   </div>
                   <div className="text-xs text-gray-600">
-                    {formatNumber(creator.volume_24h)} SOL
+                    {formatNumber(creator.volume_24h)} USD
                   </div>
                 </div>
               </button>
@@ -346,7 +346,7 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="font-semibold text-gray-900">
-                      {creator.key_price.toFixed(2)} SOL
+                      {creator.key_price} USD
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -367,7 +367,7 @@ export default function MarketDiscovery({ onNavigate }: MarketDiscoveryProps) {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="font-medium text-gray-900">
-                      {formatNumber(creator.market_cap)} SOL
+                      {formatNumber(creator.market_cap)} USD
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
