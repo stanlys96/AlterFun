@@ -783,7 +783,7 @@ export const CreatorProfilePage = ({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                disabled={!isConnected}
+                // disabled={!isConnected}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#7E34FF] disabled:bg-gray-50"
               />
             </div>
