@@ -30,6 +30,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useAuth } from "../contexts/AuthContext";
 import { Creator, Follow, supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { fetchDexScreenerData } from "../services/tokenDataService";
 
 // 🔴 MOCK USER DATA - Replace with real user data from database/authentication
 const mockUserData = {
@@ -193,6 +194,29 @@ export const ProfilePage2 = () => {
       .eq("user_id", user.id);
 
     if (followsData) {
+      const result = [];
+      for (let i = 0; i < followsData?.length; i++) {
+        if (followsData[i]?.token_address) {
+          const [dexData] = await Promise.all([
+            fetchDexScreenerData(followsData[i]?.creator?.token_address || ""),
+          ]);
+          const currentCreator = {
+            ...followsData[i],
+            creator: {
+              ...followsData[i]?.creator,
+              token_price: dexData?.priceUsd ? parseFloat(dexData.priceUsd) : 0,
+            },
+            key_price: dexData?.priceUsd ? parseFloat(dexData.priceUsd) : 0,
+            market_cap: dexData?.marketCap || 0,
+            volume_24h: dexData?.volume?.h24 || 0,
+            holder_count: dexData?.info?.holders || 0,
+            change24h: dexData?.priceChange?.h24 || 0,
+          };
+          result.push(currentCreator);
+        } else {
+          result.push(followsData[i]);
+        }
+      }
       setFollowing(
         followsData.map((f) => ({
           ...f,
