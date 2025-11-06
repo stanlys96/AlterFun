@@ -97,11 +97,7 @@ function AppContent() {
               />
             }
           />
-          <Route
-            path="/profile"
-            element={<ProfilePage onNavigate={handleNavigate} />}
-          />
-          <Route path="/profile-2" element={<ProfilePage2 />} />
+          <Route path="/profile" element={<ProfilePage2 />} />
           <Route
             path="/join"
             element={<JoinUsPage onNavigate={handleNavigate} />}

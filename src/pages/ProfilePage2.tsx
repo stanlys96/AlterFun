@@ -29,6 +29,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useAuth } from "../contexts/AuthContext";
 import { Creator, Follow, supabase } from "../lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 // 🔴 MOCK USER DATA - Replace with real user data from database/authentication
 const mockUserData = {
@@ -121,6 +122,7 @@ type FollowWithCreator = Follow & {
 };
 
 export const ProfilePage2 = () => {
+  const navigate = useNavigate();
   const [walletAddress, setWalletAddress] = useState<string | null>(
     mockUserData.walletAddress
   );
@@ -203,6 +205,12 @@ export const ProfilePage2 = () => {
   useEffect(() => {
     loadProfileData();
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-green-50">
