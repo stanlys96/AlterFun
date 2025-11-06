@@ -336,7 +336,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
   };
 
   const formatSOL = (value: number) => {
-    return `${value?.toFixed(5)} USD`;
+    return `${value?.toFixed(6)} USD`;
   };
 
   const formatUSD = (value: number) => {
