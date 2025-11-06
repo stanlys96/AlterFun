@@ -417,7 +417,7 @@ export const ProfilePage2 = () => {
                 following?.map((follow) => (
                   <Card
                     onClick={() => {
-                      navigate(`/creator/${follow?.creator?.id}`);
+                      navigate(`/creator/${follow?.creator?.slug}`);
                       window.scrollTo(0, 0);
                     }}
                     key={follow.id}
