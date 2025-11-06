@@ -10,3 +10,4 @@ export * from "./TokensPage";
 export * from "./HomePage2";
 export * from "./DiscoverPage";
 export * from "./CreatorDetailPage";
+export * from "./ProfilePage2";

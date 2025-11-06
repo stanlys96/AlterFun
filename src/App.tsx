@@ -18,6 +18,7 @@ import {
   JoinUsPage,
   LiveStreamPage,
   ProfilePage,
+  ProfilePage2,
   TokensPage,
 } from "./pages";
 import {
@@ -100,6 +101,7 @@ function AppContent() {
             path="/profile"
             element={<ProfilePage onNavigate={handleNavigate} />}
           />
+          <Route path="/profile-2" element={<ProfilePage2 />} />
           <Route
             path="/join"
             element={<JoinUsPage onNavigate={handleNavigate} />}
