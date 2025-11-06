@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "./ui/sheet";
+import { useAuth } from "../contexts/AuthContext";
 const logo = "images/5cb4e866c2dd11416d612df77a48f8661376c26b.png";
 
 type HeaderProps = {
@@ -26,6 +27,7 @@ export const Header2 = ({
   isAuthenticated,
   onAuthSuccess,
 }: HeaderProps) => {
+  const { user, signOut } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -107,20 +109,32 @@ export const Header2 = ({
 
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <button
-              onClick={() => onNavigate("profile")}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <Avatar className="w-9 h-9 border-2 border-[#7E34FF]/20">
-                <AvatarImage src={mockUser.avatarUrl} />
-                <AvatarFallback className="bg-gradient-to-br from-[#7E34FF] to-[#03EC86] text-white text-sm">
-                  {mockUser.username.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden md:block text-gray-900">
-                {mockUser.username}
-              </span>
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => onNavigate("profile")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+                  location?.pathname === "/profile"
+                    ? "bg-blue-50 text-blue-600"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <img
+                  src={user?.profile_picture_url || "/no-photo.png"}
+                  alt={"User Image"}
+                  className="w-4 h-4 rounded-full object-cover cursor-pointer"
+                />
+                <span className="text-sm font-medium">
+                  {user?.username || "Profile"}
+                </span>
+              </button>
+
+              <button
+                onClick={signOut}
+                className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
           ) : (
             <>
               <Button
