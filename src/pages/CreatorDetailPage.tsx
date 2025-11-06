@@ -393,9 +393,9 @@ export const CreatorDetailPage = ({
                   {/* 🔴 MOCK IMAGE - Replace with database URL */}
                   {/* TODO: Use creatorData.character_art_url from DB */}
                   <img
-                    src={creator?.avatar_url}
+                    src={creator?.avatar_detail_url}
                     alt={creator?.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
                   />
                   {/* Live Badge */}
                   {!creatorData.isLive && (
@@ -1064,13 +1064,13 @@ export const CreatorDetailPage = ({
             </Card>
 
             {/* Character Banner */}
-            {/* <div className="w-full overflow-hidden rounded-lg shadow-lg">
+            <div className="w-full overflow-hidden rounded-lg shadow-lg">
               <img
-                src={characterBanner}
-                alt={`${creatorData.name} Banner`}
+                src={creator?.banner_url || ""}
+                alt={`${creator?.name} Banner`}
                 className="w-full h-auto object-cover"
               />
-            </div> */}
+            </div>
 
             {/* About Section */}
             {/* 🔴 ABOUT SECTION - All data from database */}
