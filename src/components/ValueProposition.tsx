@@ -1,18 +1,18 @@
 import { TrendingUp, Coins, BarChart3 } from "lucide-react";
 const image_b7c83c690af7e81ee0445db9ad2a61484b5c13ed =
-  "images/b7c83c690af7e81ee0445db9ad2a61484b5c13ed.png";
+  "/images/b7c83c690af7e81ee0445db9ad2a61484b5c13ed.png";
 const image_f5a349d502f0b2548c4daff7615fd689e006358f =
-  "images/f5a349d502f0b2548c4daff7615fd689e006358f.png";
-const barChartImage = "images/barchart.png";
+  "/images/f5a349d502f0b2548c4daff7615fd689e006358f.png";
+const barChartImage = "/images/barchart.png";
 const image_2faa9a4f373618932f8a7a9108b9c0d7cd310fed =
-  "images/2faa9a4f373618932f8a7a9108b9c0d7cd310fed.png";
+  "/images/2faa9a4f373618932f8a7a9108b9c0d7cd310fed.png";
 const image_e0fc7a3bcb0e7ee9d340af0ea54cb40cd841339f =
-  "images/e0fc7a3bcb0e7ee9d340af0ea54cb40cd841339f.png";
+  "/images/e0fc7a3bcb0e7ee9d340af0ea54cb40cd841339f.png";
 const image_8761f9fa27a099701dcc4028a8375d1199f91dba =
-  "images/8761f9fa27a099701dcc4028a8375d1199f91dba.png";
-const tokenImage = "images/token.png";
-const barIcon = "images/2faa9a4f373618932f8a7a9108b9c0d7cd310fed.png";
-const arrowIcon = "images/e0fc7a3bcb0e7ee9d340af0ea54cb40cd841339f.png";
+  "/images/8761f9fa27a099701dcc4028a8375d1199f91dba.png";
+const tokenImage = "/images/token.png";
+const barIcon = "/images/2faa9a4f373618932f8a7a9108b9c0d7cd310fed.png";
+const arrowIcon = "/images/e0fc7a3bcb0e7ee9d340af0ea54cb40cd841339f.png";
 
 export function ValueProposition() {
   return (

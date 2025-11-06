@@ -1,5 +1,5 @@
 import { MessageCircle, Twitter, Instagram } from "lucide-react";
-const logo = "images/alterfun.png";
+const logo = "/images/alterfun.png";
 
 type FooterProps = {
   currentPage: string;

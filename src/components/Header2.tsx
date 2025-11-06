@@ -11,8 +11,8 @@ import {
   SheetDescription,
 } from "./ui/sheet";
 import { useAuth } from "../contexts/AuthContext";
-const logo = "images/5cb4e866c2dd11416d612df77a48f8661376c26b.png";
-const image_87599d96af2012a1a657a0bebaa3c837b68be1b6 = "images/alterfun.png";
+const logo = "/images/5cb4e866c2dd11416d612df77a48f8661376c26b.png";
+const image_87599d96af2012a1a657a0bebaa3c837b68be1b6 = "/images/alterfun.png";
 
 type HeaderProps = {
   currentPage: string;
@@ -56,11 +56,7 @@ export const Header2 = ({
             onClick={() => onNavigate("")}
             className="flex items-center gap-2"
           >
-            <img
-              src={image_87599d96af2012a1a657a0bebaa3c837b68be1b6}
-              alt="ALTERFUN"
-              className="h-8"
-            />
+            <img src={"/images/alterfun.png"} alt="ALTERFUN" className="h-8" />
           </button>
 
           <nav className="hidden md:flex items-center gap-8">

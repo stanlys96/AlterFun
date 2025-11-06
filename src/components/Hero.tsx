@@ -1,19 +1,19 @@
-const vtuberWithMascot = "images/vtuber-with-mascot.png";
+const vtuberWithMascot = "/images/vtuber-with-mascot.png";
 const image_a9c11bdbcdc6e8526510a74b79878f471385a47a =
-  "images/a9c11bdbcdc6e8526510a74b79878f471385a47a.png";
+  "/images/a9c11bdbcdc6e8526510a74b79878f471385a47a.png";
 const image_1bc0387f9279e1dd829f43409095935dac3c96bb =
-  "images/1bc0387f9279e1dd829f43409095935dac3c96bb.png";
+  "/images/1bc0387f9279e1dd829f43409095935dac3c96bb.png";
 const image_962f2baedefc981bd3cfde7f00314d5fbfc9d51a =
-  "images/962f2baedefc981bd3cfde7f00314d5fbfc9d51a.png";
+  "/images/962f2baedefc981bd3cfde7f00314d5fbfc9d51a.png";
 const image_1718961a2638c3581f34ef1bd88c5e12602c6e8b =
-  "images/1718961a2638c3581f34ef1bd88c5e12602c6e8b.png";
-const heroImage = "images/f817ef1a29b5c690b05ebfc83afb2fef863b2d0d.png";
-const hexagonalBg = "images/58922dcf4b54f768870e201fc765d663a083c65f.png";
-const circuitBg = "images/d281320630ae1ba0e918dac42b556c3fae8ee616.png";
-const meteoraLogo = "images/meteora.png";
-const cyreneLogo = "images/cyrene.png";
-const superteamLogo = "images/74a0b8134d2a5b09a6c280420dd36595734d22b4.png";
-const pvcLogo = "images/9320316b15f577a7e6110fb00ae8788cc2cf7b99.png";
+  "/images/1718961a2638c3581f34ef1bd88c5e12602c6e8b.png";
+const heroImage = "/images/f817ef1a29b5c690b05ebfc83afb2fef863b2d0d.png";
+const hexagonalBg = "/images/58922dcf4b54f768870e201fc765d663a083c65f.png";
+const circuitBg = "/images/d281320630ae1ba0e918dac42b556c3fae8ee616.png";
+const meteoraLogo = "/images/meteora.png";
+const cyreneLogo = "/images/cyrene.png";
+const superteamLogo = "/images/74a0b8134d2a5b09a6c280420dd36595734d22b4.png";
+const pvcLogo = "/images/9320316b15f577a7e6110fb00ae8788cc2cf7b99.png";
 
 export function Hero() {
   const partners = [

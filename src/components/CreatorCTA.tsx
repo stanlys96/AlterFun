@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-const creatorsImage = "images/9eb1eac55c2ecbd4007bef9f0b22323c146fa31a.png";
+const creatorsImage = "/images/9eb1eac55c2ecbd4007bef9f0b22323c146fa31a.png";
 
 export function CreatorCTA() {
   const navigate = useNavigate();

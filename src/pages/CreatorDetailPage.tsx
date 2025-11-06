@@ -50,11 +50,11 @@ import { useAuth } from "../contexts/AuthContext";
 
 // 🔴 MOCK ASSETS - Replace with database URLs
 // TODO: Store these image URLs in database and fetch based on creator ID
-const characterArt = "images/11300db999a790ecb9c5a97893bea6d702bf81e8.png";
-const characterBanner = "images/2a5ac5b4a8c0ee8a22cd0d2b266354577118ce50.png";
-const tradingChart = "images/54e2a4c44dfcbb0161079346ad87ca8cadae33e2.png";
+const characterArt = "/images/11300db999a790ecb9c5a97893bea6d702bf81e8.png";
+const characterBanner = "/images/2a5ac5b4a8c0ee8a22cd0d2b266354577118ce50.png";
+const tradingChart = "/images/54e2a4c44dfcbb0161079346ad87ca8cadae33e2.png";
 const image_fb0f00bcf8c51620020e4db0c8bb0206986ff5f9 =
-  "images/fb0f00bcf8c51620020e4db0c8bb0206986ff5f9.png";
+  "/images/fb0f00bcf8c51620020e4db0c8bb0206986ff5f9.png";
 
 type CreatorDetailPageProps = {
   onFollowClick: () => void;
