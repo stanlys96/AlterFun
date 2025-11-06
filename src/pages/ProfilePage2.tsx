@@ -217,12 +217,7 @@ export const ProfilePage2 = () => {
           result.push(followsData[i]);
         }
       }
-      setFollowing(
-        followsData.map((f) => ({
-          ...f,
-          creator: f.creators as unknown as Creator,
-        }))
-      );
+      setFollowing(result);
     }
   };
 
