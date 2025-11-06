@@ -395,7 +395,7 @@ export const CreatorDetailPage = ({
                   <img
                     src={creator?.avatar_detail_url}
                     alt={creator?.name}
-                    className="w-full h-full"
+                    className="w-full object-contain h-full"
                   />
                   {/* Live Badge */}
                   {!creatorData.isLive && (
