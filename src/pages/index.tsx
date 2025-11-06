@@ -7,3 +7,5 @@ export * from "./ApplyPage";
 export * from "./ApplyThanksPage";
 export * from "./LiveStreamPage";
 export * from "./TokensPage";
+export * from "./HomePage2";
+export * from "./DiscoverPage";

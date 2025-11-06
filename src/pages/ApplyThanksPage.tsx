@@ -57,7 +57,7 @@ export const ApplyThanksPage = ({ email }: ApplyThanksProps) => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-[#7E34FF] to-purple-600 rounded-xl p-8 text-white">
+          <div className="bg-purple-600 rounded-xl p-8 text-white">
             <MessageCircle className="w-12 h-12 mx-auto mb-4" />
             <h3 className="text-2xl font-bold mb-3">
               While you wait, why not join our Discord to meet other creators?

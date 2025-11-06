@@ -1,7 +1,7 @@
 import AuthModal from "./AuthModal";
 import Comments from "./Comments";
 import ConnectWalletModal from "./ConnectWalletModal";
-import Footer from "./Footer";
+import { Footer } from "./Footer";
 import GrowthChart from "./GrowthChart";
 import Header from "./Header";
 import HeroBanner from "./HeroBanner";
@@ -15,8 +15,22 @@ import UsernameSetupModal from "./UsernameSetupModal";
 import WalletConnectionModal from "./WalletConnectionModal";
 import YouTubeVideoList from "./YouTubeVideoList";
 import { TokenCard } from "./TokenCard";
+import { Hero } from "./Hero";
+import { ValueProposition } from "./ValueProposition";
+import { VideoSection } from "./VideoSection";
+import { LiveNow } from "./LiveNow";
+import { FAQ } from "./FAQ";
+import { CreatorCTA } from "./CreatorCTA";
+import { Header2 } from "./Header2";
 
 export {
+  Header2,
+  CreatorCTA,
+  FAQ,
+  LiveNow,
+  VideoSection,
+  ValueProposition,
+  Hero,
   HeroBanner,
   AuthModal,
   Comments,

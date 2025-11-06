@@ -36,7 +36,7 @@ export const TokensPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center py-6 mb-10 bg-gradient-to-r bg-gray-50 border-b border-gray-200">
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+        <h1 className="text-5xl font-extrabold bg-clip-text bg-gradient-to-r text-purple-600">
           Launched Tokens
         </h1>
         <p className="text-xl font-medium text-gray-600 mt-2">

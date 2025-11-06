@@ -11,7 +11,9 @@ import {
   ApplyThanksPage,
   CreatorListsPage,
   CreatorProfilePage,
+  DiscoverPage,
   HomePage,
+  HomePage2,
   JoinUsPage,
   LiveStreamPage,
   ProfilePage,
@@ -21,12 +23,17 @@ import {
   AuthModal,
   Footer,
   Header,
+  Header2,
   OTPModal,
   WalletConnectionModal,
 } from "./components";
+import { useLocation } from "react-router-dom";
+
 type AuthModalMode = "signup" | "login" | null;
 
 function AppContent() {
+  const location = useLocation();
+  const currentPage = location?.pathname;
   const navigate = useNavigate();
   const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>("");
   const [applicationEmail, setApplicationEmail] = useState<string>("");
@@ -36,6 +43,7 @@ function AppContent() {
   const { isAuthenticated, isWalletConnected } = useAuth();
 
   const handleNavigate = (page: string, slugOrEmail?: string) => {
+    window.scrollTo(0, 0);
     navigate(`/${page}`);
     if (slugOrEmail) {
       if (page === "apply-thanks") {
@@ -44,7 +52,6 @@ function AppContent() {
         setSelectedCreatorSlug(slugOrEmail);
       }
     }
-    window.scrollTo(0, 0);
   };
 
   const handleBuyAction = () => {
@@ -62,18 +69,16 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header
+      <Header2
         onNavigate={handleNavigate}
-        onSignUp={() => setAuthModalMode("signup")}
-        onSignIn={() => setAuthModalMode("login")}
+        currentPage={currentPage}
+        isAuthenticated={isAuthenticated}
+        onAuthSuccess={() => setOtpModalOpen(true)}
       />
 
       <main className="min-h-[calc(100vh-4rem)]">
         <Routes>
-          <Route
-            path="/"
-            element={<HomePage handleNavigate={handleNavigate} />}
-          />
+          <Route path="/" element={<HomePage2 />} />
           <Route
             path="/creators"
             element={<CreatorListsPage onNavigate={handleNavigate} />}
@@ -103,12 +108,16 @@ function AppContent() {
             path="/apply-thanks"
             element={<ApplyThanksPage email={applicationEmail} />}
           />
+          <Route
+            path="/discover"
+            element={<DiscoverPage onCreatorClick={handleNavigate} />}
+          />
           <Route path="/live-stream" element={<LiveStreamPage />} />
           <Route path="/tokens" element={<TokensPage />} />
         </Routes>
       </main>
 
-      <Footer />
+      <Footer currentPage="/" onNavigate={navigate} />
 
       <AuthModal
         isOpen={authModalMode !== null}

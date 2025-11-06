@@ -228,7 +228,7 @@ export default function AuthModal({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30"
+                    className="w-full py-3 bg-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30"
                   >
                     {loading ? "Sending..." : "Send Reset Link"}
                   </button>
@@ -330,8 +330,8 @@ export default function AuthModal({
                   >
                     Email
                   </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <div className="relative flex gap-x-2 items-center">
+                    <Mail className="absolute left-3 top-3/4 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       id="email"
                       type="email"
@@ -388,8 +388,8 @@ export default function AuthModal({
                   disabled={loading}
                   className={`w-full py-3 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg ${
                     mode === "signup"
-                      ? "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-green-500/30"
-                      : "bg-gradient-to-r from-[#7E34FF] to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-purple-500/30"
+                      ? "bg-green-600 hover:from-green-600 hover:to-green-700 shadow-green-500/30"
+                      : "bg-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-purple-500/30"
                   }`}
                 >
                   {loading
