@@ -28,7 +28,29 @@ import { fetchAndCacheVideos } from "../lib/youtube";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import YouTube from "react-youtube";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
+import {
+  fetchTokenData,
+  fetchDexScreenerData,
+} from "../services/tokenDataService";
+import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
+import { useAppKitAccount } from "@reown/appkit/react";
+
+interface TokenData {
+  address: string;
+  name: string;
+  symbol: string;
+  description: string;
+  image: string;
+  price: number;
+  priceChange: { percentage: number; period: string };
+  marketCap: number;
+  volume24h: number;
+  holders: number;
+  poolAddress?: string;
+  tradeStatus: "active" | "graduated";
+  metadataUri?: string;
+}
 
 type CreatorProfileProps = {
   slug: string;
@@ -39,6 +61,17 @@ export const CreatorProfilePage = ({
   slug,
   onBuyClick,
 }: CreatorProfileProps) => {
+  const { tokens } = useLaunchedTokens();
+  const searchParams = useSearchParams();
+  const tokenAddress = searchParams.get("tokenAddress");
+  const tokenName = searchParams.get("tokenName");
+  const tokenSymbol = searchParams.get("tokenSymbol");
+  const poolAddress = searchParams.get("poolAddress");
+  const metadataUri = searchParams.get("metadataUri");
+  const tradeStatus = searchParams.get("tradeStatus") as "active" | "graduated";
+  const [tokenData, setTokenData] = useState<TokenData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const currentCreator = location?.pathname?.split("/")[2];
   const { publicKey } = useWallet();

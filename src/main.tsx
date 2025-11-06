@@ -5,6 +5,29 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./stores/store.ts";
 import { WalletConnectionProvider } from "./WalletConnectionProvider";
+import { createAppKit } from "@reown/appkit/react";
+import { SolanaAdapter } from "@reown/appkit-adapter-solana/react";
+import { solana, solanaTestnet, solanaDevnet } from "@reown/appkit/networks";
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+
+const solanaWeb3JsAdapter = new SolanaAdapter({
+  wallets: [new PhantomWalletAdapter()],
+});
+
+createAppKit({
+  adapters: [solanaWeb3JsAdapter],
+  projectId: "",
+  networks: [solana, solanaTestnet, solanaDevnet],
+  metadata: {
+    name: "My Trading App",
+    description: "Trade tokens on Solana",
+    url: "https://myapp.com",
+    icons: ["https://myapp.com/icon.png"],
+  },
+  features: {
+    analytics: true,
+  },
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -42,6 +42,8 @@ import {
   PaginationEllipsis,
 } from "../components/ui/pagination";
 import { supabase } from "../lib/supabase";
+import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
+import { fetchDexScreenerData } from "../services/tokenDataService";
 
 type Creator = {
   name: string;
@@ -58,184 +60,6 @@ type Creator = {
   };
 };
 
-// Mock data - no rank property
-const mockCreators: Creator[] = [
-  {
-    name: "SakuraMiko",
-    avatar: "anime creator",
-    tokenPrice: 2.45,
-    change24h: 15.3,
-    marketCap: 1245000,
-    volume24h: 89000,
-    holders: 1240,
-    socials: {
-      twitter: "https://twitter.com/sakuramiko",
-      youtube: "https://youtube.com/@sakuramiko",
-      twitch: "https://twitch.tv/sakuramiko",
-    },
-  },
-  {
-    name: "KuroNeko",
-    avatar: "vtuber gaming",
-    tokenPrice: 1.89,
-    change24h: -3.2,
-    marketCap: 980000,
-    volume24h: 45000,
-    holders: 876,
-    socials: {
-      twitter: "https://twitter.com/kuroneko",
-      twitch: "https://twitch.tv/kuroneko",
-    },
-  },
-  {
-    name: "AquaLuna",
-    avatar: "anime streamer",
-    tokenPrice: 3.12,
-    change24h: 8.7,
-    marketCap: 750000,
-    volume24h: 62000,
-    holders: 654,
-    socials: {
-      twitter: "https://twitter.com/aqualuna",
-      youtube: "https://youtube.com/@aqualuna",
-    },
-  },
-  {
-    name: "HikaruStar",
-    avatar: "vtuber idol",
-    tokenPrice: 0.95,
-    change24h: 22.1,
-    marketCap: 520000,
-    volume24h: 38000,
-    holders: 543,
-    socials: {
-      youtube: "https://youtube.com/@hikarustar",
-      twitter: "https://twitter.com/hikarustar",
-    },
-  },
-  {
-    name: "YukiChan",
-    avatar: "anime character",
-    tokenPrice: 1.67,
-    change24h: -1.5,
-    marketCap: 410000,
-    volume24h: 29000,
-    holders: 432,
-    socials: {
-      twitter: "https://twitter.com/yukichan",
-      youtube: "https://youtube.com/@yukichan",
-      twitch: "https://twitch.tv/yukichan",
-    },
-  },
-  {
-    name: "RinAmane",
-    avatar: "vtuber music",
-    tokenPrice: 2.21,
-    change24h: 5.4,
-    marketCap: 380000,
-    volume24h: 21000,
-    holders: 387,
-    socials: {
-      youtube: "https://youtube.com/@rinamane",
-      twitter: "https://twitter.com/rinamane",
-    },
-  },
-  {
-    name: "MeiFlower",
-    avatar: "anime artist",
-    tokenPrice: 0.78,
-    change24h: -8.3,
-    marketCap: 290000,
-    volume24h: 15000,
-    holders: 298,
-    socials: {
-      twitter: "https://twitter.com/meiflower",
-      twitch: "https://twitch.tv/meiflower",
-    },
-  },
-  {
-    name: "NanaKawaii",
-    avatar: "vtuber cute",
-    tokenPrice: 1.43,
-    change24h: 11.2,
-    marketCap: 245000,
-    volume24h: 18000,
-    holders: 267,
-    socials: {
-      twitter: "https://twitter.com/nanakawaii",
-      youtube: "https://youtube.com/@nanakawaii",
-      twitch: "https://twitch.tv/nanakawaii",
-    },
-  },
-  {
-    name: "KaitoVoid",
-    avatar: "vtuber gamer",
-    tokenPrice: 1.92,
-    change24h: 6.8,
-    marketCap: 215000,
-    volume24h: 14000,
-    holders: 234,
-    socials: {
-      twitter: "https://twitter.com/kaitovoid",
-      twitch: "https://twitch.tv/kaitovoid",
-    },
-  },
-  {
-    name: "HoshiNova",
-    avatar: "anime idol",
-    tokenPrice: 2.78,
-    change24h: -4.6,
-    marketCap: 195000,
-    volume24h: 12000,
-    holders: 198,
-    socials: {
-      youtube: "https://youtube.com/@hoshinova",
-      twitter: "https://twitter.com/hoshinova",
-      twitch: "https://twitch.tv/hoshinova",
-    },
-  },
-  {
-    name: "ChihiroFox",
-    avatar: "vtuber streamer",
-    tokenPrice: 1.34,
-    change24h: 13.5,
-    marketCap: 178000,
-    volume24h: 9500,
-    holders: 176,
-    socials: {
-      twitter: "https://twitter.com/chihirofox",
-      youtube: "https://youtube.com/@chihirofox",
-    },
-  },
-  {
-    name: "AyameRose",
-    avatar: "anime artist",
-    tokenPrice: 0.89,
-    change24h: -2.1,
-    marketCap: 156000,
-    volume24h: 8200,
-    holders: 154,
-    socials: {
-      twitter: "https://twitter.com/ayamerose",
-      twitch: "https://twitch.tv/ayamerose",
-    },
-  },
-  {
-    name: "RyujiDragon",
-    avatar: "vtuber gaming",
-    tokenPrice: 1.56,
-    change24h: 9.4,
-    marketCap: 142000,
-    volume24h: 7100,
-    holders: 132,
-    socials: {
-      twitter: "https://twitter.com/ryujidragon",
-      youtube: "https://youtube.com/@ryujidragon",
-      twitch: "https://twitch.tv/ryujidragon",
-    },
-  },
-];
-
 type SortField =
   | "tokenPrice"
   | "change24h"
@@ -249,6 +73,7 @@ type DiscoverPageProps = {
 };
 
 export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
+  const { tokens } = useLaunchedTokens();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<SortField>("marketCap");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -304,7 +129,27 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
       .order("market_cap", { ascending: false });
 
     if (!error && data) {
-      setCreators(data);
+      const result = [];
+      for (let i = 0; i < data?.length; i++) {
+        if (data[i]?.token_address) {
+          const [dexData] = await Promise.all([
+            fetchDexScreenerData(data[i]?.token_address || ""),
+          ]);
+          const currentCreator = {
+            ...data[i],
+            key_price: dexData?.priceUsd ? parseFloat(dexData.priceUsd) : 0,
+            market_cap: dexData?.marketCap || 0,
+            volume_24h: dexData?.volume?.h24 || 0,
+            holder_count: dexData?.info?.holders || 0,
+            change24h: dexData?.priceChange?.h24 || 0,
+          };
+          result.push(currentCreator);
+        } else {
+          result.push(data[i]);
+        }
+      }
+
+      setCreators(result);
     }
   };
 
@@ -353,12 +198,6 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
     });
 
     setFilteredCreators(filtered);
-  };
-
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000)?.toFixed(2)}M`;
-    if (num >= 1000) return `${(num / 1000)?.toFixed(1)}k`;
-    return num.toString();
   };
 
   const handleSort = (field: SortField) => {
@@ -517,23 +356,6 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
     }
     return formatUSD(value);
   };
-
-  // Calculate top performers
-  const topGrowth = useMemo(() => {
-    return [...mockCreators]
-      .sort((a, b) => b.change24h - a.change24h)
-      .slice(0, 3);
-  }, []);
-
-  const topMarketCap = useMemo(() => {
-    return [...mockCreators]
-      .sort((a, b) => b.marketCap - a.marketCap)
-      .slice(0, 3);
-  }, []);
-
-  const topHolders = useMemo(() => {
-    return [...mockCreators].sort((a, b) => b.holders - a.holders).slice(0, 3);
-  }, []);
 
   const clearFilters = () => {
     setTempPriceMin("");
@@ -719,7 +541,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                     { field: "change24h" as SortField, label: "24h Change" },
                     { field: "marketCap" as SortField, label: "Market Cap" },
                     { field: "volume24h" as SortField, label: "24h Volume" },
-                    { field: "holders" as SortField, label: "Holders" },
+                    // { field: "holders" as SortField, label: "Holders" },
                   ].map(({ field, label }) => (
                     <button
                       key={field}
@@ -869,7 +691,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                   </div>
 
                   {/* Holders Range */}
-                  <div className="space-y-3">
+                  {/* <div className="space-y-3">
                     <Label className="font-semibold">Holders Range</Label>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
@@ -897,7 +719,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Action Buttons */}
                   <div className="space-y-3 pt-4">
@@ -941,11 +763,11 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
             <SortButton field="marketCap" label="Market Cap" />
           </div>
           <div className="text-xs uppercase tracking-wide">
-            <SortButton field="volume24h" label="Volume" />
+            <SortButton field="volume24h" label="24h Volume" />
           </div>
-          <div className="text-xs uppercase tracking-wide">
+          {/* <div className="text-xs uppercase tracking-wide">
             <SortButton field="holders" label="Holders" />
-          </div>
+          </div> */}
           <div className="text-xs uppercase tracking-wide text-gray-500">
             Socials
           </div>
@@ -1038,7 +860,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                           ) : (
                             <TrendingDown className="w-4 h-4" />
                           )}
-                          <span>0%</span>
+                          <span>{creator?.change24h}%</span>
                         </div>
                       </div>
 
@@ -1063,14 +885,14 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                       </div>
 
                       {/* Holders - Full width */}
-                      <div className="col-span-2 bg-slate-50 rounded-lg p-2">
+                      {/* <div className="col-span-2 bg-slate-50 rounded-lg p-2">
                         <div className="text-xs text-gray-500 mb-1">
                           Holders
                         </div>
                         <div className="font-semibold text-gray-900">
                           {creator?.holder_count?.toLocaleString()}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Social Media and CTA - Vertical Layout */}
@@ -1165,15 +987,17 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                   <div className="hidden md:block">
                     <div
                       className={`flex items-center gap-1 font-semibold ${
-                        true ? "text-[#03EC86]" : "text-red-600"
+                        creator?.change24h >= 0
+                          ? "text-[#03EC86]"
+                          : "text-red-600"
                       }`}
                     >
-                      {true ? (
+                      {creator?.change24h >= 0 ? (
                         <TrendingUp className="w-4 h-4" />
                       ) : (
                         <TrendingDown className="w-4 h-4" />
                       )}
-                      <span>0%</span>
+                      <span>{creator?.change24h || 0}%</span>
                     </div>
                   </div>
 
@@ -1192,13 +1016,13 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                   </div>
 
                   {/* Desktop Holders */}
-                  <div className="hidden md:block">
+                  {/* <div className="hidden md:block">
                     <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-200">
                       <span className="font-semibold text-gray-900">
                         {creator?.holder_count?.toLocaleString()}
                       </span>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Desktop Social Media */}
                   <div className="hidden md:flex items-center gap-2">

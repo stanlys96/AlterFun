@@ -47,6 +47,13 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { fetchAndCacheVideos } from "../lib/youtube";
 import { Comments } from "../components";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  fetchDexScreenerData,
+  fetchTokenData,
+} from "../services/tokenDataService";
+import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
+import { useSearchParams } from "next/navigation";
+import ChartContainer from "../components/ChartContainer";
 
 // 🔴 MOCK ASSETS - Replace with database URLs
 // TODO: Store these image URLs in database and fetch based on creator ID
@@ -61,10 +68,31 @@ type CreatorDetailPageProps = {
   onBack: () => void;
 };
 
+interface TokenData {
+  address: string;
+  name: string;
+  symbol: string;
+  description: string;
+  image: string;
+  price: number;
+  priceChange: { percentage: number; period: string };
+  marketCap: number;
+  volume24h: number;
+  holders: number;
+  poolAddress?: string;
+  tradeStatus: "active" | "graduated";
+  metadataUri?: string;
+}
+
 export const CreatorDetailPage = ({
   onFollowClick,
   onBack,
 }: CreatorDetailPageProps) => {
+  const { tokens } = useLaunchedTokens();
+  const searchParams = useSearchParams();
+  const [tokenData, setTokenData] = useState<TokenData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const currentCreator = location?.pathname?.split("/")[2];
   const { publicKey } = useWallet();
@@ -267,6 +295,35 @@ export const CreatorDetailPage = ({
           setVideosLoading(false);
         }
       }
+      if (creatorData?.token_address) {
+        const loadTokenData = async () => {
+          try {
+            setIsLoading(true);
+            const [dexData] = await Promise.all([
+              fetchDexScreenerData(creatorData?.token_address),
+            ]);
+            const combinedData = {
+              address: creatorData?.token_address,
+              description: `token`,
+              price: dexData?.priceUsd ? parseFloat(dexData.priceUsd) : 0,
+              priceChange: {
+                percentage: dexData?.priceChange?.h24 || 0,
+                period: "24h",
+              },
+              marketCap: dexData?.marketCap || 0,
+              volume24h: dexData?.volume?.h24 || 0,
+              holders: dexData?.info?.holders || 0,
+            };
+            setTokenData(combinedData);
+          } catch (err) {
+            console.error("Error loading token data:", err);
+            setError("Failed to load token data");
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        loadTokenData();
+      }
     }
   };
 
@@ -315,52 +372,11 @@ export const CreatorDetailPage = ({
     setIsFollowing(!!data);
   };
 
-  const formatSOL = (value: number) => `${value.toFixed(3)} SOL`;
-  const formatUSD = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-
   const formatCompactNumber = (value: number) => {
     if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
     if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
     return value.toString();
   };
-
-  // 🔴 MOCK COMMENTS - REPLACE WITH DATABASE FETCH
-  // TODO: Fetch comments from database
-  // Example: const { data: comments } = useQuery(['comments', creatorName], fetchComments);
-  // Database Table: creator_comments
-  const mockComments = [
-    {
-      id: 1, // DB field: comment_id
-      user: "CryptoFan23", // DB field: user_name or join from users table
-      avatar: "user gaming", // DB field: user_avatar_url or join from users table
-      text: "Amazing creator! Just bought 100 tokens 🚀", // DB field: comment_text
-      time: "2 hours ago", // Calculate from DB field: created_at
-      likes: 12, // DB field: like_count
-    },
-    {
-      id: 2,
-      user: "VTuberLover",
-      avatar: "user anime",
-      text: "Been holding since day 1. This is going to the moon!",
-      time: "5 hours ago",
-      likes: 8,
-    },
-    {
-      id: 3,
-      user: "TokenTrader",
-      avatar: "user crypto",
-      text: "Great stream today! The community is so supportive 💜",
-      time: "1 day ago",
-      likes: 15,
-    },
-  ];
-  // 🔴 END MOCK COMMENTS
 
   useEffect(() => {
     loadCreatorData();
@@ -757,6 +773,22 @@ export const CreatorDetailPage = ({
                 </>
               )}
             </button>
+            {creator?.token_address ? (
+              isLoading ? (
+                <div className="text-center">
+                  <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto animate-spin mb-4"></div>
+                  <p className="text-gray-500">Loading Chart...</p>
+                </div>
+              ) : (
+                tokenData?.address && (
+                  <ChartContainer
+                    tokenAddress={tokenData?.address || ""}
+                    price={tokenData?.price || 0}
+                    height={500}
+                  />
+                )
+              )
+            ) : null}
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
