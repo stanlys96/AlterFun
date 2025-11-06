@@ -1,4 +1,3 @@
-const image_87599d96af2012a1a657a0bebaa3c837b68be1b6 = "images/alterfun.png";
 import { useState } from "react";
 import { User, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -13,6 +12,7 @@ import {
 } from "./ui/sheet";
 import { useAuth } from "../contexts/AuthContext";
 const logo = "images/5cb4e866c2dd11416d612df77a48f8661376c26b.png";
+const image_87599d96af2012a1a657a0bebaa3c837b68be1b6 = "images/alterfun.png";
 
 type HeaderProps = {
   currentPage: string;

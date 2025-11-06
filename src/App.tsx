@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import {
   ApplyPage,
   ApplyThanksPage,
+  CreatorDetailPage,
   CreatorListsPage,
   CreatorProfilePage,
   DiscoverPage,
@@ -86,9 +87,12 @@ function AppContent() {
           <Route
             path="/creator/:creator"
             element={
-              <CreatorProfilePage
-                slug={selectedCreatorSlug}
-                onBuyClick={handleBuyAction}
+              <CreatorDetailPage
+                onFollowClick={handleBuyAction}
+                onBack={() => {
+                  navigate(-1);
+                  window.scrollTo(0, 0);
+                }}
               />
             }
           />

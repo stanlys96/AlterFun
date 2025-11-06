@@ -9,3 +9,4 @@ export * from "./LiveStreamPage";
 export * from "./TokensPage";
 export * from "./HomePage2";
 export * from "./DiscoverPage";
+export * from "./CreatorDetailPage";
