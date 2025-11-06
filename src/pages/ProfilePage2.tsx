@@ -296,9 +296,7 @@ export const ProfilePage2 = () => {
               <CardTitle className="text-sm text-gray-600">Following</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl text-gray-900">
-                {mockUserData.followedCreators.length}
-              </div>
+              <div className="text-2xl text-gray-900">{following?.length}</div>
               <div className="text-sm text-gray-500">Creators</div>
             </CardContent>
           </Card>
