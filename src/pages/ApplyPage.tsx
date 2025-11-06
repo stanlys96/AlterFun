@@ -189,7 +189,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("businessEmail", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="your@email.com"
                 />
                 <p className="mt-2 text-sm text-gray-600">
@@ -209,7 +209,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("creatorName", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="Your creator name"
                 />
                 <p className="mt-2 text-sm text-gray-600">
@@ -227,7 +227,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("username", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 border bg-white border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="Your username"
                 />
                 <p className="mt-2 text-sm text-gray-600">
@@ -257,7 +257,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("youtubeLink", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="https://www.youtube.com/channel/UC..."
                 />
               </div>
@@ -272,7 +272,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("twitchLink", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="https://www.twitch.tv/yourname"
                 />
               </div>
@@ -287,7 +287,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("twitterLink", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   placeholder="https://twitter.com/yourhandle"
                 />
               </div>
@@ -311,7 +311,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                 <textarea
                   value={formData.bio}
                   onChange={(e) => handleInputChange("bio", e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                   rows={3}
                   placeholder="Describe yourself in 1-2 sentences."
                 />
@@ -326,7 +326,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("category", e.target.value)
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white cursor-pointer border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7E34FF] focus:border-transparent"
                 >
                   <option value="">Select a category</option>
                   <option value="VTuber">VTuber</option>
@@ -343,7 +343,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   Upload Profile Picture
                 </label>
                 <div className="mt-2">
-                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                  <label className="flex bg-white flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
                     {profilePicturePreview ? (
                       <img
                         src={profilePicturePreview}
@@ -383,7 +383,7 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
             </h2>
 
             <div className="space-y-6">
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   id="terms"
@@ -391,12 +391,15 @@ export const ApplyPage = ({ onNavigate }: ApplyProps) => {
                   onChange={(e) =>
                     handleInputChange("agreeToTerms", e.target.checked)
                   }
-                  className="mt-1 w-5 h-5 text-[#7E34FF] border-gray-300 rounded focus:ring-[#7E34FF]"
+                  className="w-5 h-5 cursor-pointer text-[#7E34FF] border-gray-300 rounded focus:ring-[#7E34FF]"
                 />
-                <label htmlFor="terms" className="text-sm text-gray-700">
+                <label
+                  htmlFor="terms"
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
                   I have read and agree to the{" "}
                   <a
-                    href="/terms"
+                    // href="/terms"
                     className="text-[#7E34FF] hover:underline font-semibold"
                   >
                     Alterfun Creator Terms of Service
