@@ -416,6 +416,10 @@ export const ProfilePage2 = () => {
               ) : (
                 following?.map((follow) => (
                   <Card
+                    onClick={() => {
+                      navigate(`/creator/${follow?.creator_id}`);
+                      window.scrollTo(0, 0);
+                    }}
                     key={follow.id}
                     className="shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer overflow-hidden"
                   >
