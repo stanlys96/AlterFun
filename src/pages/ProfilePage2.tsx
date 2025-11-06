@@ -196,7 +196,7 @@ export const ProfilePage2 = () => {
     if (followsData) {
       const result = [];
       for (let i = 0; i < followsData?.length; i++) {
-        if (followsData[i]?.token_address) {
+        if (followsData[i]?.creator?.token_address) {
           const [dexData] = await Promise.all([
             fetchDexScreenerData(followsData[i]?.creator?.token_address || ""),
           ]);
@@ -217,7 +217,12 @@ export const ProfilePage2 = () => {
           result.push(followsData[i]);
         }
       }
-      setFollowing(result);
+      setFollowing(
+        followsData.map((f) => ({
+          ...f,
+          creator: f.creators as unknown as Creator,
+        }))
+      );
     }
   };
 
