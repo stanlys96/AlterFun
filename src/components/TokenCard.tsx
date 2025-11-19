@@ -47,6 +47,16 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             ${token.tokenSymbol}
           </p>
         </div>
+        {token?.tokenSymbol?.toLowerCase()?.trim() === "yami" && (
+          <a
+            href={"https://x.com/aurelmayoriii"}
+            target="_blank"
+            className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
+            aria-label="Twitter"
+          >
+            <Twitter color="white" className="w-5 h-5" />
+          </a>
+        )}
       </div>
 
       {/* Info Section */}
@@ -105,16 +115,6 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             {token.tradeStatus ? "Active" : "Graduated"}
           </span>
         </div>
-        {token?.tokenSymbol?.toLowerCase()?.trim() === "yami" && (
-          <a
-            href={"https://x.com/aurelmayoriii"}
-            target="_blank"
-            className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
-            aria-label="Twitter"
-          >
-            <Twitter className="w-5 h-5" />
-          </a>
-        )}
       </div>
 
       {/* Trade Button */}
