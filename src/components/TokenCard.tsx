@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Copy, XIcon } from "lucide-react";
+import { CheckCircle, ArrowRight, Copy } from "lucide-react";
 import { LaunchedTokenData } from "../lib/cyreneSupabase";
 import Swal from "sweetalert2";
+import { XIcon } from "./icons";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -54,7 +55,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
             aria-label="Twitter"
           >
-            <XIcon color="white" className="w-5 h-5" />
+            <XIcon />
           </a>
         )}
       </div>
