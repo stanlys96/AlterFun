@@ -910,7 +910,10 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                             className="p-3 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-[#7E34FF]"
                             aria-label="Twitter"
                           >
-                            <XIcon className="w-6 h-6 text-gray-600 hover:text-[#7E34FF]" />
+                            <XIcon
+                              color="gray"
+                              className="w-6 h-6 text-gray-600 hover:text-[#7E34FF]"
+                            />
                           </a>
                         )}
                         {creator?.youtube_handle && (
@@ -1037,7 +1040,10 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                         className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-[#7E34FF]"
                         aria-label="Twitter"
                       >
-                        <XIcon className="w-5 h-5 text-gray-600 hover:text-[#7E34FF]" />
+                        <XIcon
+                          color="gray"
+                          className="w-5 h-5 text-gray-600 hover:text-[#7E34FF]"
+                        />
                       </a>
                     )}
                     {creator?.youtube_handle && (

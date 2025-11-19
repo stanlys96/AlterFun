@@ -481,7 +481,10 @@ export const CreatorDetailPage = ({
                         rel="noopener noreferrer"
                         className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-blue-500"
                       >
-                        <XIcon className="w-5 h-5 text-gray-600 hover:text-blue-500" />
+                        <XIcon
+                          color="gray"
+                          className="w-5 h-5 text-gray-600 hover:text-blue-500"
+                        />
                       </a>
                     )}
                   </div>
