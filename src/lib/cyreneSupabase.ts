@@ -133,6 +133,7 @@ export interface LaunchedTokenData {
   verifiedBy?: string;
   verifiedAt?: string;
   projectImage?: string;
+  twitter_url?: string;
 }
 
 // Stream Management Types
