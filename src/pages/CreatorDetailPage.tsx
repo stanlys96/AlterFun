@@ -13,7 +13,6 @@ import {
   Send,
   Youtube,
   Twitch,
-  Twitter,
   Globe,
   UserPlus,
   UserCheck,
@@ -54,6 +53,7 @@ import {
 import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
 import { useSearchParams } from "next/navigation";
 import ChartContainer from "../components/ChartContainer";
+import { XIcon } from "../components/icons";
 
 // 🔴 MOCK ASSETS - Replace with database URLs
 // TODO: Store these image URLs in database and fetch based on creator ID
@@ -481,7 +481,7 @@ export const CreatorDetailPage = ({
                         rel="noopener noreferrer"
                         className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-blue-500"
                       >
-                        <Twitter className="w-5 h-5" />
+                        <XIcon className="w-5 h-5" />
                       </a>
                     )}
                   </div>

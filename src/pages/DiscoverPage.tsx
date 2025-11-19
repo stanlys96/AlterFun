@@ -13,7 +13,6 @@ import {
   DollarSign,
   Youtube,
   Twitch,
-  Twitter,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -44,6 +43,7 @@ import {
 import { supabase } from "../lib/supabase";
 import { useLaunchedTokens } from "../hooks/useLaunchedTokens";
 import { fetchDexScreenerData } from "../services/tokenDataService";
+import { XIcon } from "../components/icons";
 
 type Creator = {
   name: string;
@@ -910,7 +910,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                             className="p-3 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-[#7E34FF]"
                             aria-label="Twitter"
                           >
-                            <Twitter className="w-6 h-6" />
+                            <XIcon className="w-6 h-6" />
                           </a>
                         )}
                         {creator?.youtube_handle && (
@@ -1037,7 +1037,7 @@ export function DiscoverPage({ onCreatorClick }: DiscoverPageProps) {
                         className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-gray-600 hover:text-[#7E34FF]"
                         aria-label="Twitter"
                       >
-                        <Twitter className="w-5 h-5" />
+                        <XIcon className="w-5 h-5" />
                       </a>
                     )}
                     {creator?.youtube_handle && (
