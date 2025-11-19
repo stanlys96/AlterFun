@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Copy } from "lucide-react";
+import { CheckCircle, ArrowRight, Copy, Twitter } from "lucide-react";
 import { LaunchedTokenData } from "../lib/cyreneSupabase";
 import Swal from "sweetalert2";
 
@@ -105,6 +105,16 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             {token.tradeStatus ? "Active" : "Graduated"}
           </span>
         </div>
+        {token?.twitter_url && (
+          <a
+            href={token?.twitter_url}
+            target="_blank"
+            className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
+            aria-label="Twitter"
+          >
+            <Twitter className="w-5 h-5" />
+          </a>
+        )}
       </div>
 
       {/* Trade Button */}
