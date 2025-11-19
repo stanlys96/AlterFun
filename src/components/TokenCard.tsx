@@ -105,9 +105,9 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             {token.tradeStatus ? "Active" : "Graduated"}
           </span>
         </div>
-        {token?.twitter_url && (
+        {token?.tokenSymbol?.toLowerCase() === "yami" && (
           <a
-            href={token?.twitter_url}
+            href={"https://x.com/aurelmayoriii"}
             target="_blank"
             className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
             aria-label="Twitter"
