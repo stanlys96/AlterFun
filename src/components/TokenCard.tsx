@@ -105,7 +105,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             {token.tradeStatus ? "Active" : "Graduated"}
           </span>
         </div>
-        {token?.tokenSymbol?.toLowerCase() === "yami" && (
+        {token?.tokenSymbol?.toLowerCase()?.trim() === "yami" && (
           <a
             href={"https://x.com/aurelmayoriii"}
             target="_blank"
