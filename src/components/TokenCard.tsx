@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight, Copy, Twitter } from "lucide-react";
+import { CheckCircle, ArrowRight, Copy, X } from "lucide-react";
 import { LaunchedTokenData } from "../lib/cyreneSupabase";
 import Swal from "sweetalert2";
 
@@ -54,7 +54,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
             className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
             aria-label="Twitter"
           >
-            <Twitter color="white" className="w-5 h-5" />
+            <X color="white" className="w-5 h-5" />
           </a>
         )}
       </div>
