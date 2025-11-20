@@ -42,7 +42,7 @@ export function Hero() {
       <div className="container mx-auto px-10 relative z-10">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div className="md:pl-10">
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-gray-600 mt-5 mb-6">
               🏅 ALTERFUN: 2nd Winner of Startup Village Hanoi
             </p>
 
