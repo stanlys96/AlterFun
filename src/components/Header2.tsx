@@ -180,6 +180,16 @@ export const Header2 = ({
                 >
                   Discover
                 </button>
+          <button
+                  onClick={() => handleMobileNavigation("tokens")}
+                  className={`text-left text-lg transition-colors ${
+                    currentPage === "/tokens"
+                      ? "text-[#7E34FF]"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Launched Tokens
+                </button>
                 <button
                   onClick={() => handleMobileNavigation("/join")}
                   className="text-left text-lg text-gray-700"
