@@ -50,7 +50,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
         </div>
         {token?.tokenSymbol?.toLowerCase()?.trim() === "yami" && (
           <a
-            href={"https://x.com/aurelmayoriii"}
+            href={"https://x.com/Nexus_Auremiya"}
             target="_blank"
             className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#7E34FF] transition-colors"
             aria-label="Twitter"
