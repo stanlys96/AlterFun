@@ -9,13 +9,17 @@ import {
   Gem,
 } from "lucide-react";
 import { TokenSelector, TokenOption } from "../components/TokenSelector";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 export function PrimeRealmPage() {
-  const [isConnected, setIsConnected] = useState(false);
+  const [, setIsConnected] = useState(false);
   const [tokenBalance] = useState(0); // Mock: 0 tokens
   const [stakeAmount, setStakeAmount] = useState(1000);
   const [selectedTokenId, setSelectedTokenId] = useState("yami");
-
+  const { connected, connect, disconnect, publicKey, select, wallet, wallets } =
+    useWallet();
+  const { setVisible: setModalVisible } = useWalletModal();
   // Available tokens for staking
   const availableTokens: TokenOption[] = [
     {
@@ -162,32 +166,49 @@ export function PrimeRealmPage() {
                   <div className="text-white text-2xl font-bold">1,205</div>
                 </div>
               </div>
-
-              {!isConnected ? (
-                <button
-                  onClick={() => setIsConnected(true)}
-                  className="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-8 py-4 rounded-xl hover:scale-105 transition-all shadow-2xl shadow-yellow-500/50 font-bold text-lg"
-                >
-                  Connect Wallet
-                </button>
-              ) : tokenBalance === 0 ? (
-                <button className="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-8 py-4 rounded-xl hover:scale-105 transition-all shadow-2xl shadow-yellow-500/50 font-bold text-lg flex items-center gap-2 mx-auto">
-                  <Gem className="w-5 h-5" />
-                  Buy $CREATOR
-                </button>
-              ) : (
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
-                  <div className="text-white/70 text-sm mb-2">Your Balance</div>
-                  <div className="text-white text-3xl font-bold mb-4 flex items-center gap-2">
-                    <Gem className="w-8 h-8 text-yellow-400" />
-                    {tokenBalance.toLocaleString()} $CREATOR
+              <div className="flex flex-row gap-x-2 items-center">
+                {!connected ? (
+                  <button
+                    onClick={async () => {
+                      setModalVisible(true);
+                    }}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-8 py-4 rounded-xl hover:scale-105 transition-all shadow-2xl shadow-yellow-500/50 font-bold text-lg"
+                  >
+                    Connect Wallet
+                  </button>
+                ) : (
+                  <button
+                    onClick={async () => {
+                      disconnect();
+                    }}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-8 py-4 rounded-xl hover:scale-105 transition-all shadow-2xl shadow-yellow-500/50 font-bold text-lg"
+                  >
+                    {publicKey?.toBase58()?.slice(0, 5) +
+                      "..." +
+                      publicKey?.toBase58()?.slice(40)}
+                  </button>
+                )}
+                {connected && tokenBalance === 0 ? (
+                  <button className="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-8 py-4 rounded-xl hover:scale-105 transition-all shadow-2xl shadow-yellow-500/50 font-bold text-lg flex items-center gap-2">
+                    <Gem className="w-5 h-5" />
+                    Buy $CREATOR
+                  </button>
+                ) : connected && tokenBalance > 0 ? (
+                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
+                    <div className="text-white/70 text-sm mb-2">
+                      Your Balance
+                    </div>
+                    <div className="text-white text-3xl font-bold mb-4 flex items-center gap-2">
+                      <Gem className="w-8 h-8 text-yellow-400" />
+                      {tokenBalance.toLocaleString()} $CREATOR
+                    </div>
+                    <div className="flex items-center gap-2 text-yellow-400">
+                      <Crown className="w-5 h-5" />
+                      <span className="font-semibold">Prime Member Active</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-yellow-400">
-                    <Crown className="w-5 h-5" />
-                    <span className="font-semibold">Prime Member Active</span>
-                  </div>
-                </div>
-              )}
+                ) : null}
+              </div>
             </div>
 
             {/* Right: Member Card 3D */}
@@ -210,7 +231,7 @@ export function PrimeRealmPage() {
                     <div className="space-y-2">
                       <div className="text-white/70 text-sm">Member ID</div>
                       <div className="text-white text-2xl font-bold tracking-wider">
-                        #PRIME-{isConnected ? "1205" : "****"}
+                        #PRIME-{connected ? "1205" : "****"}
                       </div>
                     </div>
 
@@ -357,7 +378,7 @@ export function PrimeRealmPage() {
                   <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
                   <span>Whitelist Open</span>
                 </div>
-                {isConnected && tokenBalance > 0 ? (
+                {connected && tokenBalance > 0 ? (
                   <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl hover:scale-105 transition-all shadow-lg font-bold">
                     Join Whitelist
                   </button>
@@ -602,16 +623,16 @@ export function PrimeRealmPage() {
               </div>
 
               {/* CTA */}
-              {isConnected && tokenBalance > 0 ? (
+              {connected && tokenBalance > 0 ? (
                 <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl hover:scale-105 transition-all shadow-lg font-bold text-lg">
                   Stake Now
                 </button>
               ) : (
                 <button
-                  onClick={() => !isConnected && setIsConnected(true)}
+                  onClick={() => !connected && setModalVisible(true)}
                   className="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 py-4 rounded-xl hover:scale-105 transition-all shadow-lg font-bold text-lg"
                 >
-                  {isConnected
+                  {connected
                     ? "Buy $CREATOR to Stake"
                     : "Connect Wallet to Continue"}
                 </button>
