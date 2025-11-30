@@ -82,7 +82,6 @@ function AppContent() {
         onNavigate={(page: string) => handleNavigate(page)}
         isLoggedIn={isAuthenticated}
         user={user}
-        userSparks={userData.sparks}
         onSignOut={signOut}
         onPressGetStarted={() => setAuthModalMode("signup")}
       />

@@ -17,7 +17,7 @@ import {
   ArrowRight,
   Gem,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -27,8 +27,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useNavigate } from "react-router-dom";
-const heroImage = "/images/alterfun.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import { formatNumber } from "../utils/utils";
+import { supabase } from "../lib/supabase";
+import useSWR from "swr";
+import { useAuth } from "../contexts/AuthContext";
 
 interface Mission {
   id: number;
@@ -39,6 +42,20 @@ interface Mission {
 
 export function TalentDetail() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const creatorChapterId = location.pathname.split("/")?.[2];
+  const { currentCreatorChapter } = useAuth();
+  // const fetcher = async (key: string) => {
+  //   const { data, error } = await supabase
+  //     .from(key)
+  //     .select("*, creators(*)")
+  //     .eq("id", creatorChapterId)
+  //     .single();
+  //   if (error) throw error;
+  //   return data;
+  // };
+  // const { data: currentCreatorChapter } = useSWR("creator_chapters", fetcher);
+
   const talent = {
     id: 1,
     name: "Auremiya",
@@ -48,7 +65,7 @@ export function TalentDetail() {
     chapter: "Chapter 2: Nexus",
     generation: "Gen 1",
   };
-  const [showFullLore, setShowFullLore] = useState(false);
+
   const [chartPeriod, setChartPeriod] = useState<"7d" | "30d">("7d");
   const [missions] = useState<Mission[]>([
     { id: 1, title: "Watch Stream 10 mins", reward: 100, status: "available" },
@@ -76,6 +93,24 @@ export function TalentDetail() {
       votes: [45, 55],
     },
   ]);
+
+  const calculateTimeLeft = () => {
+    const difference =
+      new Date(currentCreatorChapter?.expired_at).getTime() -
+      new Date().getTime();
+
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0 };
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / (1000 * 60)) % 60);
+
+    return { days, hours, minutes };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   // Chart data
   const contentData7d = [
@@ -129,11 +164,21 @@ export function TalentDetail() {
     { day: "W4", count: 535000 },
   ];
 
+  const formatTime = (num: number) => String(num).padStart(2, "0");
+
   const contentActivityData =
     chartPeriod === "7d" ? contentData7d : contentData30d;
   const subscriberGrowthData =
     chartPeriod === "7d" ? subscriberData7d : subscriberData30d;
   const viewerGrowthData = chartPeriod === "7d" ? viewerData7d : viewerData30d;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000 * 60); // update every minute
+
+    return () => clearInterval(timer);
+  }, [currentCreatorChapter?.expired_at]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -142,7 +187,7 @@ export function TalentDetail() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <ImageWithFallback
-            src={heroImage}
+            src={currentCreatorChapter?.creators?.banner_url}
             alt="Chapter Background"
             className="w-full h-full object-cover"
           />
@@ -172,13 +217,14 @@ export function TalentDetail() {
                   className="text-white text-5xl lg:text-6xl mb-2"
                   style={{ fontFamily: "var(--font-accent)" }}
                 >
-                  CHAPTER 0: NEXUS
+                  CHAPTER {currentCreatorChapter?.chapter_number}:{" "}
+                  {currentCreatorChapter?.chapter_name}
                 </h1>
                 <h2
                   className="text-white text-3xl lg:text-4xl"
                   style={{ fontFamily: "var(--font-accent)" }}
                 >
-                  AUREMIYA
+                  {currentCreatorChapter?.creators?.name}
                 </h2>
               </div>
 
@@ -193,7 +239,7 @@ export function TalentDetail() {
                       className="text-4xl font-bold text-white"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
-                      15
+                      {formatTime(timeLeft?.days)}
                     </div>
                     <div className="text-xs text-white/70 mt-1">Days</div>
                   </div>
@@ -203,7 +249,7 @@ export function TalentDetail() {
                       className="text-4xl font-bold text-white"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
-                      08
+                      {formatTime(timeLeft?.hours)}
                     </div>
                     <div className="text-xs text-white/70 mt-1">Hours</div>
                   </div>
@@ -213,7 +259,7 @@ export function TalentDetail() {
                       className="text-4xl font-bold text-white"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
-                      42
+                      {formatTime(timeLeft?.minutes)}
                     </div>
                     <div className="text-xs text-white/70 mt-1">Mins</div>
                   </div>
@@ -229,11 +275,11 @@ export function TalentDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Profile Image */}
-            <div className="w-48 h-48 rounded-2xl overflow-hidden border-4 border-purple-300 shadow-2xl flex-shrink-0 mx-auto md:mx-0">
+            <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-purple-300 shadow-2xl flex-shrink-0 mx-auto md:mx-0">
               <ImageWithFallback
-                src={talent.image}
+                src={currentCreatorChapter?.creators?.avatar_url}
                 alt={talent.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-full"
               />
             </div>
 
@@ -243,20 +289,17 @@ export function TalentDetail() {
                 className="text-5xl mb-4 text-gray-900"
                 style={{ fontFamily: "var(--font-accent)" }}
               >
-                {talent.name}
+                {currentCreatorChapter?.creators?.name}
               </h1>
               <p className="text-gray-700 text-lg max-w-3xl mb-4">
-                A skilled warrior from the digital realm, embarking on an epic
-                journey through the Nexus dimension.
-                {showFullLore &&
-                  " Her mission is to unite the fragmented worlds and restore balance to the multiverse. With her trusty companions and unwavering determination, she faces countless challenges in pursuit of the ultimate truth."}
+                {currentCreatorChapter?.creators?.bio}
               </p>
-              <button
+              {/* <button
                 onClick={() => setShowFullLore(!showFullLore)}
                 className="text-purple-600 hover:text-purple-700 font-semibold mb-6"
               >
                 {showFullLore ? "Show Less" : "Read More"}
-              </button>
+              </button> */}
 
               {/* Stats */}
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -264,7 +307,11 @@ export function TalentDetail() {
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5 text-purple-600" />
                     <div>
-                      <div className="text-gray-900 font-bold">13.1K</div>
+                      <div className="text-gray-900 font-bold">
+                        {formatNumber(
+                          currentCreatorChapter?.creators?.subscribers
+                        )}
+                      </div>
                       <div className="text-gray-600 text-xs">Subscribers</div>
                     </div>
                   </div>
@@ -273,7 +320,11 @@ export function TalentDetail() {
                   <div className="flex items-center gap-2">
                     <Eye className="w-5 h-5 text-blue-600" />
                     <div>
-                      <div className="text-gray-900 font-bold">835.5K</div>
+                      <div className="text-gray-900 font-bold">
+                        {formatNumber(
+                          currentCreatorChapter?.creators?.total_views
+                        )}
+                      </div>
                       <div className="text-gray-600 text-xs">Total Views</div>
                     </div>
                   </div>
@@ -282,7 +333,9 @@ export function TalentDetail() {
                   <div className="flex items-center gap-2">
                     <PlayCircle className="w-5 h-5 text-green-600" />
                     <div>
-                      <div className="text-gray-900 font-bold">1.3K</div>
+                      <div className="text-gray-900 font-bold">
+                        {currentCreatorChapter?.creators?.total_contents}
+                      </div>
                       <div className="text-gray-600 text-xs">
                         Total Contents
                       </div>
@@ -293,7 +346,9 @@ export function TalentDetail() {
                   <div className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-purple-600" />
                     <div>
-                      <div className="text-gray-900 font-bold">Afternoon</div>
+                      <div className="text-gray-900 font-bold">
+                        {currentCreatorChapter?.creators?.most_active_time}
+                      </div>
                       <div className="text-gray-600 text-xs">Active Time</div>
                     </div>
                   </div>
@@ -453,7 +508,9 @@ export function TalentDetail() {
                       <Video className="w-5 h-5 text-purple-600" />
                       <div className="text-sm text-gray-600">Total Videos</div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">38</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {currentCreatorChapter?.creators?.total_videos}
+                    </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
@@ -461,7 +518,9 @@ export function TalentDetail() {
                       <Film className="w-5 h-5 text-pink-600" />
                       <div className="text-sm text-gray-600">Total Shorts</div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">232</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {currentCreatorChapter?.creators?.total_shorts}
+                    </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
@@ -469,7 +528,9 @@ export function TalentDetail() {
                       <Radio className="w-5 h-5 text-red-600" />
                       <div className="text-sm text-gray-600">Livestreams</div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">1.1K</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {currentCreatorChapter?.creators?.total_livestreams}
+                    </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
@@ -478,7 +539,9 @@ export function TalentDetail() {
                       <div className="text-sm text-gray-600">Total Likes</div>
                     </div>
                     <div className="text-2xl font-bold text-gray-900">
-                      32.7K
+                      {formatNumber(
+                        currentCreatorChapter?.creators?.total_likes
+                      )}
                     </div>
                   </div>
 
@@ -490,40 +553,47 @@ export function TalentDetail() {
                       </div>
                     </div>
                     <div className="text-2xl font-bold text-gray-900">
-                      4,065 hr
+                      {
+                        currentCreatorChapter?.creators
+                          ?.all_content_duration_hours
+                      }{" "}
+                      hrs
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                  {/* <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
                     <div className="text-sm text-gray-600 mb-2">
                       Longest Content
                     </div>
                     <div className="text-xl font-bold text-gray-900">
                       14:32:13
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                  {/* <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
                     <div className="text-sm text-gray-600 mb-2">
                       Shortest Content
                     </div>
                     <div className="text-xl font-bold text-gray-900">
                       00:00:05
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                  {/* <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
                     <div className="text-sm text-gray-600 mb-2">
                       Livestream Ratio
                     </div>
                     <div className="text-xl font-bold text-gray-900">79.5%</div>
-                  </div>
+                  </div> */}
 
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
                     <div className="text-sm text-gray-600 mb-2">
                       Avg. Live Duration
                     </div>
-                    <div className="text-xl font-bold text-gray-900">9 hr</div>
+                    <div className="text-xl font-bold text-gray-900">
+                      {currentCreatorChapter?.creators?.avg_live_duration_hours}{" "}
+                      hrs
+                    </div>
                   </div>
                 </div>
               </div>

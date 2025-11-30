@@ -5,7 +5,6 @@ interface HeaderProps {
   onNavigate: (page: string) => void;
   isLoggedIn?: boolean;
   user?: any;
-  userSparks?: number;
   onSignOut?: () => void;
   onPressGetStarted?: () => void;
 }
@@ -14,7 +13,6 @@ export function Header({
   onNavigate,
   isLoggedIn = false,
   user,
-  userSparks = 0,
   onSignOut,
   onPressGetStarted,
 }: HeaderProps) {
@@ -84,7 +82,7 @@ export function Header({
                 <div className="flex items-center gap-2 bg-purple-100 border border-purple-300 px-4 py-2 rounded-full">
                   <Zap className="w-4 h-4 text-purple-600 fill-purple-600" />
                   <span className="font-bold text-purple-900">
-                    {userSparks.toLocaleString()}
+                    {user?.sparks || "0"}
                   </span>
                 </div>
                 <img
@@ -172,7 +170,7 @@ export function Header({
                     <div className="flex items-center gap-2 bg-purple-100 border border-purple-300 px-4 py-2 rounded-full mb-3 inline-flex">
                       <Zap className="w-4 h-4 text-purple-600 fill-purple-600" />
                       <span className="font-bold text-purple-900">
-                        {userSparks.toLocaleString()}
+                        {user?.sparks || "0"}
                       </span>
                     </div>
                     <button

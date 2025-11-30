@@ -15,6 +15,8 @@ type User = {
   wallet_address: string | null;
   username: string | null;
   profile_picture_url: string | null;
+  sparks: number | null;
+  prime_member: boolean | null;
 };
 
 type AuthContextType = {
@@ -32,12 +34,15 @@ type AuthContextType = {
   connectWallet: (walletType: "phantom" | "solflare") => Promise<void>;
   disconnectWallet: () => Promise<void>;
   signInWithSolanaWallet: () => Promise<void>;
+  currentCreatorChapter: any;
+  setCurrentCreatorChapter: (value: any) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [currentCreatorChapter, setCurrentCreatorChapter] = useState(null);
   const [loading, setLoading] = useState(true);
   const { publicKey } = useWallet();
   useEffect(() => {
@@ -46,16 +51,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!config.useMockData) {
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session?.user) {
+          const { data } = await supabase
+            .from("users")
+            .select("*")
+            .eq("email", session.user.email)
+            .single();
           setUser({
             id: session.user.id,
-            email: session.user.email || null,
+            email: data?.email || null,
             wallet_address: null,
-            username:
-              session?.user?.user_metadata?.username ||
-              session?.user?.email?.split("@")[0],
-            profile_picture_url: session?.user?.user_metadata?.avatar_url,
+            username: data?.username,
+            profile_picture_url: data?.avatar_url,
+            sparks: data?.sparks,
+            prime_member: data?.prime_member,
           });
         } else {
           setUser(null);
@@ -81,15 +91,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.user) {
+        const { data } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", session.user.email)
+          .single();
         setUser({
           id: session.user.id,
-          email: session.user.email || null,
+          email: data?.email,
           wallet_address: null,
-          username:
-            session?.user?.user_metadata?.username ||
-            session?.user?.email?.split("@")[0],
-          profile_picture_url: session?.user?.user_metadata?.avatar_url,
+          username: data?.username,
+          profile_picture_url: data?.avatar_url,
+          sparks: data?.sparks,
+          prime_member: data?.prime_member,
         });
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error("Error initializing auth:", error);
@@ -158,9 +175,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    setUser(null);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+    } catch (e) {
+      console.log(e, "<<< E");
+    }
   };
 
   const resetPassword = async (email: string) => {
@@ -253,6 +274,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         disconnectWallet,
         verifyOtp,
         signInWithSolanaWallet,
+        currentCreatorChapter,
+        setCurrentCreatorChapter,
       }}
     >
       {children}

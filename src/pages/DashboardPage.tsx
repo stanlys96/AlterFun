@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Zap,
   DollarSign,
@@ -11,6 +11,8 @@ import {
   Gem,
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface InventoryItem {
   id: string;
@@ -37,9 +39,12 @@ interface TalentToken {
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<
     "all" | "unclaimed" | "shipped" | "listed"
   >("all");
+
+  const { isAuthenticated, user } = useAuth();
 
   // Mock user data
   const userData = {
@@ -153,6 +158,13 @@ export function DashboardPage() {
     return item.status === filter;
   });
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      window.scrollTo(0, 0);
+      navigate("/");
+    }
+  }, [isAuthenticated]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-purple-50 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -162,11 +174,11 @@ export function DashboardPage() {
             {/* Avatar */}
             <div className="relative">
               <ImageWithFallback
-                src={userData.avatar}
-                alt={userData.name}
+                src={user?.profile_picture_url || ""}
+                alt={user?.username || ""}
                 className="w-24 h-24 rounded-full border-4 border-purple-200"
               />
-              {userData.isPrime && (
+              {user?.prime_member && (
                 <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
                   <Crown className="w-5 h-5 text-gray-900" />
                 </div>
@@ -177,7 +189,7 @@ export function DashboardPage() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {userData.name}
+                  {user?.username}
                 </h1>
                 <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                   <Settings className="w-5 h-5 text-gray-600" />
@@ -185,7 +197,7 @@ export function DashboardPage() {
               </div>
 
               {/* Badge Status */}
-              {userData.isPrime ? (
+              {user?.prime_member ? (
                 <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 px-4 py-2 rounded-full font-bold mb-4">
                   <Crown className="w-4 h-4" />
                   <span>Prime Member</span>
@@ -228,7 +240,7 @@ export function DashboardPage() {
               <div>
                 <div className="text-gray-600 text-sm">AlterSparks</div>
                 <div className="text-3xl font-bold text-gray-900">
-                  ⚡ {userData.sparks.toLocaleString()}
+                  ⚡ {user?.sparks}
                 </div>
               </div>
             </div>

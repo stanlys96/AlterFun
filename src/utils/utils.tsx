@@ -52,3 +52,21 @@ export function combineTokensAndIdeas(
 
   return combinedData;
 }
+
+export function formatNumber(num: number): string {
+  if (num < 1000) return num?.toString();
+
+  const units = ["K", "M", "B", "T"];
+  let unitIndex = -1;
+  let scaled = num;
+
+  while (scaled >= 1000 && unitIndex < units.length - 1) {
+    scaled /= 1000;
+    unitIndex++;
+  }
+
+  // Keep one decimal if needed
+  const formatted = scaled % 1 === 0 ? scaled?.toFixed(0) : scaled?.toFixed(1);
+
+  return `${formatted}${units[unitIndex]}`;
+}

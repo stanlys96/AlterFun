@@ -2,83 +2,25 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Circle, Filter, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
+import useSWR from "swr";
 
-interface Talent {
-  id: number;
-  name: string;
-  image: string;
-  isLive: boolean;
-  chapter: string;
-  generation: string;
-}
+const fetcher = async (key: string) => {
+  const { data, error } = await supabase.from(key).select("*, creators(*)");
+  if (error) throw error;
+  return data;
+};
 
-const talents: Talent[] = [
-  {
-    id: 1,
-    name: "Auremiya",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: true,
-    chapter: "Chapter 2: Nexus",
-    generation: "Gen 1",
-  },
-  {
-    id: 2,
-    name: "Lunaria",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: false,
-    chapter: "Chapter 1: Origins",
-    generation: "Gen 1",
-  },
-  {
-    id: 3,
-    name: "Stellara",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: true,
-    chapter: "Chapter 3: Ascension",
-    generation: "Gen 2",
-  },
-  {
-    id: 4,
-    name: "Kaida",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: false,
-    chapter: "Chapter 2: Nexus",
-    generation: "Gen 2",
-  },
-  {
-    id: 5,
-    name: "Yuki",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: true,
-    chapter: "Chapter 1: Origins",
-    generation: "Gen 1",
-  },
-  {
-    id: 6,
-    name: "Aria",
-    image:
-      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    isLive: false,
-    chapter: "Chapter 3: Ascension",
-    generation: "Gen 2",
-  },
-];
 export function TalentsPage() {
   const navigate = useNavigate();
   const [filterStatus, setFilterStatus] = useState<"all" | "live">("all");
   const [filterGen, setFilterGen] = useState<"all" | "Gen 1" | "Gen 2">("all");
 
-  const filteredTalents = talents.filter((talent) => {
-    if (filterStatus === "live" && !talent.isLive) return false;
-    if (filterGen !== "all" && talent.generation !== filterGen) return false;
-    return true;
-  });
+  const { setCurrentCreatorChapter } = useAuth();
 
+  const { data: talentsData } = useSWR("creator_chapters", fetcher);
+  console.log(talentsData, "<<!!");
   return (
     <section className="py-32 bg-gradient-to-b from-purple-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -138,70 +80,73 @@ export function TalentsPage() {
           </div>
 
           <div className="ml-auto text-sm text-gray-600">
-            {filteredTalents.length} talent
-            {filteredTalents.length !== 1 ? "s" : ""} found
+            {talentsData?.length} talent
+            {talentsData?.length !== 1 ? "s" : ""} found
           </div>
         </div>
 
         {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTalents.map((talent) => (
-            <div
-              key={talent.id}
-              onClick={() => {
-                window.scrollTo(0, 0);
-                navigate(`/talents/${talent.name}`);
-              }}
-              className="group bg-white rounded-2xl overflow-hidden border-2 border-purple-200 hover:border-purple-400 transition-all hover:scale-105 shadow-lg hover:shadow-2xl cursor-pointer"
-            >
-              {/* Image */}
-              <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                <ImageWithFallback
-                  src={talent.image}
-                  alt={talent.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
+          {talentsData &&
+            talentsData != null &&
+            talentsData?.map((talent: any) => (
+              <div
+                key={talent?.id}
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  setCurrentCreatorChapter(talent);
+                  navigate(`/talents/${talent?.id}`);
+                }}
+                className="group bg-white rounded-2xl overflow-hidden border-2 border-purple-200 hover:border-purple-400 transition-all hover:scale-105 shadow-lg hover:shadow-2xl cursor-pointer"
+              >
+                {/* Image */}
+                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+                  <ImageWithFallback
+                    src={talent?.creators?.avatar_detail_url}
+                    alt={talent?.name}
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                  />
 
-                {/* Live Indicator */}
-                {talent.isLive && (
-                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
-                    <Circle className="w-2.5 h-2.5 fill-white animate-pulse" />
-                    <span className="text-sm font-bold">LIVE</span>
-                  </div>
-                )}
+                  {/* Live Indicator */}
+                  {talent?.isLive && (
+                    <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+                      <Circle className="w-2.5 h-2.5 fill-white animate-pulse" />
+                      <span className="text-sm font-bold">LIVE</span>
+                    </div>
+                  )}
 
-                {/* Chapter Tag */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur-md border border-purple-200 rounded-xl px-3 py-2 shadow-lg">
-                    <div className="text-xs text-purple-600 font-semibold">
-                      {talent.chapter}
+                  {/* Chapter Tag */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white/90 backdrop-blur-md border border-purple-200 rounded-xl px-3 py-2 shadow-lg">
+                      <div className="text-xs text-purple-600 font-semibold">
+                        Chapter {talent?.chapter_number}: {talent?.chapter_name}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
                 </div>
 
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
-              </div>
-
-              {/* Info */}
-              <div className="p-6">
-                <h3
-                  className="text-gray-900 text-2xl font-bold mb-2"
-                  style={{ fontFamily: "var(--font-accent)" }}
-                >
-                  {talent.name}
-                </h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
-                    {talent.generation}
-                  </span>
-                  <span className="text-sm text-purple-600 font-semibold group-hover:text-purple-700">
-                    View Profile →
-                  </span>
+                {/* Info */}
+                <div className="p-6">
+                  <h3
+                    className="text-gray-900 text-2xl font-bold mb-2"
+                    style={{ fontFamily: "var(--font-accent)" }}
+                  >
+                    {talent?.creators?.name}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">
+                      {talent?.description}
+                    </span>
+                    <span className="text-sm text-purple-600 font-semibold group-hover:text-purple-700">
+                      View Profile →
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </section>
