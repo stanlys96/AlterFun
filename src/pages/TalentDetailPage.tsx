@@ -433,7 +433,7 @@ export function TalentDetail({
                         </h3>
                         <div className="flex items-center gap-1 text-purple-600 font-bold">
                           <Zap className="w-4 h-4 fill-purple-600" />
-                          <span>{userStore?.price}</span>
+                          <span>{userStore?.price?.toLocaleString()}</span>
                         </div>
                         <div className="text-xs text-gray-600 mt-1">
                           {userStore?.stock} left
