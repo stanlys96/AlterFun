@@ -195,7 +195,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       type: "email", // The type is 'email' for email OTP
     });
     if (error) throw error;
-    updateUser(email);
+    await updateUser(email);
   };
 
   const signOut = async () => {
