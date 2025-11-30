@@ -305,7 +305,7 @@ export function BountyBoard({
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
               <div className="absolute top-3 right-3 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                {request?.users?.username}
+                {request?.official_products?.creators?.name}
               </div>
               {request?.status === "fulfilled" && (
                 <div className="absolute top-3 left-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
