@@ -1,15 +1,21 @@
-import { HeroBanner, LiveStreaming, MarketDiscovery } from "../components";
+import {
+  Hero,
+  LiveAction,
+  PrimeMembership,
+  BountyBoard,
+  Vision,
+  Footer,
+} from "../components";
 
-type HomePageProps = {
-  handleNavigate: (page: string, slugOrEmail?: string) => void;
-};
-
-export const HomePage = ({ handleNavigate }: HomePageProps) => {
+export const HomePage = () => {
   return (
     <>
-      <HeroBanner />
-      {/* <LiveStreaming onNavigate={handleNavigate} /> */}
-      <MarketDiscovery onNavigate={handleNavigate} />
+      <Hero />
+      <LiveAction />
+      <PrimeMembership />
+      <BountyBoard isHomepage={true} />
+      <Vision />
+      <Footer />
     </>
   );
 };

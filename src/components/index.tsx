@@ -3,7 +3,6 @@ import Comments from "./Comments";
 import ConnectWalletModal from "./ConnectWalletModal";
 import { Footer } from "./Footer";
 import GrowthChart from "./GrowthChart";
-import Header from "./Header";
 import HeroBanner from "./HeroBanner";
 import LiveStreaming from "./LiveStreaming";
 import MarketDiscovery from "./MarketDiscovery";
@@ -21,10 +20,13 @@ import { VideoSection } from "./VideoSection";
 import { LiveNow } from "./LiveNow";
 import { FAQ } from "./FAQ";
 import { CreatorCTA } from "./CreatorCTA";
-import { Header2 } from "./Header2";
+import { LiveAction } from "./LiveAction";
+import { PrimeMembership } from "./PrimeMembership";
+import { BountyBoard } from "./BountyBoard";
+import { Vision } from "./Vision";
+import { Header } from "./Header";
 
 export {
-  Header2,
   CreatorCTA,
   FAQ,
   LiveNow,
@@ -48,4 +50,8 @@ export {
   WalletConnectionModal,
   YouTubeVideoList,
   TokenCard,
+  LiveAction,
+  PrimeMembership,
+  BountyBoard,
+  Vision,
 };

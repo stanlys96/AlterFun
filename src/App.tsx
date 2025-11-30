@@ -14,7 +14,6 @@ import {
   CreatorProfilePage,
   DiscoverPage,
   HomePage,
-  HomePage2,
   JoinUsPage,
   LiveStreamPage,
   ProfilePage,
@@ -23,9 +22,7 @@ import {
 } from "./pages";
 import {
   AuthModal,
-  Footer,
   Header,
-  Header2,
   OTPModal,
   WalletConnectionModal,
 } from "./components";
@@ -35,8 +32,23 @@ type AuthModalMode = "signup" | "login" | null;
 
 function AppContent() {
   const location = useLocation();
-  const currentPage = location?.pathname;
+  // const currentPage = location?.pathname;
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState<
+    "home" | "talents" | "market" | "prime" | "dashboard" | "about"
+  >("home");
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set to true for mockup
+
+  // Mock user data
+  const userData = {
+    name: "Sarah Tanaka",
+    sparks: 12500,
+  };
+
+  const handleSignOut = () => {
+    setIsLoggedIn(false);
+    setCurrentPage("home");
+  };
   const [selectedCreatorSlug, setSelectedCreatorSlug] = useState<string>("");
   const [applicationEmail, setApplicationEmail] = useState<string>("");
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
@@ -71,56 +83,51 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header2
-        onNavigate={handleNavigate}
-        currentPage={currentPage}
-        isAuthenticated={isAuthenticated}
-        onAuthSuccess={() => setOtpModalOpen(true)}
+      <Header
+        onNavigate={setCurrentPage}
+        isLoggedIn={isLoggedIn}
+        userName={userData.name}
+        userSparks={userData.sparks}
+        onSignOut={handleSignOut}
       />
-
-      <main className="min-h-[calc(100vh-4rem)]">
-        <Routes>
-          <Route path="/" element={<HomePage2 />} />
-          <Route
-            path="/creators"
-            element={<CreatorListsPage onNavigate={handleNavigate} />}
-          />
-          <Route
-            path="/creator/:creator"
-            element={
-              <CreatorDetailPage
-                onFollowClick={handleBuyAction}
-                onBack={() => {
-                  navigate(-1);
-                  window.scrollTo(0, 0);
-                }}
-              />
-            }
-          />
-          <Route path="/profile" element={<ProfilePage2 />} />
-          <Route
-            path="/join"
-            element={<JoinUsPage onNavigate={handleNavigate} />}
-          />
-          <Route
-            path="/apply"
-            element={<ApplyPage onNavigate={handleNavigate} />}
-          />
-          <Route
-            path="/apply-thanks"
-            element={<ApplyThanksPage email={applicationEmail} />}
-          />
-          <Route
-            path="/discover"
-            element={<DiscoverPage onCreatorClick={handleNavigate} />}
-          />
-          <Route path="/live-stream" element={<LiveStreamPage />} />
-          <Route path="/tokens" element={<TokensPage />} />
-        </Routes>
-      </main>
-
-      <Footer currentPage="/" onNavigate={navigate} />
-
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/creators"
+          element={<CreatorListsPage onNavigate={handleNavigate} />}
+        />
+        <Route
+          path="/creator/:creator"
+          element={
+            <CreatorDetailPage
+              onFollowClick={handleBuyAction}
+              onBack={() => {
+                navigate(-1);
+                window.scrollTo(0, 0);
+              }}
+            />
+          }
+        />
+        <Route path="/profile" element={<ProfilePage2 />} />
+        <Route
+          path="/join"
+          element={<JoinUsPage onNavigate={handleNavigate} />}
+        />
+        <Route
+          path="/apply"
+          element={<ApplyPage onNavigate={handleNavigate} />}
+        />
+        <Route
+          path="/apply-thanks"
+          element={<ApplyThanksPage email={applicationEmail} />}
+        />
+        <Route
+          path="/discover"
+          element={<DiscoverPage onCreatorClick={handleNavigate} />}
+        />
+        <Route path="/live-stream" element={<LiveStreamPage />} />
+        <Route path="/tokens" element={<TokensPage />} />
+      </Routes>
       <AuthModal
         isOpen={authModalMode !== null}
         onClose={() => setAuthModalMode(null)}
