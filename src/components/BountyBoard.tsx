@@ -4,78 +4,7 @@ import { useState } from "react";
 import { TokenSelector, TokenOption } from "./TokenSelector";
 import { supabase } from "../lib/supabase";
 import useSWR from "swr";
-
-interface BountyRequest {
-  id: number;
-  itemName: string;
-  itemImage: string;
-  requester: string;
-  requesterAvatar: string;
-  offerPrice: number;
-  talent: string; // Auremiya, Lunaria, etc.
-  ticker: string; // $YAMI, $LUNA, etc.
-  postedTime: string;
-  status: "active" | "fulfilled";
-}
-
-const bountyRequests: BountyRequest[] = [
-  {
-    id: 1,
-    itemName: "Signed Poster",
-    itemImage:
-      "https://images.unsplash.com/photo-1499673610122-01c7122c5dcb?w=400",
-    requester: "Sarah_VT",
-    requesterAvatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
-    offerPrice: 15000,
-    talent: "Auremiya",
-    ticker: "$YAMI",
-    postedTime: "2 hours ago",
-    status: "active",
-  },
-  {
-    id: 2,
-    itemName: "Limited Edition Hoodie",
-    itemImage:
-      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",
-    requester: "Mike_Collector",
-    requesterAvatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-    offerPrice: 12000,
-    talent: "Lunaria",
-    ticker: "$LUNA",
-    postedTime: "5 hours ago",
-    status: "active",
-  },
-  {
-    id: 3,
-    itemName: "T-Shirt Bundle",
-    itemImage:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
-    requester: "Alex_Fan",
-    requesterAvatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
-    offerPrice: 8000,
-    talent: "Auremiya",
-    ticker: "$YAMI",
-    postedTime: "1 day ago",
-    status: "active",
-  },
-  {
-    id: 4,
-    itemName: "Acrylic Stand",
-    itemImage:
-      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400",
-    requester: "Luna_Dreamer",
-    requesterAvatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
-    offerPrice: 5000,
-    talent: "Lunaria",
-    ticker: "$LUNA",
-    postedTime: "3 days ago",
-    status: "fulfilled",
-  },
-];
+import { timeAgo } from "../utils/utils";
 
 interface BountyBoardProps {
   initialFilter?: string;
@@ -200,16 +129,16 @@ export function BountyBoard({
   const selectedToken =
     availableTokens.find((t) => t.id === selectedTokenId) || availableTokens[0];
 
-  const filteredRequests = bountyRequests.filter((request) => {
+  const filteredRequests = bountiesData?.filter((request) => {
     if (filterStatus === "all") return true;
-    if (filterStatus === "active") return request.status === "active";
+    if (filterStatus === "active") return request?.status === "active";
     if (filterStatus === "my-bounties") return false; // Mock: user has no bounties
     return true;
   });
 
   // For homepage, show only top 3
   const displayRequests = isHomepage
-    ? filteredRequests.slice(0, 3)
+    ? filteredRequests?.slice(0, 3)
     : filteredRequests;
 
   // Homepage variant - Card Grid
@@ -231,40 +160,40 @@ export function BountyBoard({
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {displayRequests.map((request) => (
+            {displayRequests?.map((request) => (
               <div
-                key={request.id}
+                key={request?.id}
                 className="bg-white border-2 border-yellow-500/30 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:border-yellow-500 transition-all group"
               >
                 {/* Item Image */}
                 <div className="aspect-square overflow-hidden bg-gray-100 relative">
                   <ImageWithFallback
-                    src={request.itemImage}
-                    alt={request.itemName}
+                    src={request?.official_products?.image}
+                    alt={request?.official_products?.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute top-3 right-3 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    {request.talent}
+                    {request?.official_products?.creators?.name}
                   </div>
                 </div>
 
                 {/* Card Content */}
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {request.itemName}
+                    {request?.official_products?.name}
                   </h3>
 
                   {/* Requester */}
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-200">
                       <ImageWithFallback
-                        src={request.requesterAvatar}
-                        alt={request.requester}
+                        src={request?.users?.avatar_url}
+                        alt={request?.users?.username}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <span className="text-sm text-gray-600">
-                      by {request.requester}
+                      by {request?.users?.username}
                     </span>
                   </div>
 
@@ -272,14 +201,14 @@ export function BountyBoard({
                   <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300 px-4 py-3 rounded-xl text-center mb-4">
                     <div className="flex items-center justify-center gap-2 text-gray-900 font-bold">
                       <Gem className="w-5 h-5 text-yellow-600" />
-                      <span>{request.offerPrice.toLocaleString()}</span>
-                      <span>{request.ticker}</span>
+                      <span>{request?.bounty?.toLocaleString()}</span>
+                      <span>${request?.token}</span>
                     </div>
                   </div>
 
                   {/* Posted Time */}
                   <div className="text-xs text-gray-500 text-center mb-4">
-                    Posted {request.postedTime}
+                    Posted {timeAgo(request?.created_at)}
                   </div>
 
                   {/* Action Button */}
@@ -330,7 +259,7 @@ export function BountyBoard({
           <div className="flex items-center gap-2 bg-green-100 border border-green-300 px-3 py-1.5 rounded-full">
             <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
             <span className="text-sm font-semibold text-green-800">
-              {filteredRequests.length} Live Demand
+              {filteredRequests?.length} Live Demand
             </span>
           </div>
         </div>
@@ -363,7 +292,7 @@ export function BountyBoard({
 
       {/* Bounty Card Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredRequests.map((request) => (
+        {filteredRequests?.map((request) => (
           <div
             key={request.id}
             className="bg-white border-2 border-yellow-500/30 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:border-yellow-500 transition-all group"
@@ -371,14 +300,14 @@ export function BountyBoard({
             {/* Item Image */}
             <div className="aspect-square overflow-hidden bg-gray-100 relative">
               <ImageWithFallback
-                src={request.itemImage}
-                alt={request.itemName}
+                src={request?.official_products?.image}
+                alt={request?.official_products?.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
               <div className="absolute top-3 right-3 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                {request.talent}
+                {request?.users?.username}
               </div>
-              {request.status === "fulfilled" && (
+              {request?.fulfilled && (
                 <div className="absolute top-3 left-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
                   ✓ Fulfilled
                 </div>
@@ -388,22 +317,22 @@ export function BountyBoard({
             {/* Card Content */}
             <div className="p-5">
               <h3 className="font-bold text-gray-900 mb-3 line-clamp-2">
-                {request.itemName}
+                {request?.official_products?.name}
               </h3>
 
               {/* Requester */}
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-200">
                   <ImageWithFallback
-                    src={request.requesterAvatar}
-                    alt={request.requester}
+                    src={request?.users?.avatar_url}
+                    alt={request?.users?.username}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-gray-500">Requested by</div>
                   <div className="text-sm text-gray-700 font-semibold truncate">
-                    {request.requester}
+                    {request?.users?.username}
                   </div>
                 </div>
               </div>
@@ -415,18 +344,18 @@ export function BountyBoard({
                 </div>
                 <div className="flex items-center justify-center gap-2 text-gray-900 font-bold">
                   <Gem className="w-5 h-5 text-yellow-600" />
-                  <span>{request.offerPrice.toLocaleString()}</span>
-                  <span>{request.ticker}</span>
+                  <span>{request?.bounty?.toLocaleString()}</span>
+                  <span>${request?.token}</span>
                 </div>
               </div>
 
               {/* Posted Time */}
               <div className="text-xs text-gray-500 text-center mb-4">
-                Posted {request.postedTime}
+                Posted {timeAgo(request?.created_at)}
               </div>
 
               {/* Action Button */}
-              {request.status === "active" ? (
+              {!request?.fulfilled ? (
                 <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl hover:scale-105 transition-all shadow-lg font-bold">
                   Fulfill Request
                 </button>
@@ -444,7 +373,7 @@ export function BountyBoard({
       </div>
 
       {/* Empty State for My Bounties */}
-      {filterStatus === "my-bounties" && filteredRequests.length === 0 && (
+      {filterStatus === "my-bounties" && filteredRequests?.length === 0 && (
         <div className="text-center py-12">
           <Crown className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-900 mb-2">
