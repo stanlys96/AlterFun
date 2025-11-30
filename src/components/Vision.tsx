@@ -43,7 +43,7 @@ export function Vision() {
                     </div>
 
                     <div
-                      className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
+                      className="absolute -top-11 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
                       1
@@ -75,7 +75,7 @@ export function Vision() {
                     </div>
 
                     <div
-                      className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
+                      className="absolute -top-11 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
                       2
@@ -107,7 +107,7 @@ export function Vision() {
                     </div>
 
                     <div
-                      className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
+                      className="absolute -top-11 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
                       3
