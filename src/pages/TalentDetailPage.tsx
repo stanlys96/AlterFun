@@ -32,13 +32,6 @@ import { supabase } from "../lib/supabase";
 import useSWR from "swr";
 import { useAuth } from "../contexts/AuthContext";
 
-interface Mission {
-  id: number;
-  title: string;
-  reward: number;
-  status: "available" | "completed" | "claimed";
-}
-
 export function TalentDetail() {
   const navigate = useNavigate();
   const location = useLocation();
