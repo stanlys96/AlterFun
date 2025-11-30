@@ -32,7 +32,7 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState<
     "home" | "talents" | "market" | "prime" | "dashboard" | "about"
   >("home");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set to true for mockup
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Set to true for mockup
 
   // Mock user data
   const userData = {
@@ -49,7 +49,7 @@ function AppContent() {
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [otpModalOpen, setOtpModalOpen] = useState<boolean>(false);
-  const { isAuthenticated, isWalletConnected } = useAuth();
+  const { isAuthenticated, isWalletConnected, signOut, user } = useAuth();
 
   const handleNavigate = (page: string, slugOrEmail?: string) => {
     window.scrollTo(0, 0);
@@ -80,10 +80,11 @@ function AppContent() {
     <div className="min-h-screen bg-white">
       <Header
         onNavigate={(page: string) => handleNavigate(page)}
-        isLoggedIn={isLoggedIn}
-        userName={userData.name}
+        isLoggedIn={isAuthenticated}
+        user={user}
         userSparks={userData.sparks}
-        onSignOut={handleSignOut}
+        onSignOut={signOut}
+        onPressGetStarted={() => setAuthModalMode("signup")}
       />
       <Routes>
         <Route path="/" element={<HomePage />} />

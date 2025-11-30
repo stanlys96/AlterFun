@@ -194,7 +194,7 @@ export function PrimeRealmPage() {
             <div className="flex items-center justify-center">
               <div className="relative">
                 {/* Card */}
-                <div className="w-full max-w-md aspect-[1.6/1] bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl border-2 border-yellow-500/50 p-8 transform hover:rotate-2 transition-transform duration-500">
+                <div className="w-full max-w-md aspect-[1/1] bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl border-2 border-yellow-500/50 p-8 transform hover:rotate-2 transition-transform duration-500">
                   {/* Card Content */}
                   <div className="flex flex-col h-full justify-between">
                     <div className="flex items-center justify-between">

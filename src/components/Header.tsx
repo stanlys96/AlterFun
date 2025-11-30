@@ -2,27 +2,25 @@ import { useState } from "react";
 import { Menu, X, Zap, Sparkles } from "lucide-react";
 
 interface HeaderProps {
-  onNavigate: (
-    page: "home" | "talents" | "market" | "prime" | "dashboard" | "about"
-  ) => void;
+  onNavigate: (page: string) => void;
   isLoggedIn?: boolean;
-  userName?: string;
+  user?: any;
   userSparks?: number;
   onSignOut?: () => void;
+  onPressGetStarted?: () => void;
 }
 
 export function Header({
   onNavigate,
   isLoggedIn = false,
-  userName = "",
+  user,
   userSparks = 0,
   onSignOut,
+  onPressGetStarted,
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleNavClick = (
-    page: "home" | "talents" | "market" | "prime" | "dashboard" | "about"
-  ) => {
+  const handleNavClick = (page: string) => {
     onNavigate(page);
     setIsMenuOpen(false);
   };
@@ -89,13 +87,17 @@ export function Header({
                     {userSparks.toLocaleString()}
                   </span>
                 </div>
-
+                <img
+                  src={user?.profile_picture_url || "/no-photo.png"}
+                  alt={"User Image"}
+                  className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                />
                 {/* User Menu */}
                 <button
                   onClick={() => handleNavClick("dashboard")}
                   className="text-gray-700 hover:text-purple-600 transition-colors font-semibold"
                 >
-                  {userName}
+                  {user?.username}
                 </button>
 
                 {/* Sign Out */}
@@ -107,7 +109,10 @@ export function Header({
                 </button>
               </>
             ) : (
-              <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg hover:scale-105 transition-all shadow-lg font-semibold">
+              <button
+                onClick={onPressGetStarted}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg hover:scale-105 transition-all shadow-lg font-semibold"
+              >
                 Get Started
               </button>
             )}
@@ -174,7 +179,7 @@ export function Header({
                       onClick={() => handleNavClick("dashboard")}
                       className="text-gray-700 hover:text-purple-600 transition-colors font-semibold py-2 block"
                     >
-                      {userName}
+                      {user?.username}
                     </button>
                     <button
                       onClick={() => {
@@ -188,7 +193,10 @@ export function Header({
                   </div>
                 </>
               ) : (
-                <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg hover:scale-105 transition-all shadow-lg font-semibold mt-2">
+                <button
+                  onClick={onPressGetStarted}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg hover:scale-105 transition-all shadow-lg font-semibold mt-2"
+                >
                   Get Started
                 </button>
               )}
