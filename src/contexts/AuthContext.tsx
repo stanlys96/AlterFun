@@ -49,30 +49,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { publicKey } = useWallet();
   useEffect(() => {
-    initializeAuth();
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
-        await supabase.auth.signOut();
         try {
-          const { data } = await supabase
-            .from("users")
-            .select("*")
-            .eq("email", session?.user?.email)
-            .maybeSingle();
-          setUser({
-            id: session.user.id,
-            email: data?.email || null,
-            wallet_address: null,
-            username: data?.username,
-            profile_picture_url: data?.avatar_url,
-            sparks: data?.sparks,
-            prime_member: data?.prime_member,
-            level: data?.level,
-            experience: data?.experience,
-          });
+          // const { data } = await supabase
+          //   .from("users")
+          //   .select("*")
+          //   .eq("email", session?.user?.email)
+          //   .maybeSingle();
+          // setUser({
+          // id: session.user.id,
+          // email: session?.user?.email || null,
+          // wallet_address: null,
+          // username: data?.username,
+          // profile_picture_url: data?.avatar_url,
+          // sparks: data?.sparks,
+          // prime_member: data?.prime_member,
+          // level: data?.level,
+          // experience: data?.experience,
+          // });
         } catch (e) {
           console.log(e, "<<< E");
         }
@@ -80,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
       }
     });
-
+    initializeAuth();
     return () => {
       subscription.unsubscribe();
     };
@@ -90,14 +87,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const {
         data: { session },
-      } = await supabase.auth.getSession();
+      } = await supabase?.auth?.getSession();
       if (session?.user) {
         try {
-          await supabase.auth.signOut();
           const { data } = await supabase
             .from("users")
             .select("*")
-            .eq("email", session.user.email)
+            .eq("email", session?.user?.email)
             .maybeSingle();
           setUser({
             id: session.user.id,
