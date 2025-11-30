@@ -96,7 +96,9 @@ export function BountyBoard({
   const fetcher = async (key: string) => {
     const { data, error } = await supabase
       .from(key)
-      .select("*, users(*), official_products(*)");
+      .select(
+        "*, users!bounties_user_id_fkey(*), official_products(*, creators(*))"
+      );
     if (error) throw error;
     return data;
   };
