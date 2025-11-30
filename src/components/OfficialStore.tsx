@@ -1,18 +1,8 @@
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Zap, Filter, ChevronDown, ShoppingBag } from "lucide-react";
+import { Zap, Filter, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import useSWR from "swr";
-
-interface Product {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
-  category: "physical" | "digital" | "access";
-  isFeatured?: boolean;
-}
 
 interface OfficialStoreProps {
   onSwitchToBounty: (itemName?: string) => void;
