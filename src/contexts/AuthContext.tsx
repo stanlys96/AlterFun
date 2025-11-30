@@ -80,7 +80,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      supabase.auth.signOut();
+      subscription.unsubscribe();
+    };
   }, []);
 
   const initializeAuth = async () => {
