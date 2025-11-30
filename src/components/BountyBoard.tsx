@@ -32,7 +32,7 @@ export function BountyBoard({
     return data;
   };
   const { data: bountiesData } = useSWR("bounties", fetcher);
-  console.log(bountiesData, "<<");
+
   // Available tokens
   const availableTokens: TokenOption[] = [
     {
