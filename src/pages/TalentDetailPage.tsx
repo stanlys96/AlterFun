@@ -482,53 +482,50 @@ export function TalentDetail({
                       <h3 className="text-gray-900 font-semibold mb-4">
                         {vote?.title}
                       </h3>
-
                       {vote?.community_decisions_options?.map(
-                        (option: any, idx: any) => (
-                          <div key={idx} className="space-y-2">
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between text-sm mb-1">
-                                  <span className="text-gray-700 font-semibold">
-                                    {option?.title}
-                                  </span>
-                                  <span className="text-purple-600 font-bold">
-                                    {(
-                                      (option?.total_vote /
-                                        vote?.community_decisions_options?.reduce(
-                                          (prev: any, next: any) =>
-                                            prev + next?.total_vote
-                                        )) *
-                                      100
-                                    )?.toFixed(0)}
-                                    %
-                                  </span>
+                        (option: any, idx: any) => {
+                          const thePercentage = `${(
+                            (parseFloat(option?.total_vote) /
+                              parseFloat(
+                                vote?.community_decisions_options?.reduce(
+                                  (prev: any, next: any) =>
+                                    prev + next?.total_vote,
+                                  0
+                                )
+                              )) *
+                            100
+                          )?.toFixed(0)}%`;
+                          return (
+                            <div key={idx} className="space-y-2">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between text-sm mb-1">
+                                    <span className="text-gray-700 font-semibold">
+                                      {option?.title}
+                                    </span>
+                                    <span className="text-purple-600 font-bold">
+                                      {thePercentage}
+                                    </span>
+                                  </div>
+                                  <div className="relative w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div
+                                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full transition-all"
+                                      style={{
+                                        width: thePercentage,
+                                      }}
+                                    ></div>
+                                  </div>
                                 </div>
-                                <div className="relative w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                                  <div
-                                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full transition-all"
-                                    style={{
-                                      width: `${(
-                                        (option?.total_vote /
-                                          vote?.community_decisions_options?.reduce(
-                                            (prev: any, next: any) =>
-                                              prev + next?.total_vote
-                                          )) *
-                                        100
-                                      )?.toFixed(0)}%`,
-                                    }}
-                                  ></div>
-                                </div>
+                                <button className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-lg whitespace-nowrap">
+                                  <Zap className="w-4 h-4 fill-white" />
+                                  <span className="font-bold text-sm">
+                                    {option?.spark?.toLocaleString()}
+                                  </span>
+                                </button>
                               </div>
-                              <button className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:scale-105 transition-all shadow-lg whitespace-nowrap">
-                                <Zap className="w-4 h-4 fill-white" />
-                                <span className="font-bold text-sm">
-                                  {option?.spark?.toLocaleString()}
-                                </span>
-                              </button>
                             </div>
-                          </div>
-                        )
+                          );
+                        }
                       )}
                     </div>
                   ))}
