@@ -535,3 +535,31 @@ const mockBounty = {
     updated_at: "2025-11-30T18:20:18.252982+00:00",
   },
 };
+
+const mockCommunityData = {
+  id: 1,
+  created_at: "2025-11-30T20:21:31.556764+00:00",
+  updated_at: "2025-11-30T20:21:31.556764+00:00",
+  creator_chapter_id: 2,
+  title: "Next Game to Play",
+  community_decisions_options: [
+    {
+      id: 1,
+      spark: 50,
+      title: "Genshin Impact",
+      created_at: "2025-11-30T20:24:47.337909+00:00",
+      total_vote: 5,
+      updated_at: "2025-11-30T20:24:47.337909+00:00",
+      community_decision_id: 1,
+    },
+    {
+      id: 2,
+      spark: 50,
+      title: "Honkai Star Rail",
+      created_at: "2025-11-30T20:25:17.747498+00:00",
+      total_vote: 8,
+      updated_at: "2025-11-30T20:25:17.747498+00:00",
+      community_decision_id: 1,
+    },
+  ],
+};
