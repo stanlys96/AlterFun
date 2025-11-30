@@ -1,6 +1,8 @@
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Zap, Filter, ChevronDown, ShoppingBag } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
+import useSWR from "swr";
 
 interface Product {
   id: number;
@@ -12,79 +14,26 @@ interface Product {
   isFeatured?: boolean;
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Limited Edition Hoodie",
-    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",
-    price: 5000,
-    stock: 12,
-    category: "physical",
-    isFeatured: true,
-  },
-  {
-    id: 2,
-    name: "Acrylic Stand",
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400",
-    price: 2500,
-    stock: 28,
-    category: "physical",
-  },
-  {
-    id: 3,
-    name: "Signed Poster",
-    image: "https://images.unsplash.com/photo-1499673610122-01c7122c5dcb?w=400",
-    price: 8000,
-    stock: 5,
-    category: "physical",
-  },
-  {
-    id: 4,
-    name: "Digital Wallpaper Pack",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400",
-    price: 500,
-    stock: 999,
-    category: "digital",
-  },
-  {
-    id: 5,
-    name: "Exclusive Voice Pack",
-    image: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400",
-    price: 1500,
-    stock: 999,
-    category: "digital",
-  },
-  {
-    id: 6,
-    name: "VIP Discord Role (30 Days)",
-    image: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=400",
-    price: 3000,
-    stock: 50,
-    category: "access",
-  },
-  {
-    id: 7,
-    name: "T-Shirt Bundle",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
-    price: 4000,
-    stock: 0,
-    category: "physical",
-  },
-];
-
 interface OfficialStoreProps {
   onSwitchToBounty: (itemName?: string) => void;
 }
 
 export function OfficialStore({ onSwitchToBounty }: OfficialStoreProps) {
+  const fetcher = async (key: string) => {
+    const { data, error } = await supabase.from(key).select("*");
+    if (error) throw error;
+    return data;
+  };
+  const { data: products } = useSWR("official_products", fetcher);
+
   const [filterCategory, setFilterCategory] = useState<
     "all" | "physical" | "digital" | "access"
   >("all");
 
-  const featuredProduct = products.find((p) => p.isFeatured);
-  const catalogProducts = products.filter((p) => !p.isFeatured);
+  const featuredProduct = products?.find((p) => p.isFeatured);
+  const catalogProducts = products?.filter((p) => !p.isFeatured);
 
-  const filteredProducts = catalogProducts.filter((product) => {
+  const filteredProducts = catalogProducts?.filter((product) => {
     if (filterCategory === "all") return true;
     return product.category === filterCategory;
   });
@@ -165,56 +114,57 @@ export function OfficialStore({ onSwitchToBounty }: OfficialStoreProps) {
 
       {/* Product Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => (
-          <div
-            key={product.id}
-            className="group bg-white border-2 border-purple-200 rounded-2xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl"
-          >
-            {/* Product Image */}
-            <div className="relative aspect-square overflow-hidden bg-gray-100">
-              <ImageWithFallback
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+        {filteredProducts &&
+          filteredProducts?.map((product) => (
+            <div
+              key={product.id}
+              className="group bg-white border-2 border-purple-200 rounded-2xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl"
+            >
+              {/* Product Image */}
+              <div className="relative aspect-square overflow-hidden bg-gray-100">
+                <ImageWithFallback
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
 
-              {/* Stock Badge */}
-              {product.stock === 0 ? (
-                <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  SOLD OUT
-                </div>
-              ) : product.stock < 10 ? (
-                <div className="absolute top-3 right-3 bg-yellow-500 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
-                  {product.stock} LEFT
-                </div>
-              ) : null}
-            </div>
-
-            {/* Product Info */}
-            <div className="p-4">
-              <h3 className="text-gray-900 font-bold mb-2">{product.name}</h3>
-              <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-4 h-4 text-purple-600 fill-purple-600" />
-                <span className="text-purple-600 font-bold text-lg">
-                  {product.price.toLocaleString()}
-                </span>
+                {/* Stock Badge */}
+                {product.stock === 0 ? (
+                  <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    SOLD OUT
+                  </div>
+                ) : product.stock < 10 ? (
+                  <div className="absolute top-3 right-3 bg-yellow-500 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
+                    {product.stock} LEFT
+                  </div>
+                ) : null}
               </div>
 
-              {product.stock === 0 ? (
-                <button
-                  onClick={() => onSwitchToBounty(product.name)}
-                  className="w-full bg-gray-900 text-white py-2.5 rounded-xl hover:bg-gray-800 transition-all font-semibold text-sm"
-                >
-                  Check Bounty Board →
-                </button>
-              ) : (
-                <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-xl hover:scale-105 transition-all shadow-lg font-semibold">
-                  Redeem
-                </button>
-              )}
+              {/* Product Info */}
+              <div className="p-4">
+                <h3 className="text-gray-900 font-bold mb-2">{product.name}</h3>
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-4 h-4 text-purple-600 fill-purple-600" />
+                  <span className="text-purple-600 font-bold text-lg">
+                    {product.price.toLocaleString()}
+                  </span>
+                </div>
+
+                {product.stock === 0 ? (
+                  <button
+                    onClick={() => onSwitchToBounty(product.name)}
+                    className="w-full bg-gray-900 text-white py-2.5 rounded-xl hover:bg-gray-800 transition-all font-semibold text-sm"
+                  >
+                    Check Bounty Board →
+                  </button>
+                ) : (
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-xl hover:scale-105 transition-all shadow-lg font-semibold">
+                    Redeem
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

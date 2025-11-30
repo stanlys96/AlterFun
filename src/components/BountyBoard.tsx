@@ -2,6 +2,8 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Crown, Plus, Filter, ChevronDown, Gem } from "lucide-react";
 import { useState } from "react";
 import { TokenSelector, TokenOption } from "./TokenSelector";
+import { supabase } from "../lib/supabase";
+import useSWR from "swr";
 
 interface BountyRequest {
   id: number;
@@ -91,6 +93,15 @@ export function BountyBoard({
   const [selectedTokenId, setSelectedTokenId] = useState("yami");
   const [offerAmount, setOfferAmount] = useState(5000);
 
+  const fetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*, users(*), official_products(*)");
+    if (error) throw error;
+    return data;
+  };
+  const { data: bountiesData } = useSWR("bounties", fetcher);
+  console.log(bountiesData, "<<");
   // Available tokens
   const availableTokens: TokenOption[] = [
     {

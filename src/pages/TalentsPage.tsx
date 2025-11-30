@@ -7,9 +7,13 @@ import { useAuth } from "../contexts/AuthContext";
 import useSWR from "swr";
 
 const fetcher = async (key: string) => {
-  const { data, error } = await supabase.from(key).select("*, creators(*)");
-  if (error) throw error;
-  return data;
+  try {
+    const { data, error } = await supabase.from(key).select("*, creators(*)");
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    return [];
+  }
 };
 
 export function TalentsPage() {
@@ -20,7 +24,6 @@ export function TalentsPage() {
   const { setCurrentCreatorChapter } = useAuth();
 
   const { data: talentsData } = useSWR("creator_chapters", fetcher);
-  console.log(talentsData, "<<!!");
   return (
     <section className="py-32 bg-gradient-to-b from-purple-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

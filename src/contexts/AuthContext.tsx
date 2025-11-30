@@ -17,6 +17,8 @@ type User = {
   profile_picture_url: string | null;
   sparks: number | null;
   prime_member: boolean | null;
+  level: number | null;
+  experience: number | null;
 };
 
 type AuthContextType = {
@@ -36,6 +38,7 @@ type AuthContextType = {
   signInWithSolanaWallet: () => Promise<void>;
   currentCreatorChapter: any;
   setCurrentCreatorChapter: (value: any) => void;
+  updateUser: (email: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,15 +51,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     initializeAuth();
 
-    if (!config.useMockData) {
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session?.user) {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        try {
           const { data } = await supabase
             .from("users")
             .select("*")
-            .eq("email", session.user.email)
+            .eq("email", session?.user?.email)
             .single();
           setUser({
             id: session.user.id,
@@ -66,45 +69,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             profile_picture_url: data?.avatar_url,
             sparks: data?.sparks,
             prime_member: data?.prime_member,
+            level: data?.level,
+            experience: data?.experience,
           });
-        } else {
-          setUser(null);
+        } catch (e) {
+          console.log(e, "<<< E");
         }
-      });
+      } else {
+        setUser(null);
+      }
+    });
 
-      return () => subscription.unsubscribe();
-    }
+    return () => subscription.unsubscribe();
   }, []);
 
   const initializeAuth = async () => {
-    if (config.useMockData) {
-      const mockUser = localStorage.getItem("mock_user");
-      if (mockUser) {
-        setUser(JSON.parse(mockUser));
-      }
-      setLoading(false);
-      return;
-    }
-
     try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.user) {
-        const { data } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", session.user.email)
-          .single();
-        setUser({
-          id: session.user.id,
-          email: data?.email,
-          wallet_address: null,
-          username: data?.username,
-          profile_picture_url: data?.avatar_url,
-          sparks: data?.sparks,
-          prime_member: data?.prime_member,
-        });
+        try {
+          const { data } = await supabase
+            .from("users")
+            .select("*")
+            .eq("email", session.user.email)
+            .single();
+          setUser({
+            id: session.user.id,
+            email: data?.email,
+            wallet_address: null,
+            username: data?.username,
+            profile_picture_url: data?.avatar_url,
+            sparks: data?.sparks,
+            prime_member: data?.prime_member,
+            level: data?.level,
+            experience: data?.experience,
+          });
+        } catch (e) {
+          console.log(e, "<<< E");
+        }
       } else {
         setUser(null);
       }
@@ -113,6 +117,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const updateUser = async (email: string) => {
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+    setUser({
+      id: data?.id,
+      email: data?.email || null,
+      wallet_address: null,
+      username: data?.username,
+      profile_picture_url: data?.avatar_url,
+      sparks: data?.sparks,
+      prime_member: data?.prime_member,
+      level: data?.level,
+      experience: data?.experience,
+    });
   };
 
   const signInWithSolanaWallet = async () => {
@@ -276,6 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithSolanaWallet,
         currentCreatorChapter,
         setCurrentCreatorChapter,
+        updateUser,
       }}
     >
       {children}

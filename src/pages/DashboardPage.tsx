@@ -46,17 +46,6 @@ export function DashboardPage() {
 
   const { isAuthenticated, user } = useAuth();
 
-  // Mock user data
-  const userData = {
-    name: "Sarah Tanaka",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    isPrime: true,
-    level: 12,
-    levelProgress: 65, // percentage
-    sparks: 12500,
-    creatorTokens: 500.0,
-  };
-
   // Mock talent tokens
   const talentTokens: TalentToken[] = [
     {
@@ -212,16 +201,16 @@ export function DashboardPage() {
               <div className="max-w-md">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-700 font-semibold">
-                    Level {userData.level}
+                    Level {user?.level}
                   </span>
                   <span className="text-sm text-gray-600">
-                    {userData.levelProgress}%
+                    {user?.experience}%
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all"
-                    style={{ width: `${userData.levelProgress}%` }}
+                    style={{ width: `${user?.experience}%` }}
                   ></div>
                 </div>
               </div>

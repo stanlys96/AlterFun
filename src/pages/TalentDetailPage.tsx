@@ -44,7 +44,52 @@ export function TalentDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const creatorChapterId = location.pathname.split("/")?.[2];
-  const { currentCreatorChapter } = useAuth();
+  const fetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*")
+      .eq("creator_chapters_id", creatorChapterId);
+    if (error) throw error;
+    return data;
+  };
+  const { data: missionsData } = useSWR(
+    "creator_chapters_sparks_missions",
+    fetcher
+  );
+
+  const { currentCreatorChapter, user, updateUser } = useAuth();
+  const missionsFetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*")
+      .eq("user_id", user?.id)
+      .eq("creator_chapters_id", creatorChapterId);
+    if (error) throw error;
+    return data;
+  };
+
+  const { data: userMissionsData, mutate: userMissionsDataMutate } = useSWR(
+    "creator_chapters_sparks_users",
+    missionsFetcher
+  );
+
+  const storesFetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*")
+      .eq("creator_id", currentCreatorChapter?.creators?.id);
+    if (error) throw error;
+    return data;
+  };
+
+  const { data: userStoresData } = useSWR("official_products", storesFetcher);
+
+  const getMissionStatus = (id: any) => {
+    return userMissionsData?.find(
+      (userMission) => userMission.creator_chapters_sparks_missions_id === id
+    )?.status;
+  };
+
   // const fetcher = async (key: string) => {
   //   const { data, error } = await supabase
   //     .from(key)
@@ -67,17 +112,6 @@ export function TalentDetail() {
   };
 
   const [chartPeriod, setChartPeriod] = useState<"7d" | "30d">("7d");
-  const [missions] = useState<Mission[]>([
-    { id: 1, title: "Watch Stream 10 mins", reward: 100, status: "available" },
-    { id: 2, title: "Share on Social Media", reward: 50, status: "available" },
-    {
-      id: 3,
-      title: "Comment 3 times in chat",
-      reward: 75,
-      status: "completed",
-    },
-    { id: 4, title: "Subscribe to Channel", reward: 200, status: "claimed" },
-  ]);
 
   const [votes] = useState([
     {
@@ -385,55 +419,29 @@ export function TalentDetail() {
 
                 <div className="grid sm:grid-cols-3 gap-4">
                   {/* Merch Item 1 */}
-                  <div className="group bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl cursor-pointer">
-                    <div className="aspect-square bg-purple-100 flex items-center justify-center">
-                      <ShoppingBag className="w-16 h-16 text-purple-400" />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 mb-1">
-                        Limited Hoodie
-                      </h3>
-                      <div className="flex items-center gap-1 text-purple-600 font-bold">
-                        <Zap className="w-4 h-4 fill-purple-600" />
-                        <span>5,000</span>
+                  {userStoresData?.slice(0, 3)?.map((userStore) => (
+                    <div className="group bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl cursor-pointer">
+                      <div className="aspect-square bg-purple-100 flex items-center justify-center">
+                        <ImageWithFallback
+                          src={userStore?.image}
+                          alt={userStore?.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="text-xs text-gray-600 mt-1">12 left</div>
-                    </div>
-                  </div>
-
-                  {/* Merch Item 2 */}
-                  <div className="group bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl cursor-pointer">
-                    <div className="aspect-square bg-purple-100 flex items-center justify-center">
-                      <ShoppingBag className="w-16 h-16 text-purple-400" />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 mb-1">
-                        Acrylic Stand
-                      </h3>
-                      <div className="flex items-center gap-1 text-purple-600 font-bold">
-                        <Zap className="w-4 h-4 fill-purple-600" />
-                        <span>2,500</span>
+                      <div className="p-4">
+                        <h3 className="font-bold text-gray-900 mb-1">
+                          {userStore?.name}
+                        </h3>
+                        <div className="flex items-center gap-1 text-purple-600 font-bold">
+                          <Zap className="w-4 h-4 fill-purple-600" />
+                          <span>{userStore?.price}</span>
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          {userStore?.stock} left
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-600 mt-1">28 left</div>
                     </div>
-                  </div>
-
-                  {/* Merch Item 3 */}
-                  <div className="group bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl overflow-hidden hover:border-purple-400 transition-all hover:shadow-xl cursor-pointer">
-                    <div className="aspect-square bg-purple-100 flex items-center justify-center">
-                      <ShoppingBag className="w-16 h-16 text-purple-400" />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 mb-1">
-                        Signed Poster
-                      </h3>
-                      <div className="flex items-center gap-1 text-purple-600 font-bold">
-                        <Zap className="w-4 h-4 fill-purple-600" />
-                        <span>8,000</span>
-                      </div>
-                      <div className="text-xs text-gray-600 mt-1">5 left</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -744,37 +752,80 @@ export function TalentDetail() {
                       className="text-xl font-bold text-gray-900"
                       style={{ fontFamily: "var(--font-accent)" }}
                     >
-                      Get Altersparks Here
+                      Get AlterSparks Here
                     </h2>
                   </div>
 
                   <div className="space-y-3">
-                    {missions.map((mission) => (
+                    {missionsData?.map((mission) => (
                       <div
-                        key={mission.id}
+                        key={mission?.id}
                         className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl hover:border-purple-400 transition-colors"
                       >
                         <div className="text-gray-900 font-semibold text-sm mb-1">
-                          {mission.title}
+                          {mission?.title}
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1 text-xs text-purple-600">
                             <Zap className="w-3 h-3 fill-purple-600" />
-                            <span>+{mission.reward}</span>
+                            <span>+{mission?.sparks}</span>
                           </div>
                           <button
+                            onClick={async () => {
+                              const currentEmail = user?.email;
+                              const theStatus = getMissionStatus(mission?.id);
+                              if (theStatus === "completed") {
+                                await supabase
+                                  .from("creator_chapters_sparks_users")
+                                  .update({
+                                    status: "claimed",
+                                  })
+                                  .eq("user_id", user?.id)
+                                  .eq(
+                                    "creator_chapters_sparks_missions_id",
+                                    mission?.id
+                                  )
+                                  .eq(
+                                    "creator_chapters_id",
+                                    currentCreatorChapter?.id
+                                  );
+                                await supabase
+                                  .from("users")
+                                  .update({
+                                    sparks:
+                                      (user?.sparks || 0) + mission?.sparks,
+                                  })
+                                  .eq("email", user?.email);
+                                updateUser(currentEmail || "");
+                              } else if (!theStatus) {
+                                await supabase
+                                  .from("creator_chapters_sparks_users")
+                                  .insert({
+                                    user_id: user?.id,
+                                    status: "completed",
+                                    creator_chapters_sparks_missions_id:
+                                      mission?.id,
+                                    creator_chapters_id:
+                                      currentCreatorChapter?.id,
+                                  });
+                              }
+
+                              await userMissionsDataMutate();
+                            }}
                             className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                              mission.status === "claimed"
+                              getMissionStatus(mission?.id) === "claimed"
                                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                : mission.status === "completed"
+                                : getMissionStatus(mission?.id) === "completed"
                                 ? "bg-green-600 text-white hover:bg-green-700"
                                 : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:scale-105 shadow-lg"
                             }`}
-                            disabled={mission.status === "claimed"}
+                            disabled={
+                              getMissionStatus(mission?.id) === "claimed"
+                            }
                           >
-                            {mission.status === "claimed"
+                            {getMissionStatus(mission?.id) === "claimed"
                               ? "Done"
-                              : mission.status === "completed"
+                              : getMissionStatus(mission?.id) === "completed"
                               ? "Claim"
                               : "Go"}
                           </button>

@@ -16,7 +16,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 
 createAppKit({
   adapters: [solanaWeb3JsAdapter],
-  projectId: "",
+  projectId: "85bb78d3e28a1aa94144cacb71c3e242",
   networks: [solana, solanaTestnet, solanaDevnet],
   metadata: {
     name: "My Trading App",
@@ -25,7 +25,7 @@ createAppKit({
     icons: ["https://myapp.com/icon.png"],
   },
   features: {
-    analytics: true,
+    analytics: false,
   },
 });
 
