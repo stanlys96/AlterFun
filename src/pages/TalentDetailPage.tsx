@@ -83,6 +83,20 @@ export function TalentDetail({
 
   const { data: userStoresData } = useSWR("official_products", storesFetcher);
 
+  const communityDecisionsFetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*, community_decisions_options(*)")
+      .eq("creator_chapter_id", currentCreatorChapter?.id);
+    if (error) throw error;
+    return data;
+  };
+
+  const { data: communityDecisionsData } = useSWR(
+    "community_decisions",
+    communityDecisionsFetcher
+  );
+  console.log(communityDecisionsData, "<<< COMMUNITY DECISIONS");
   const getMissionStatus = (id: any) => {
     return userMissionsData?.find(
       (userMission) => userMission.creator_chapters_sparks_missions_id === id
