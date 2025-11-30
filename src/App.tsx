@@ -7,18 +7,12 @@ import {
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import {
-  ApplyPage,
-  ApplyThanksPage,
-  CreatorDetailPage,
-  CreatorListsPage,
-  CreatorProfilePage,
-  DiscoverPage,
+  AboutPage,
+  DashboardPage,
   HomePage,
-  JoinUsPage,
-  LiveStreamPage,
-  ProfilePage,
-  ProfilePage2,
-  TokensPage,
+  MarketPage,
+  PrimeRealmPage,
+  TalentsPage,
 } from "./pages";
 import {
   AuthModal,
@@ -84,7 +78,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-white">
       <Header
-        onNavigate={setCurrentPage}
+        onNavigate={(page: string) => handleNavigate(page)}
         isLoggedIn={isLoggedIn}
         userName={userData.name}
         userSparks={userData.sparks}
@@ -92,41 +86,11 @@ function AppContent() {
       />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route
-          path="/creators"
-          element={<CreatorListsPage onNavigate={handleNavigate} />}
-        />
-        <Route
-          path="/creator/:creator"
-          element={
-            <CreatorDetailPage
-              onFollowClick={handleBuyAction}
-              onBack={() => {
-                navigate(-1);
-                window.scrollTo(0, 0);
-              }}
-            />
-          }
-        />
-        <Route path="/profile" element={<ProfilePage2 />} />
-        <Route
-          path="/join"
-          element={<JoinUsPage onNavigate={handleNavigate} />}
-        />
-        <Route
-          path="/apply"
-          element={<ApplyPage onNavigate={handleNavigate} />}
-        />
-        <Route
-          path="/apply-thanks"
-          element={<ApplyThanksPage email={applicationEmail} />}
-        />
-        <Route
-          path="/discover"
-          element={<DiscoverPage onCreatorClick={handleNavigate} />}
-        />
-        <Route path="/live-stream" element={<LiveStreamPage />} />
-        <Route path="/tokens" element={<TokensPage />} />
+        <Route path="/talents" element={<TalentsPage />} />
+        <Route path="/market" element={<MarketPage />} />
+        <Route path="/prime" element={<PrimeRealmPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
       <AuthModal
         isOpen={authModalMode !== null}

@@ -10,3 +10,8 @@ export * from "./TokensPage";
 export * from "./DiscoverPage";
 export * from "./CreatorDetailPage";
 export * from "./ProfilePage2";
+export * from "./TalentsPage";
+export * from "./MarketPage";
+export * from "./PrimeRealmPage";
+export * from "./AboutPage";
+export * from "./DashboardPage";

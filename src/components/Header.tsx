@@ -47,7 +47,7 @@ export function Header({
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <button
-              onClick={() => handleNavClick("home")}
+              onClick={() => handleNavClick("")}
               className="text-gray-700 hover:text-purple-600 transition-colors font-semibold"
             >
               Home

@@ -38,6 +38,7 @@
     "react-router-dom": "^7.9.4",
     "react-spinners": "^0.17.0",
     "react-youtube": "^10.1.0",
+    "recharts": "^3.5.1",
     "redux": "^5.0.1",
     "sonner": "^2.0.7",
     "sweetalert2": "^11.26.3"
