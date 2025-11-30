@@ -1,10 +1,9 @@
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import {
   ArrowLeft,
   Zap,
   Crown,
   Clock,
-  TrendingUp,
   Lock,
   Ticket,
   Eye,
@@ -28,6 +27,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
 const heroImage = "/images/alterfun.png";
 
 interface Mission {
@@ -37,16 +37,17 @@ interface Mission {
   status: "available" | "completed" | "claimed";
 }
 
-interface TalentDetailProps {
-  talent: {
-    name: string;
-    image: string;
-    chapter: string;
+export function TalentDetail() {
+  const navigate = useNavigate();
+  const talent = {
+    id: 1,
+    name: "Auremiya",
+    image:
+      "https://images.unsplash.com/photo-1653981215619-12a857d7f566?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMHdvbWFuJTIwc3RyZWFtZXIlMjBnYW1pbmclMjBzZXR1cHxlbnwxfHx8fDE3NjQyMDQ1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    isLive: true,
+    chapter: "Chapter 2: Nexus",
+    generation: "Gen 1",
   };
-  onBack: () => void;
-}
-
-export function TalentDetail({ talent, onBack }: TalentDetailProps) {
   const [showFullLore, setShowFullLore] = useState(false);
   const [chartPeriod, setChartPeriod] = useState<"7d" | "30d">("7d");
   const [missions] = useState<Mission[]>([
@@ -149,13 +150,14 @@ export function TalentDetail({ talent, onBack }: TalentDetailProps) {
         </div>
 
         {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="absolute top-24 left-4 lg:left-8 z-10 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
+        {/* <button
+          onClick={() => navigate(-1)}
+          style={{ zIndex: 100000 }}
+          className="absolute cursor-pointer top-24 left-4 lg:left-8 z-1000000 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="font-semibold">Back to Talents</span>
-        </button>
+        </button> */}
 
         {/* Chapter Info */}
         <div className="absolute inset-0 flex items-center justify-center z-10">

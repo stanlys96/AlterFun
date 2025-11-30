@@ -12,6 +12,7 @@ import {
   HomePage,
   MarketPage,
   PrimeRealmPage,
+  TalentDetail,
   TalentsPage,
 } from "./pages";
 import {
@@ -87,6 +88,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/talents" element={<TalentsPage />} />
+        <Route path="/talents/:talent" element={<TalentDetail />} />
         <Route path="/market" element={<MarketPage />} />
         <Route path="/prime" element={<PrimeRealmPage />} />
         <Route path="/about" element={<AboutPage />} />

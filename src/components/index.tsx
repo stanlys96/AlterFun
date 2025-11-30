@@ -25,8 +25,6 @@ import { PrimeMembership } from "./PrimeMembership";
 import { BountyBoard } from "./BountyBoard";
 import { Vision } from "./Vision";
 import { Header } from "./Header";
-import { TalentDetail } from "./TalentDetail";
-import { TalentDirectory } from "./TalentDirectory";
 import { OfficialStore } from "./OfficialStore";
 
 export {
@@ -57,7 +55,5 @@ export {
   PrimeMembership,
   BountyBoard,
   Vision,
-  TalentDetail,
-  TalentDirectory,
   OfficialStore,
 };

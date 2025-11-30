@@ -15,3 +15,4 @@ export * from "./MarketPage";
 export * from "./PrimeRealmPage";
 export * from "./AboutPage";
 export * from "./DashboardPage";
+export * from "./TalentDetailPage";
