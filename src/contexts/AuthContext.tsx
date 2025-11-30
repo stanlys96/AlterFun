@@ -55,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
+        await supabase.auth.signOut();
         try {
           const { data } = await supabase
             .from("users")
@@ -81,7 +82,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
-      supabase.auth.signOut();
       subscription.unsubscribe();
     };
   }, []);
@@ -93,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } = await supabase.auth.getSession();
       if (session?.user) {
         try {
+          await supabase.auth.signOut();
           const { data } = await supabase
             .from("users")
             .select("*")
