@@ -1,6 +1,5 @@
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import {
-  ArrowLeft,
   Zap,
   Crown,
   Clock,
