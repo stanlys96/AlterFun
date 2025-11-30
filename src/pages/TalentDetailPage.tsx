@@ -32,7 +32,13 @@ import { supabase } from "../lib/supabase";
 import useSWR from "swr";
 import { useAuth } from "../contexts/AuthContext";
 
-export function TalentDetail() {
+interface TalentDetailPageProps {
+  onUnAuthenticatedPressButton: () => void;
+}
+
+export function TalentDetail({
+  onUnAuthenticatedPressButton,
+}: TalentDetailPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const creatorChapterId = location.pathname.split("/")?.[2];
@@ -49,7 +55,8 @@ export function TalentDetail() {
     fetcher
   );
 
-  const { currentCreatorChapter, user, updateUser } = useAuth();
+  const { currentCreatorChapter, user, updateUser, isAuthenticated } =
+    useAuth();
   const missionsFetcher = async (key: string) => {
     const { data, error } = await supabase
       .from(key)
@@ -764,6 +771,10 @@ export function TalentDetail() {
                           </div>
                           <button
                             onClick={async () => {
+                              if (!isAuthenticated) {
+                                onUnAuthenticatedPressButton();
+                                return;
+                              }
                               const currentEmail = user?.email;
                               const theStatus = getMissionStatus(mission?.id);
                               if (theStatus === "completed") {
