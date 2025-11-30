@@ -132,7 +132,7 @@ export function BountyBoard({
   const filteredRequests = bountiesData?.filter((request) => {
     if (filterStatus === "all") return true;
     if (filterStatus === "active") return request?.status === "active";
-    if (filterStatus === "my-bounties") return false; // Mock: user has no bounties
+    if (filterStatus === "my-bounties") return false;
     return true;
   });
 
@@ -307,7 +307,7 @@ export function BountyBoard({
               <div className="absolute top-3 right-3 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
                 {request?.users?.username}
               </div>
-              {request?.fulfilled && (
+              {request?.status === "fulfilled" && (
                 <div className="absolute top-3 left-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
                   ✓ Fulfilled
                 </div>
@@ -355,7 +355,7 @@ export function BountyBoard({
               </div>
 
               {/* Action Button */}
-              {!request?.fulfilled ? (
+              {request?.status === "active" ? (
                 <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl hover:scale-105 transition-all shadow-lg font-bold">
                   Fulfill Request
                 </button>
