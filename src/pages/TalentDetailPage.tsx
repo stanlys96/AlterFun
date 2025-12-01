@@ -847,13 +847,12 @@ export function TalentDetail({
                                         currentCreatorChapter?.id,
                                     });
                                 }
+                                await userMissionsDataMutate();
                               } catch (e) {
                                 console.log(e, "<<< E");
                               } finally {
                                 setLoading(false);
                               }
-
-                              await userMissionsDataMutate();
                             }}
                             className={`px-3 py-1 flex gap-x-2 items-center rounded-lg text-xs font-semibold transition-all ${
                               getMissionStatus(mission?.id) === "claimed"
