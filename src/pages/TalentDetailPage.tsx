@@ -854,7 +854,7 @@ export function TalentDetail({
                                 setLoading(false);
                               }
                             }}
-                            className={`px-3 py-1 flex gap-x-2 items-center rounded-lg text-xs font-semibold transition-all ${
+                            className={`px-3 py-1 flex gap-x-2 items-center disabled:cursor-not-allowed rounded-lg text-xs font-semibold transition-all ${
                               getMissionStatus(mission?.id) === "claimed"
                                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                 : getMissionStatus(mission?.id) === "completed"
