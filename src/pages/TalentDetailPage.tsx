@@ -39,6 +39,7 @@ interface TalentDetailPageProps {
 export function TalentDetail({
   onUnAuthenticatedPressButton,
 }: TalentDetailPageProps) {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const creatorChapterId = location.pathname.split("/")?.[2];
@@ -788,7 +789,7 @@ export function TalentDetail({
                   </div>
 
                   <div className="space-y-3">
-                    {missionsData?.map((mission) => (
+                    {missionsData?.map((mission, idx) => (
                       <div
                         key={mission?.id}
                         className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl hover:border-purple-400 transition-colors"
@@ -809,45 +810,52 @@ export function TalentDetail({
                               }
                               const currentEmail = user?.email;
                               const theStatus = getMissionStatus(mission?.id);
-                              if (theStatus === "completed") {
-                                await supabase
-                                  .from("creator_chapters_sparks_users")
-                                  .update({
-                                    status: "claimed",
-                                  })
-                                  .eq("user_id", user?.id)
-                                  .eq(
-                                    "creator_chapters_sparks_missions_id",
-                                    mission?.id
-                                  )
-                                  .eq(
-                                    "creator_chapters_id",
-                                    currentCreatorChapter?.id
-                                  );
-                                await supabase
-                                  .from("users")
-                                  .update({
-                                    sparks:
-                                      (user?.sparks || 0) + mission?.sparks,
-                                  })
-                                  .eq("email", user?.email);
-                                updateUser(currentEmail || "");
-                              } else if (!theStatus) {
-                                await supabase
-                                  .from("creator_chapters_sparks_users")
-                                  .insert({
-                                    user_id: user?.id,
-                                    status: "completed",
-                                    creator_chapters_sparks_missions_id:
-                                      mission?.id,
-                                    creator_chapters_id:
-                                      currentCreatorChapter?.id,
-                                  });
+                              try {
+                                setLoading(true);
+                                if (theStatus === "completed") {
+                                  await supabase
+                                    .from("creator_chapters_sparks_users")
+                                    .update({
+                                      status: "claimed",
+                                    })
+                                    .eq("user_id", user?.id)
+                                    .eq(
+                                      "creator_chapters_sparks_missions_id",
+                                      mission?.id
+                                    )
+                                    .eq(
+                                      "creator_chapters_id",
+                                      currentCreatorChapter?.id
+                                    );
+                                  await supabase
+                                    .from("users")
+                                    .update({
+                                      sparks:
+                                        (user?.sparks || 0) + mission?.sparks,
+                                    })
+                                    .eq("email", user?.email);
+                                  updateUser(currentEmail || "");
+                                } else if (!theStatus) {
+                                  await supabase
+                                    .from("creator_chapters_sparks_users")
+                                    .insert({
+                                      user_id: user?.id,
+                                      status: "completed",
+                                      creator_chapters_sparks_missions_id:
+                                        mission?.id,
+                                      creator_chapters_id:
+                                        currentCreatorChapter?.id,
+                                    });
+                                }
+                              } catch (e) {
+                                console.log(e, "<<< E");
+                              } finally {
+                                setLoading(false);
                               }
 
                               await userMissionsDataMutate();
                             }}
-                            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                            className={`px-3 py-1 flex gap-x-2 items-center rounded-lg text-xs font-semibold transition-all ${
                               getMissionStatus(mission?.id) === "claimed"
                                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                 : getMissionStatus(mission?.id) === "completed"
@@ -855,9 +863,13 @@ export function TalentDetail({
                                 : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:scale-105 shadow-lg"
                             }`}
                             disabled={
-                              getMissionStatus(mission?.id) === "claimed"
+                              getMissionStatus(mission?.id) === "claimed" ||
+                              loading
                             }
                           >
+                            {loading && (
+                              <div className="animate-spin rounded-full h-2 w-2 border-b-2 border-blue-600" />
+                            )}
                             {getMissionStatus(mission?.id) === "claimed"
                               ? "Done"
                               : getMissionStatus(mission?.id) === "completed"
