@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import useSWR from "swr";
 
-const fetcher = async (key: string) => {
+const thisFetcher = async (key: string) => {
   try {
     const { data, error } = await supabase.from(key).select("*, creators(*)");
     if (error) throw error;
@@ -23,7 +23,7 @@ export function TalentsPage() {
 
   const { setCurrentCreatorChapter } = useAuth();
 
-  const { data: talentsData } = useSWR("creator_chapters", fetcher);
+  const { data: talentsData } = useSWR("creator_chapters", thisFetcher);
   return (
     <section className="py-32 bg-gradient-to-b from-purple-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

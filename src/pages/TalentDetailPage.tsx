@@ -16,7 +16,7 @@ import {
   ArrowRight,
   Gem,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -43,6 +43,19 @@ export function TalentDetail({
   const navigate = useNavigate();
   const location = useLocation();
   const creatorChapterId = location.pathname.split("/")?.[2];
+  const creatorChaptersFetcher = async (key: string) => {
+    const { data, error } = await supabase
+      .from(key)
+      .select("*, creators(*)")
+      .eq("id", creatorChapterId);
+    if (error) throw error;
+    return data;
+  };
+  const { data: currentCreatorData } = useSWR(
+    "creator_chapters",
+    creatorChaptersFetcher
+  );
+  const currentCreatorChapter = currentCreatorData?.[0];
   const fetcher = async (key: string) => {
     const { data, error } = await supabase
       .from(key)
@@ -56,8 +69,7 @@ export function TalentDetail({
     fetcher
   );
 
-  const { currentCreatorChapter, user, updateUser, isAuthenticated } =
-    useAuth();
+  const { user, updateUser, isAuthenticated } = useAuth();
   const missionsFetcher = async (key: string) => {
     const { data, error } = await supabase
       .from(key)
@@ -82,7 +94,10 @@ export function TalentDetail({
     return data;
   };
 
-  const { data: userStoresData } = useSWR("official_products", storesFetcher);
+  const { data: userStoresData, isLoading: officialProductsLoading } = useSWR(
+    "official_products",
+    storesFetcher
+  );
 
   const communityDecisionsFetcher = async (key: string) => {
     const { data, error } = await supabase
@@ -127,36 +142,25 @@ export function TalentDetail({
 
   const [chartPeriod, setChartPeriod] = useState<"7d" | "30d">("7d");
 
-  const [votes] = useState([
-    {
-      id: 1,
-      title: "Next Game to Play",
-      options: ["Genshin Impact", "Honkai Star Rail"],
-      votes: [65, 35],
-    },
-    {
-      id: 2,
-      title: "Next Outfit Color",
-      options: ["Purple", "Pink"],
-      votes: [45, 55],
-    },
-  ]);
+  const calculateTimeLeft = useCallback(() => {
+    if (currentCreatorChapter?.expired_at) {
+      const difference =
+        new Date(currentCreatorChapter?.expired_at).getTime() -
+        new Date().getTime();
 
-  const calculateTimeLeft = () => {
-    const difference =
-      new Date(currentCreatorChapter?.expired_at).getTime() -
-      new Date().getTime();
+      if (difference <= 0) {
+        return { days: 0, hours: 0, minutes: 0 };
+      }
 
-    if (difference <= 0) {
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / (1000 * 60)) % 60);
+
+      return { days, hours, minutes };
+    } else {
       return { days: 0, hours: 0, minutes: 0 };
     }
-
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((difference / (1000 * 60)) % 60);
-
-    return { days, hours, minutes };
-  };
+  }, [currentCreatorChapter?.expired_at]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -221,12 +225,16 @@ export function TalentDetail({
   const viewerGrowthData = chartPeriod === "7d" ? viewerData7d : viewerData30d;
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    let timer: any;
+    if (currentCreatorChapter?.expired_at) {
       setTimeLeft(calculateTimeLeft());
-    }, 1000 * 60); // update every minute
+      timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft());
+      }, 1000 * 60);
+    }
 
     return () => clearInterval(timer);
-  }, [currentCreatorChapter?.expired_at]);
+  }, [currentCreatorChapter]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -430,7 +438,9 @@ export function TalentDetail({
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
-
+                {(officialProductsLoading || !userStoresData) && (
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
+                )}
                 <div className="grid sm:grid-cols-3 gap-4">
                   {/* Merch Item 1 */}
                   {userStoresData?.slice(0, 3)?.map((userStore) => (
@@ -473,7 +483,9 @@ export function TalentDetail({
                     <span className="text-sm font-bold">LIVE VOTING</span>
                   </div>
                 </div>
-
+                {!communityDecisionsData && (
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
+                )}
                 <div className="space-y-6">
                   {communityDecisionsData?.map((vote) => (
                     <div
@@ -787,7 +799,9 @@ export function TalentDetail({
                       Get AlterSparks Here
                     </h2>
                   </div>
-
+                  {!missionsData && (
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
+                  )}
                   <div className="space-y-3">
                     {missionsData?.map((mission, idx) => (
                       <div
