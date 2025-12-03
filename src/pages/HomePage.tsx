@@ -13,7 +13,7 @@ export const HomePage = () => {
       <Hero />
       <LiveAction />
       <PrimeMembership />
-      <BountyBoard isHomepage={true} />
+      {/* <BountyBoard isHomepage={true} /> */}
       <Vision />
       <Footer />
     </>

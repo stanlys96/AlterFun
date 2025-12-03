@@ -1,124 +1,169 @@
+import { useEffect, useState } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Zap, Sparkles } from "lucide-react";
 
-const heroImage = "/images/alterfun.png";
+const vtuberCharacter =
+  "figma:asset/e2961a5ee7ad796226b86872eacd42a019078cb2.png";
+const stageBackground =
+  "figma:asset/6c779e7b07114a95de6f561c7bf25e51d5772ad6.png";
 
-export function Hero() {
+interface HeroProps {
+  featuredTalent?: {
+    name: string;
+    image: string;
+    chapter: string;
+  };
+}
+
+export function Hero({ featuredTalent }: HeroProps) {
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Trigger slide-in animation after component mounts
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Default featured talent
+  const talent = featuredTalent || {
+    name: "Auremiya",
+    image: vtuberCharacter,
+    chapter: "CHAPTER 0: NEXUS",
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-white pt-20">
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-20 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-40"></div>
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-200 rounded-full blur-3xl opacity-40"></div>
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-32">
+      {/* Stage Background */}
+      <div className="absolute inset-0">
+        <img
+          src={stageBackground}
+          alt="Stage Background"
+          className="w-full h-full object-cover"
+        />
+        {/* Overlay gradient for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20"></div>
+      </div>
 
-      {/* Grid pattern overlay */}
+      {/* Decorative background elements */}
+      <div className="absolute top-20 right-20 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-20"></div>
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-cyan-200 rounded-full blur-3xl opacity-20"></div>
+
+      {/* Diagonal grid pattern - subtle */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(45deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px), linear-gradient(-45deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
           backgroundSize: "50px 50px",
         }}
       ></div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Column - Content */}
-          <div className="space-y-8 z-10">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white border border-purple-200 shadow-sm px-4 py-2 rounded-full">
-                <Sparkles className="w-4 h-4 text-purple-600" />
-                <span className="text-sm text-purple-900 font-semibold">
-                  Platform Creator Economy Masa Depan
-                </span>
-              </div>
+      {/* Diagonal accent lines - asymmetric */}
+      <div className="absolute top-1/4 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent transform -rotate-12 opacity-30"></div>
+      <div className="absolute bottom-1/3 right-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent transform rotate-6 opacity-30"></div>
 
-              <h1
-                className="text-gray-900"
-                style={{ fontFamily: "var(--font-accent)" }}
-              >
-                <span className="block text-5xl lg:text-7xl leading-tight mb-2">
-                  Dukung Streamer
-                </span>
-                <span className="block text-5xl lg:text-7xl leading-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Favoritmu
-                </span>
-              </h1>
+      {/* FULL-SCREEN CHARACTER - No Parallax, Only Slide-in */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute -right-[5%] md:-right-[5%] top-0 bottom-0 w-[80%] md:w-[55%] flex items-start justify-end overflow-visible transition-all duration-1000 ease-out"
+          style={{
+            transform: `translateX(${isVisible ? "0" : "100%"})`,
+            opacity: isVisible ? 1 : 0,
+          }}
+        >
+          {/* Character Glow */}
+          <div className="absolute inset-0 bg-gradient-to-l from-cyan-400 via-purple-400 to-transparent blur-3xl opacity-30"></div>
 
-              <p className="text-xl lg:text-2xl text-gray-700 max-w-xl">
-                Dan dapatkan{" "}
-                <span className="text-purple-900 font-semibold">
-                  official merch eksklusif
-                </span>
-                , bebas biaya.
-              </p>
-            </div>
+          {/* Character Image - 200% Zoom, Top Aligned */}
+          <img
+            src={talent.image}
+            alt={talent.name}
+            className="relative transition-all duration-1000"
+            style={{
+              height: "200%",
+              width: "auto",
+              objectFit: "cover",
+              objectPosition: "top center",
+              filter: "drop-shadow(0 20px 60px rgba(6, 182, 212, 0.6))",
+            }}
+          />
+        </div>
+      </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="group relative bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50">
-                <span className="relative z-10 flex items-center justify-center gap-2 text-lg font-bold">
-                  Cek Merch
-                  <Sparkles className="w-5 h-5" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
-
-              <button className="border-2 border-purple-300 text-purple-900 px-8 py-4 rounded-xl hover:bg-purple-50 transition-all">
-                Pelajari Lebih Lanjut
-              </button>
+      {/* Content - Asymmetric, Diagonal, Overlapping */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full z-10">
+        <div className="space-y-4 md:space-y-6 max-w-2xl">
+          {/* Chapter Badge */}
+          <div className="inline-block hover:scale-105 transition-transform">
+            <div className="relative inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-purple-100 to-cyan-100 border-2 border-purple-300 shadow-lg px-3 py-2 md:px-5 md:py-3 rounded-xl backdrop-blur-sm bg-white/90">
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-purple-500"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-purple-500"></div>
+              <div className="absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-purple-500"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-purple-500"></div>
+              <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
+              <span className="text-xs md:text-sm text-purple-900 font-bold uppercase tracking-wider">
+                {talent.chapter}
+              </span>
             </div>
           </div>
 
-          {/* Right Column - Visual */}
-          <div className="relative z-10">
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-3xl blur-3xl opacity-20"></div>
+          {/* Featured Talent Name */}
+          <div className="hover:scale-105 transition-transform">
+            <h1
+              className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-cyan-500 to-purple-600 mb-4 md:mb-6 drop-shadow-sm p-2"
+              style={{
+                fontFamily: "var(--font-accent)",
+                fontSize: "clamp(2.5rem, 8vw, 5rem)",
+                lineHeight: "1.1",
+                letterSpacing: "-0.03em",
+              }}
+            >
+              {talent.name}
+            </h1>
 
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                <ImageWithFallback
-                  src={heroImage}
-                  alt="AlterFUN Talent"
-                  className="w-full h-auto aspect-[4/5] object-cover"
-                />
+            <p className="text-base md:text-xl lg:text-2xl text-white max-w-xl leading-relaxed drop-shadow-lg">
+              New chapter mission begin! Start now and earn{" "}
+              <span className="text-cyan-300 font-bold">
+                Auremiya Official Exclusive Merch
+              </span>
+              .
+            </p>
+          </div>
 
-                {/* Floating Stats */}
-                <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md border border-purple-200 rounded-2xl px-4 py-3 shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                    <span className="text-gray-900 font-bold">
-                      12.8K Watching
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Merch Card - Bottom Right */}
-              <div className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-xl border border-purple-200 rounded-2xl p-4 shadow-2xl max-w-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl overflow-hidden flex-shrink-0 shadow-lg">
-                    <ImageWithFallback
-                      src="https://images.unsplash.com/photo-1659082056845-3b839c7551bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbmltZSUyMG1lcmNoYW5kaXNlJTIwaG9vZGllfGVufDF8fHx8MTc2NDIwNDUyN3ww&ixlib=rb-4.1.0&q=80&w=1080"
-                      alt="Exclusive Hoodie"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-gray-900 font-bold">
-                      Exclusive Hoodie
-                    </div>
-                    <div className="text-xs text-gray-600 mb-2">
-                      Limited Edition
-                    </div>
-                    <div className="flex items-center gap-1 text-purple-600">
-                      <Zap className="w-3 h-3 fill-purple-600" />
-                      <span className="text-xs font-bold">2,500 Sparks</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* CTA Button */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-2 md:pt-4">
+            <button className="group relative bg-gradient-to-r from-purple-600 to-cyan-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50">
+              <span className="relative z-10 flex items-center justify-center gap-2 text-base md:text-lg font-bold">
+                Earn Exclusive Merch
+                <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <div className="text-xs text-white/80 uppercase tracking-wider font-bold drop-shadow-lg">
+          Scroll
+        </div>
+        <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-transparent rounded-full"></div>
+      </div>
+
+      {/* Diagonal Section Transition */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white"></div>
     </section>
   );
 }

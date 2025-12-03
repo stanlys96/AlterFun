@@ -25,8 +25,8 @@ export function Footer() {
               </span>
             </div>
             <p className="text-gray-300 text-sm">
-              Platform Creator Economy masa depan. Jembatan profesional antara
-              Creator dengan Fans & Investor.
+              Future Creator Economy platform. Bridging Creator, Fans &
+              Investor.
             </p>
             <div className="flex items-center gap-3">
               <a
