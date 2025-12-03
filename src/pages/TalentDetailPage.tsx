@@ -421,6 +421,53 @@ export function TalentDetail({
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Main Content */}
             <div className="lg:col-span-2 space-y-8">
+              <div className="bg-white border-2 border-purple-200 rounded-2xl p-8 shadow-lg">
+                <div className="flex items-center gap-3 mb-6">
+                  <Radio className="w-6 h-6 text-red-600" />
+                  <h2
+                    className="text-2xl font-bold text-gray-900"
+                    style={{ fontFamily: "var(--font-accent)" }}
+                  >
+                    Live Streaming
+                  </h2>
+                  <div className="ml-auto flex items-center gap-2 bg-red-500 text-white px-3 py-1.5 rounded-full">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <span className="text-sm font-bold">LIVE NOW</span>
+                  </div>
+                </div>
+
+                {/* Stream Preview */}
+                <div className="relative rounded-xl overflow-hidden bg-gray-900 mb-4 group cursor-pointer">
+                  <div className="aspect-video">
+                    <ImageWithFallback
+                      src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800"
+                      alt="Live Stream"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-opacity"></div>
+
+                    {/* Play Button */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
+                        <PlayCircle className="w-12 h-12 text-red-600 fill-red-600" />
+                      </div>
+                    </div>
+
+                    {/* Viewer Count */}
+                    <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full font-semibold flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      <span>2,347 watching</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stream Info */}
+                <div className="space-y-3">
+                  <h3 className="font-bold text-gray-900 text-lg">
+                    Midnight Gaming Marathon - Part 3
+                  </h3>
+                </div>
+              </div>
               {/* Top 3 Merch */}
               <div className="bg-white border-2 border-purple-200 rounded-2xl p-8 shadow-lg">
                 <div className="flex items-center justify-between mb-6">

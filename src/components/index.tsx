@@ -26,6 +26,8 @@ import { BountyBoard } from "./BountyBoard";
 import { Vision } from "./Vision";
 import { Header } from "./Header";
 import { OfficialStore } from "./OfficialStore";
+import { BlindBoxStore } from "./BlindBoxStore";
+import { RedeemModal } from "./RedeemModal";
 
 export {
   CreatorCTA,
@@ -56,4 +58,6 @@ export {
   BountyBoard,
   Vision,
   OfficialStore,
+  BlindBoxStore,
+  RedeemModal,
 };
